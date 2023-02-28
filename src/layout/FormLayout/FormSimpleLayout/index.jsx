@@ -9,8 +9,7 @@ import { apiConfig } from 'config/app.config';
 
 
 
-
-export default function FormSimpleLayout({fields, route}) {
+export default function FormSimpleLayout({fields, mode = 'update' | 'create', handleSubmit=() => {}}) {
     const [isLoading, setLoading] = useState(true);
     const [isError ,setIsError] = useState(false)
 
@@ -22,36 +21,27 @@ export default function FormSimpleLayout({fields, route}) {
 
     }
 
-    const handleSubmit = event => {
-        event.preventDefault();
-        var params = {};
+    // const handleSubmit = event => {
+    //     event.preventDefault();
+    //     var params = {};
 
-        fields.forEach(element => {
-            if (element.type === 'tree') {
-                params[element.name] = [];
-                for (let index = 0; index < 4; index++) {
-                    params[element.name].push(event.target[element.name+index+""].value)
-                }
-            } else {
-                params[element.name] = event.target[element.name].value
-            }
+    //     fields.forEach(element => {
+    //         if (element.type === 'tree') {
+    //             params[element.name] = [];
+    //             for (let index = 0; index < 4; index++) {
+    //                 params[element.name].push(event.target[element.name+index+""].value)
+    //             }
+    //         } else {
+    //             params[element.name] = event.target[element.name].value
+    //         }
 
-        });
-        console.log(params);
-        
-        
-        
-        // fetch("https://pointy-gauge.glitch.me/api/form", {
-        //   method: "POST",
-        //   body: JSON.stringify(data),
-        //   headers: {
-        //     "Content-Type": "application/json"
-        //   }
-        // })
-        //   .then(response => response.json())
-        //   .then(response => console.log("Success:", JSON.stringify(response)))
-        //   .catch(error => console.error("Error:", error));
-    };
+    //     });
+    //     axios.post(api, params);
+    // };
+
+    const handleOnchange = (event, setValue) => {
+        setValue(event.target.value);
+    }
 
     return (
         <Box>
@@ -62,8 +52,7 @@ export default function FormSimpleLayout({fields, route}) {
                     borderRadius: '12px',
                     padding: '16px',
                     border: '1px solid #90caf975',
-                }}
-                onSubmit={handleSubmit} >
+                }} >
                 <h3>Form</h3>
                 {
                     fields.map((item, index) => {
@@ -71,8 +60,9 @@ export default function FormSimpleLayout({fields, route}) {
                             case 'hidden':
                                 return <input key={index} type={'hidden'} name={item.name} value={item.value}/>
                             case 'tree':
+                                console.log(item.useState);
                                 return (
-                                    <InputTypeTree name={item.name} key={index} apiData={item.apiData} listData={item.values} />
+                                    <InputTypeTree useStateValue={item.useState} labels={item.labels}/>
                                 )
                             case 'file':
                                 return item.value ? <img src={item.value} alt={'avatar'}/> : (
@@ -89,24 +79,28 @@ export default function FormSimpleLayout({fields, route}) {
                                         key={index}
                                         disablePortal
                                         id="combo-box-demo"
-                                        value={{title: item.value}}
-                                        getOptionLabel={option => option.title}
-                                        options={item.values}
+                                        value={{title: item.useState[0]?.title ?? "" }}
+                                        getOptionLabel={option => option?.title ?? "" }
+                                        options={item.values ?? []}
                                         fullWidth={true}
-                                        name={item.name}
+                                        onChange = {
+                                            (event, newValue) => {
+                                              item.useState[1](newValue);
+                                            }
+                                          }
                                         renderInput={(params) => <TextField name={item.name}  {...params} label={item.label} />}
                                     />
                                 )
                             case 'textarea':
                                 return (
                                     <TextField
-                                        name={item.name}
                                         key={index}
                                         multiline
                                         fullWidth={true}
                                         rows={3}
                                         label={item.label}
-                                        value={item.value}
+                                        value={item.useState[0]}
+                                        onChange={(event) =>  handleOnchange(event, item.useState[1])}
                                         maxRows={5}/>
                                 ) 
                             case 'radio':
@@ -115,11 +109,11 @@ export default function FormSimpleLayout({fields, route}) {
                                         <FormControl>
                                             <FormLabel>{item.label}</FormLabel>
                                             <RadioGroup
-                                                defaultValue={item.values[0].value}
-                                                name={item.name}
+                                                value={item.useState[0]}
+                                                onChange={(event) => handleOnchange(event, item.useState[1])}
                                             >
                                                 {item.values.map((option) => {
-                                                    return <FormControlLabel checked={option.value == item.value} value={option.value} control={<Radio />} label={option.value} />
+                                                    return <FormControlLabel value={option.value} control={<Radio />} label={option.value} />
                                                 })}
                                             </RadioGroup>
                                         </FormControl><br/>
@@ -134,8 +128,9 @@ export default function FormSimpleLayout({fields, route}) {
                                         helperText="Some important text"
                                         variant="outlined"
                                         label={item.label}
-                                        value={item.value}
+                                        value={item.useState[0]}
                                         fullWidth={true}
+                                        onChange={ (event) => {item.useState[1](event.target.value)}}
                                         name={item.name}
                                     />
                                 )
@@ -144,9 +139,9 @@ export default function FormSimpleLayout({fields, route}) {
                 }
                 <br/>
                 <Button
-                    type="submit"
                     variant="contained"
-                    color="primary">
+                    color="primary"
+                    onClick={handleSubmit}>
                     Save
                 </Button>
             </Box >

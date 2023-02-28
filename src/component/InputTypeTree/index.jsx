@@ -2,58 +2,62 @@ import { IconPlus, IconTrash, IconPencil   } from '@tabler/icons';
 import { Autocomplete, Box, IconButton, TextField } from '@mui/material';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import axios from 'axios';
+import { v4 as uuid } from 'uuid';
 
-export default function InputTypeTree ({apiData, listData=[], name}) {
+export default function InputTypeTree ({useStateValue, name, labels}) {
 
-    useEffect(() => {
-        axios.get(apiData).then((data) => {
-            listData[0].setData(data.data)
-        })
-    },[])
+    // const [data, useStateValue] = useState(useStateValue[0]);
 
     // useEffect(() => {
-    //     listData[0].setData(async () => {
-    //         return await (await axios.get(apiData)).data
-    //     })
-    // }, [])
-    
-    console.log(listData[0]);
+    //     useStateValue[1(useStateValue[0])
+    // })
 
-    const clearAllStartAt = async (index, newValue) => {
-        for (index; index < listData.length; index++) {
-            await listData[index].setData(null);
-        }
+    // useEffect(() => {
+    //     useStateValue[1](data)
+    // },[data])
+ 
+    console.log(useStateValue[0]);
+
+    const handleChange = (newValue, indexFrom) => {
+        const dataDeleted = useStateValue[0].filter((value, index) => index < indexFrom );
+        useStateValue[1]([...dataDeleted, newValue])
     }
+
     return (
         <Box display={'flex'}>
-            {
-                listData.map((item, index) => {
-                    return (
-                        item.data ?  
-                            <Autocomplete
-                                disablePortal
-                                clearIcon={false}
-                                options={item.data ?? []}
-                                getOptionLabel={(option) => option.title} 
-                                onChange={async (event, newValue) => {
-                                    if(index+1 < listData.length && listData[index+1].data) {
-                                        if (newValue.children != listData[index+1].data) {
-                                            await clearAllStartAt(index+1);
-                                        }
-                                    }
-                                    newValue.children ? listData[index+1].setData(newValue.children) : ''
-                                }}
-                                sx={{
-                                    width: '200px',
-                                    marginRight: '8px',
-                                }}
-                                renderInput={(params) => <TextField name={name+index+""} {...params} label={item.label} />}
-                            />: <></>)
-                })
-            }
-            {listData[listData.length - 2].data ? <TextField name={name+(listData.length - 1)+""} label={listData[listData.length - 1].label}/>: <></>}
-            
+            {(useStateValue[0] ?? []).length != 0 ? useStateValue[0].map((value, index) => {
+                return index < 3 ? (
+                    useStateValue[0][index+1] ? 
+                        <Autocomplete
+                            disablePortal
+                            disableClearable
+                            sx={{width: '200px'}}
+                            value={{title: useStateValue[0][index+1]?.title}}
+                            getOptionLabel={option => option?.title}
+                            options={useStateValue[0][index].children ?? []}
+                            name={name}
+                            onChange = {
+                                (event, newValue) => {
+                                    handleChange(newValue, index+1)
+                                }
+                            }
+                            renderInput={(params) => <TextField {...params} label={labels[index]} />}
+                        />
+                        :<Autocomplete
+                            disablePortal
+                            disableClearable
+                            getOptionLabel={option => option?.title}
+                            options={useStateValue[0][index].children ?? []}
+                            name={name}
+                            sx={{width: '200px'}}
+                            onChange = {
+                                (event, newValue) => {
+                                    handleChange(newValue, index+1)
+                                }
+                            }
+                            renderInput={(params) => <TextField {...params} label={labels[index]} />}
+                    />): index < 4 ? <TextField value={useStateValue[0][index+1]?.title ?? ""} label={labels[index]} onChange={(event) => handleChange({id: uuid(),level: index+1 , title: event.target.value, parent_id: useStateValue[0][index].id} ,index+1)} /> : <></>
+            }): <></>}
         </Box >
     )
 }

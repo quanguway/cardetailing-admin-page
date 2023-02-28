@@ -36,7 +36,7 @@ const NavItem = ({ item, level }) => {
 
     let itemTarget = '_self';
     if (item.target) {
-        itemTarget = '_blank';
+        itemTarget = '_self';
     }
 
     let listItemProps = {

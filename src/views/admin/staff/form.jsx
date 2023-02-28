@@ -1,6 +1,6 @@
-import { Box, } from '@mui/material';
+import { Box, Button, } from '@mui/material';
 import { apiConfig } from 'config/app.config';
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate  } from "react-router-dom";
 import FormSimpleLayout from 'layout/FormLayout/FormSimpleLayout';
 import { useState, useEffect } from 'react';
 import { renderGender } from 'utils/dataToView';
@@ -8,94 +8,89 @@ import axios from 'axios';
 
 
 const StaffForm = () => {
-    const {state} = useLocation();
+    const { state } = useLocation();
+    const navigate = useNavigate();
     const [roles, setRoles] = useState([])
-    const [roleSeleted, setRoleSelected] = useState(null);
+
+    const [fullName, setFullName] = useState(state.data?.full_name ?? '')
+    const [phone, setPhone] = useState(state.data?.phone ?? '')
+    const [email, setEmail] = useState(state.data?.email ?? '')
+    const [gender, setGender] = useState(renderGender(state.data?.gender) ?? 'Nam')
+    const [note, setNote] = useState(state.data?.note ?? '')
+    const [role, setRole] = useState(state.data?.role ?? '')
+    const [address, setAddress] = useState([])
     
     useEffect(() => {
         axios.get(apiConfig.ROLE_API.GET_ALL).then((value) => {
             setRoles(value.data)
-            console.log(state.id);
-            setRoleSelected(value.data.filter((role) => { return role.id === state.role_id} )[0].title);
         })
     },[])
 
-    console.log(roleSeleted);
+    useEffect(() => {
+        if(state.mode == 'UPDATE') {
+            const params = {ids: state.data.address_paths}
 
-    const [addressLevel1, setAdrressLevel1] = useState (null);
-    const [addressLevel2, setAdrressLevel2] = useState (null);
-    const [addressLevel3, setAdrressLevel3] = useState (null);
-    const [addressLevel4, setAdrressLevel4] = useState (null);
+            axios.get(apiConfig.ADDRESS_API.GET_MANY_BY_IDs, {params}).then((value) => {
+                setAddress(value.data);
+            })
+        } else {
+            axios.get(apiConfig.ADDRESS_API.GET_ALL).then((value) => {
+                setAddress([value.data[0]]);
+            })
+        }
+    },[])
 
-    console.log(roles);
-
-    // const [roles, setRoles] = useState(async () => {
-    //     const response = await axios.get(apiConfig.ROLE_API.GET_ALL);
-    //     // const responseChangeField = response.data.map(({title, ...other}) => {label : title, other});
-    //     // console.log(responseChangeField);
-    //     return response
-    // });
-
-    // console.log(roles);
-
-    const listAddressLevel = [
-        {
-            label: 'Thành phố',
-            data: addressLevel1,
-            setData: setAdrressLevel1
-        },
-        {
-            label: 'Quận / Huyện',
-            data: addressLevel2,
-            setData: setAdrressLevel2
-        },
-        {
-            label: 'Tỉnh',
-            data: addressLevel3,
-            setData: setAdrressLevel3
-        },
-        {
-            label: 'Địa chỉ',
-            data: addressLevel4,
-            setData: setAdrressLevel4
-        },
-    ]
-
-    console.log(state)
-
-    // const roles = [
-    //     {
-    //         label: 'customer'
-    //     },
-    //     {
-    //         label: 'admin' 
-    //     }
-    // ];
+    const handleSubmit = async() => {
+        // console.log('asdasd');
+        // console.log(address[address?.length-1]);
+        const addrLength = address?.length-1
+        console.log(gender);
+        var params = {
+            id: state.data?.id ?? undefined ,
+            item: {
+                full_name: fullName,
+                phone: phone,
+                email: email,
+                gender: gender == 'Nam' ? true : false,
+                note: note,
+                role_id: role.id,
+                address: address[addrLength]
+            }
+            
+        };
+        // log
+        console.log(params);
+        if(state.mode == 'UPDATE') {
+            await axios.post(apiConfig.STAFF_API.UPDATE, params).then(() => {
+                navigate('/staff');
+            });
+        } else if(state.mode == 'CREATE') {
+            await axios.post(apiConfig.STAFF_API.CREATE, params).then(() => {
+                navigate('/staff');
+            });
+        }
+        
+    };
 
     const fields = [
         {
-            name: 'id',
-            value: state.id,
-            type: 'hidden'
-        },
-        {
             label: 'Full name',
-            value: state.full_name,
-            name: 'full_name'
+            name: 'full_name',
+            useState: [fullName, setFullName]
         },
         {
             label: 'Phone',
-            value: state.phone,
-            name: 'phone'
+            name: 'phone',
+            useState: [phone, setPhone]
         },
         {
             label: 'Email',
-            value: state.email,
-            name: 'email'
+            name: 'email',
+            useState: [email, setEmail]
         },
         {
             label: 'Gender',
-            value: state.gender,
+            useState: [gender, setGender],
             name: 'gender',
             values: [
                 {
@@ -109,31 +104,28 @@ const StaffForm = () => {
         },
         {
             label: 'Note',
-            value: state.note,
             type: 'textarea',
             name: 'note',
+            useState: [note, setNote]
         },
         {
             label: 'Role',
-            value: roleSeleted,
             values: roles,
-            apiData: apiConfig.ROLE_API.GET_ALL,
             type: 'combo',
+            useState: [role, setRole],
             name: 'role',
         },
         {
             label: 'Address',
-            // value: state.address_id,
-            values: listAddressLevel,
-            apiData: apiConfig.ADDRESS_API.GET, 
-            labelOption: 'title',
+            useState: [address, setAddress],
             type: 'tree',
             name: 'address',
+            labels: ['Thành phố', 'Quận / Huyện', 'Tỉnh thành', 'Địa chỉ']
         },
         
         // {
         //     label: 'Avatar',
-        //     value: state.avatar,
+        //     value: state.data.avatar,
         //     type: 'file',
         //     name: 'avatar'
         // },
@@ -143,7 +135,7 @@ const StaffForm = () => {
 
     return (
         <Box>
-            <FormSimpleLayout fields={fields} />
+            <FormSimpleLayout mode={state.mode} fields={fields} api={state.api} handleSubmit={handleSubmit} />
         </Box>
     );
 };

@@ -15,21 +15,6 @@ export default function TableSimpleLayout({columns ,apiGet, customFields = undef
         setLoading(false);
     }, []);
 
-    // const handleDelete = (id, apiDelete) => {
-    //     if(confirm("Do you want delete this item ?")) {
-    //         axios.delete(apiDelete, { data: { id }}).then(() => {
-    //             window.location.reload();
-    //         })
-    //     }
-    // }
-    
-    
-    
-    // const handleEdit = (id, directURL) => {
-    //     const navigate = useNavigate();
-    //     navigate(directURL);
-    // }
-
     useEffect(() => {
         axios.get(apiGet).then((data) => {
 
@@ -46,8 +31,6 @@ export default function TableSimpleLayout({columns ,apiGet, customFields = undef
                     }
                 });
             }
-
-            console.log(dataRows);
 
             setRows(dataRows);
         })
@@ -68,6 +51,7 @@ export default function TableSimpleLayout({columns ,apiGet, customFields = undef
                 columns={columns}
                 rows={rows}
             />
+            
         </Box>
     );
 };

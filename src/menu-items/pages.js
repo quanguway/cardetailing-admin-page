@@ -30,6 +30,42 @@ const pages = {
                     target: true
                 },
             ]
+        },
+        {
+            id: 'product',
+            title: 'Product',
+            type: 'collapse',
+            icon: IconUser,
+            children: [
+                {
+                    id: 'category',
+                    title: 'Catagory',
+                    type: 'item',
+                    url: '/product-category',
+                    target: true
+                },
+                {
+                    id: 'products',
+                    title: 'Product',
+                    type: 'item',
+                    url: '/product',
+                    target: true
+                },
+                {
+                    id: 'unit',
+                    title: 'Unit',
+                    type: 'item',
+                    url: '/unit',
+                    target: true
+                },
+                {
+                    id: 'promotion',
+                    title: 'Promotion',
+                    type: 'item',
+                    url: '/promotion',
+                    target: true
+                },
+            ]
         }
     ]
 };

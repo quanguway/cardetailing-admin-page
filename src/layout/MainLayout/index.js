@@ -101,6 +101,8 @@ const MainLayout = () => {
                 <Breadcrumbs separator={IconChevronRight} navigation={navigation} icon title rightAlign />
                 <Outlet />
             </Main>
+            {/* <Customization /> */}
+
         </Box>
     );
 };
