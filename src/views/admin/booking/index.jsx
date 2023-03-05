@@ -19,21 +19,30 @@ const UnitPage = () => {
     setOpen(!open);
   };
 
+      // id?:string
+	// status?:string
+	// note?: string
+	// customer_id?:string
+	// date_created?:Date
+	// date_updated?:Date
+	// user_created?:Date
+	// user_updateed?:Date
+
   const columnsShow = [
-    'title',
-    'description' 
+    'status',
+    'note',
   ]
 
   const columnsChildShow = {
-    label: 'unitExchanges',
+    label: 'booking_details',
     columns: [
-      'allow_sale', 'is_active', 'is_base_unit', 'is_report', 'value', 
+      'status',  
     ]
   }
 
     const columns = [
-        { field: 'title', flex: 1 },
-        { field: 'description', flex: 1 },
+        { field: 'status', flex: 1 },
+        { field: 'note', flex: 1 },
         {
             field: 'actions',
             type: 'actions',
@@ -75,7 +84,7 @@ const UnitPage = () => {
 
     return (
         <Box>
-            <TableSimpleLayout columns={columns} apiGet={apiConfig.UNIT_API.GET_ALL} handleAddButton={() => navigate('create')} />
+            <TableSimpleLayout columns={columns} apiGet={apiConfig.BOOKING_API.GET_ALL} />
             <DrawerToggle open={open} handleToggle={handleToggle} data={row} columns={columnsShow} columnChild={columnsChildShow}/>
         </Box>
     );

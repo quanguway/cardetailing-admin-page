@@ -8,9 +8,6 @@ import axios from 'axios';
 import FormTableLayout from 'layout/FormLayout/FormTableLayout';
 import { GridActionsCellItem } from '@mui/x-data-grid';
 import { IconPencil, IconTrash } from '@tabler/icons';
-import DrawerToggle from 'component/DrawerToggle';
-import TableEditableLayout from 'layout/TableLayout/TableEditableLayout';
-import ProgressAction from 'layout/TableLayout/TableEditableLayout/ProgressAction';
 import FormToggle from 'component/DrawerToggle/FormToggle';
 
 
@@ -20,28 +17,43 @@ const UnitForm = () => {
     const [openForm, setOPenForm ] = useState(false);
     const [listProducts, setListProduct] = useState([])
 
-    //unit
+    // booking
 
-    const [title, setTitle] = useState(state.data?.title ?? '')
-    const [description, setDescription] = useState(state.data?.description ?? '')
+    const [status, setStatus] = useState(state.data?.title ?? '')
+    const [note, setNote] = useState(state.data?.description ?? '')
 
-    // unitExchange
+    // booking detail
 
-    const [unitExchangeId, setUnitExchangeId] = useState();
-    const [value, setValue] = useState();
-    const [isBaseUnit, setIsBaseUnit] = useState();
-    const [isReport, setIsReport] = useState();
-    const [isActive, setIsActive] = useState();
-    const [allowSale , setAllowSale] = useState();
-    const [ product, setProduct] = useState();
+    // id?: string
+    // status?: 'PENDING' | 'CONFIRMED' | 'CANCEL' | 'PROCESSING' | 'FINISHED'
+    // booking_id?: string
+    // product_id?: string
+    // unit_exchange_id?: string
+    // price_id?: string
+    // note?: string 
+    // date_created?: Date
+    // date_updated?: Date
+    // user_created?: Date
+    // user_updated?: Date
 
-    const [unitExchangeRows, setUnitExchangeRows] = useState([]);
+    const [ statusBookingDetail, setStatusBookingDetail ] = useState();
+    const [ product, setProduct ] = useState();
+    const [ unitExchange, setUnitExchange ] = useState();
+    const [ price, setPrice ] = useState();
+
+    const [bookingDetailRows, setBookingDetailRows] = useState([]);
 
     useEffect(() => {
-        setUnitExchangeRows(state.data.unitExchanges.map((element) => {return {...element, product_title: element.product.title}}))
+        // setUnitExchangeRows(state.data.unitExchanges.map((element) => {return {...element, product_title: element.product.title}}))
+        axios.get(apiConfig.BOOKING_DETAIL_API.GET_BY_BOOKING_ID, { params: { booking_id: state.data.id } } ).then((value) => {
+            setBookingDetailRows(value.data.map((element) => {return {
+                ...element, 
+                product_title: element.product.title,
+                unit_exchange_value: element.unitExchange.value,
+                price: element.price.price
+            }}))
+        })
     }, [])
-
-    // console.logunitExchangeRows
 
     useEffect(() => {
         axios.get(apiConfig.PRODUCT_API.GET_ALL).then((value) => {
@@ -63,20 +75,17 @@ const UnitForm = () => {
             
         };
         // log
-        console.log(params);
         if(state.mode == 'UPDATE') {
-            await axios.post(apiConfig.UNIT_API.UPDATE, params).then(() => {
-                navigate('/unit');
+            await axios.post(apiConfig.BOOKING_API.UPDATE, params).then(() => {
+                navigate('/booking');
             });
         } else if(state.mode == 'CREATE') {
-            await axios.post(apiConfig.UNIT_API.CREATE, params).then(() => {
-                navigate('/unit');
+            await axios.post(apiConfig.BOOKING_API.CREATE, params).then(() => {
+                navigate('/booking');
             });
         }
         
     };
-
-    console.log(listProducts);
 
     const handleSubmitUniExchange = async () => {
         const params = {
@@ -90,9 +99,8 @@ const UnitForm = () => {
                 product_id: product.id
             }
         }
-        // console.log(params);
         await axios.post(apiConfig.UNIT_EXCHANGE_API.UPDATE, params)
-        navigate('/unit');
+        window.location.reload()
     }
 
     const fields = [
@@ -104,7 +112,8 @@ const UnitForm = () => {
         {
             label: 'Description',
             name: 'description',
-            useState: [description, setDescription]
+            useState: [description, setDescription],
+            type: 'textarea'
         },
         
     ]
@@ -219,7 +228,7 @@ const UnitForm = () => {
     return (
         <Box>
             <FormSimpleLayout mode={state.mode} fields={fields} api={state.api} handleSubmit={handleSubmit} />
-            <FormTableLayout columns={unitExchangeCols} rows={unitExchangeRows ?? []}/>
+            <FormTableLayout columns={unitExchangeCols} rows={bookingDetailRows ?? []}/>
             <FormToggle open={openForm} handleToggle={handleToggle} fields={unitExchangeFields} handleSubmit={handleSubmitUniExchange}/>
         </Box>
     );

@@ -7,10 +7,11 @@ import { useNavigate } from "react-router-dom";
 import React, { useState } from 'react';
 import axios from 'axios';
 import DrawerToggle from 'component/DrawerToggle';
+import moment from 'moment/moment';
 
 
 
-const UnitPage = () => {
+const PricePage = () => {
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
@@ -21,19 +22,22 @@ const UnitPage = () => {
 
   const columnsShow = [
     'title',
-    'description' 
+    'start_date',
+    'end_date' 
   ]
 
   const columnsChildShow = {
-    label: 'unitExchanges',
+    label: 'priceLine',
     columns: [
-      'allow_sale', 'is_active', 'is_base_unit', 'is_report', 'value', 
+        'price', 'is_active'
     ]
   }
 
     const columns = [
         { field: 'title', flex: 1 },
-        { field: 'description', flex: 1 },
+        { field: 'start_date', flex: 1, valueFormatter: params => 
+            moment(params?.value).format("DD/MM/YYYY hh:mm"), },
+        { field: 'end_date', flex: 1,valueFormatter: params => moment(params?.value).format("DD/MM/YYYY hh:mm"), },
         {
             field: 'actions',
             type: 'actions',
@@ -54,7 +58,7 @@ const UnitPage = () => {
                 label="Delete"
                 onClick={() => {
                   if(confirm("Do you want delete this item ?")) {
-                        axios.delete(apiConfig.UNIT_API.DELETE, { data: { id: params.id }}).then(() => {
+                        axios.delete(apiConfig.PRICE_HEADER.DELETE, { data: { id: params.id }}).then(() => {
                             window.location.reload();
                         })
                     }
@@ -65,7 +69,7 @@ const UnitPage = () => {
                 icon={<IconPencil />}
                 label="Edit"
                 onClick={() => {
-                  navigate('form', {state: { data: params.row, mode: 'UPDATE', api: apiConfig.UNIT_API.EDIT }}); 
+                  navigate('update', {state: { data: params.row }}); 
                 }}
                 showInMenu
               />,
@@ -73,12 +77,16 @@ const UnitPage = () => {
         },
     ]
 
+    const handleAddButton = () => {
+      navigate('create');
+    }
+
     return (
         <Box>
-            <TableSimpleLayout columns={columns} apiGet={apiConfig.UNIT_API.GET_ALL} handleAddButton={() => navigate('create')} />
+            <TableSimpleLayout columns={columns} apiGet={apiConfig.PRICE_HEADER.GET_ALL} handleAddButton={handleAddButton}/>
             <DrawerToggle open={open} handleToggle={handleToggle} data={row} columns={columnsShow} columnChild={columnsChildShow}/>
         </Box>
     );
 };
 
-export default UnitPage;
+export default PricePage;

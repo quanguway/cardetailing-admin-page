@@ -18,8 +18,6 @@ export default function TableEditableLayout({columns, rows}) {
         })
     }, [])
 
-    console.log(rows);
-
     return (
         <Box sx={{
             height: 400,

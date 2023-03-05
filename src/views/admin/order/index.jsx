@@ -10,7 +10,7 @@ import DrawerToggle from 'component/DrawerToggle';
 
 
 
-const UnitPage = () => {
+const OrderPage = () => {
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
@@ -25,16 +25,20 @@ const UnitPage = () => {
   ]
 
   const columnsChildShow = {
-    label: 'unitExchanges',
+    label: 'priceLine',
     columns: [
-      'allow_sale', 'is_active', 'is_base_unit', 'is_report', 'value', 
+      'promotion_code', 'start_date', 'end_date', 'max_quantity', 'max_quantity_per_customer', 'max_quantity_per_customer_per_day' 
     ]
   }
 
+  const infoToggle = {
+    valueL: ''
+  }
+
     const columns = [
-        { field: 'title', flex: 1 },
-        { field: 'description', flex: 1 },
-        {
+        { field: 'total', flex: 1 },
+        { field: 'final_total', flex: 1 },
+       {
             field: 'actions',
             type: 'actions',
             headerName: 'actions',
@@ -46,26 +50,7 @@ const UnitPage = () => {
                 onClick={() => {
                   handleToggle()
                   setRow(params.row);
-                }}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<IconTrash />}
-                label="Delete"
-                onClick={() => {
-                  if(confirm("Do you want delete this item ?")) {
-                        axios.delete(apiConfig.UNIT_API.DELETE, { data: { id: params.id }}).then(() => {
-                            window.location.reload();
-                        })
-                    }
-                }}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<IconPencil />}
-                label="Edit"
-                onClick={() => {
-                  navigate('form', {state: { data: params.row, mode: 'UPDATE', api: apiConfig.UNIT_API.EDIT }}); 
+                  console.log(params.row);
                 }}
                 showInMenu
               />,
@@ -75,10 +60,10 @@ const UnitPage = () => {
 
     return (
         <Box>
-            <TableSimpleLayout columns={columns} apiGet={apiConfig.UNIT_API.GET_ALL} handleAddButton={() => navigate('create')} />
-            <DrawerToggle open={open} handleToggle={handleToggle} data={row} columns={columnsShow} columnChild={columnsChildShow}/>
+            <TableSimpleLayout columns={columns} apiGet={apiConfig.ORDER_API.GET_ALL} handleAddButton={() => navigate('create')} />
+            <DrawerToggle width={1000} open={open} handleToggle={handleToggle} data={row} columns={columnsShow} columnChild={columnsChildShow} infoToggle={infoToggle}/>
         </Box>
     );
 };
 
-export default UnitPage;
+export default OrderPage;

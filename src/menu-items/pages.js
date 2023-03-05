@@ -1,5 +1,5 @@
 // assets
-import { IconUser  } from '@tabler/icons';
+import { IconUser, IconBuildingStore, IconArchive   } from '@tabler/icons';
 
 // ==============================|| EXTRA PAGES MENU ITEMS ||============================== //
 
@@ -35,7 +35,7 @@ const pages = {
             id: 'product',
             title: 'Product',
             type: 'collapse',
-            icon: IconUser,
+            icon: IconArchive ,
             children: [
                 {
                     id: 'category',
@@ -65,6 +65,36 @@ const pages = {
                     url: '/promotion',
                     target: true
                 },
+                {
+                    id: 'price',
+                    title: 'Price',
+                    type: 'item',
+                    url: '/price',
+                    target: true
+                },
+            ]
+        },
+        {
+            id: 'sale',
+            title: 'Sale',
+            type: 'collapse',
+            icon: IconBuildingStore,
+            children: [
+                {
+                    id: 'booking',
+                    title: 'Booking',
+                    type: 'item',
+                    url: '/booking',
+                    target: true
+                },
+                {
+                    id: 'order',
+                    title: 'Order',
+                    type: 'item',
+                    url: '/order',
+                    target: true
+                },
+                
             ]
         }
     ]

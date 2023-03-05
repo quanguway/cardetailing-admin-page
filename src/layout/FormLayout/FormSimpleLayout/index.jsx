@@ -7,6 +7,11 @@ import FileUpload from 'react-mui-fileuploader';
 import InputTypeTree from 'component/InputTypeTree';
 import { apiConfig } from 'config/app.config';
 
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import InputTypeTreeSimple from 'component/InputTreeSimple';
+
 
 
 export default function FormSimpleLayout({fields, mode = 'update' | 'create', handleSubmit=() => {}}) {
@@ -60,9 +65,12 @@ export default function FormSimpleLayout({fields, mode = 'update' | 'create', ha
                             case 'hidden':
                                 return <input key={index} type={'hidden'} name={item.name} value={item.value}/>
                             case 'tree':
-                                console.log(item.useState);
                                 return (
                                     <InputTypeTree useStateValue={item.useState} labels={item.labels}/>
+                                )
+                            case 'tree-simple':
+                                return (
+                                    <InputTypeTreeSimple lengthItem={item.lengthItem} useStateValue={item.useState} labels={item.labels}/>
                                 )
                             case 'file':
                                 return item.value ? <img src={item.value} alt={'avatar'}/> : (
@@ -83,6 +91,7 @@ export default function FormSimpleLayout({fields, mode = 'update' | 'create', ha
                                         getOptionLabel={option => option?.title ?? "" }
                                         options={item.values ?? []}
                                         fullWidth={true}
+                                        disabled={item.disabled ?? false}
                                         onChange = {
                                             (event, newValue) => {
                                               item.useState[1](newValue);
@@ -113,11 +122,17 @@ export default function FormSimpleLayout({fields, mode = 'update' | 'create', ha
                                                 onChange={(event) => handleOnchange(event, item.useState[1])}
                                             >
                                                 {item.values.map((option) => {
-                                                    return <FormControlLabel value={option.value} control={<Radio />} label={option.value} />
+                                                    return <FormControlLabel value={option.value} disabled={option.disabled ?? false} control={<Radio />} label={option.value} />
                                                 })}
                                             </RadioGroup>
                                         </FormControl><br/>
                                     </Box>
+                                )
+                            case 'date-picker':
+                                return (
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DatePicker disabled={item.disabled ?? false} label={item.label} defaultValue={item.useState[0]} onChange={(event) => item.useState[1](event)} />
+                                    </LocalizationProvider>
                                 )
                             case 'text':
                             default:
@@ -132,6 +147,7 @@ export default function FormSimpleLayout({fields, mode = 'update' | 'create', ha
                                         fullWidth={true}
                                         onChange={ (event) => {item.useState[1](event.target.value)}}
                                         name={item.name}
+                                        disabled={item.disabled ?? false}
                                     />
                                 )
                         }

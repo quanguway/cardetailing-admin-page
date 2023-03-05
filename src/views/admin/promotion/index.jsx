@@ -10,7 +10,7 @@ import DrawerToggle from 'component/DrawerToggle';
 
 
 
-const UnitPage = () => {
+const PromotionPage = () => {
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
@@ -70,7 +70,7 @@ const UnitPage = () => {
                 icon={<IconPencil />}
                 label="Edit"
                 onClick={() => {
-                  navigate('form', {state: { data: params.row, mode: 'update', api: apiConfig.PROMOTION_API.EDIT }}); 
+                  navigate('form', {state: { data: params.row, mode: 'UPDATE', api: apiConfig.PROMOTION_API.UPDATE }}); 
                 }}
                 showInMenu
               />,
@@ -80,10 +80,10 @@ const UnitPage = () => {
 
     return (
         <Box>
-            <TableSimpleLayout columns={columns} apiGet={apiConfig.PROMOTION_API.GET_ALL} />
+            <TableSimpleLayout columns={columns} apiGet={apiConfig.PROMOTION_API.GET_ALL} handleAddButton={() => navigate('create')} />
             <DrawerToggle width={1000} open={open} handleToggle={handleToggle} data={row} columns={columnsShow} columnChild={columnsChildShow} infoToggle={infoToggle}/>
         </Box>
     );
 };
 
-export default UnitPage;
+export default PromotionPage;

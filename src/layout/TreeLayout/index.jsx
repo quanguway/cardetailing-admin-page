@@ -14,12 +14,10 @@ export default function TreeLayout({apiGet, apiSave}) {
     useEffect(() => {
         setLoading(false);
         axios.get(apiGet).then((value) => {
-            console.log(value); 
             setData(value.data) ;
         })
     }, []);
 
-    console.log(data);
 
     const handleSaveData = async () => {
         toggleNodeExpansion(false);

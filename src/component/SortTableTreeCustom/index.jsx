@@ -14,8 +14,6 @@ export default function SortableTreeCustom ({data, setData}) {
     const [searchFoundCount, setSearchFoundCount] = useState(null);
 
     const handleRemoveNode = (rowInfo) => {
-        let {treeIndex, path} = rowInfo;
-        console.log(rowInfo);
         if (
             window.confirm(
               `Are you sure you want to delete this node?`
@@ -34,7 +32,6 @@ export default function SortableTreeCustom ({data, setData}) {
 
     const handleAddChild = (rowInfo) => {
         setData((state) => {
-            console.log(rowInfo);
             return addNodeUnderParent({
               treeData: state,
               parentKey: rowInfo.path[rowInfo.path.length - 1],

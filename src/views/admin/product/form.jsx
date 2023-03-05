@@ -18,14 +18,11 @@ const StaffForm = () => {
         })
     },[])
 
-    // console.log(roleSeleted);
 
     const [addressLevel1, setAdrressLevel1] = useState (null);
     const [addressLevel2, setAdrressLevel2] = useState (null);
     const [addressLevel3, setAdrressLevel3] = useState (null);
     const [addressLevel4, setAdrressLevel4] = useState (null);
-
-    // console.log(roles);
 
     const listAddressLevel = [
         {
@@ -50,16 +47,7 @@ const StaffForm = () => {
         },
     ]
 
-    console.log(state.data)
 
-    // const roles = [
-    //     {
-    //         label: 'customer'
-    //     },
-    //     {
-    //         label: 'admin' 
-    //     }
-    // ];
     const [fullName, setFullName] = useState(state.data.full_name)
     const [phone, setPhone] = useState(state.data.phone)
     const [email, setEmail] = useState(state.data.email)
@@ -134,7 +122,6 @@ const StaffForm = () => {
         // },
     ]
 
-    // console.log(fields);
 
     return (
         <Box>

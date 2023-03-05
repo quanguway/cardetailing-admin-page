@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 
 
-export default function FormTableLayout({columns , rows, customFields = undefined}) {
+export default function FormTableLayout({columns , rows, addButton = true , handleAddButton = () => {}}) {
     const [isLoading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -23,6 +23,12 @@ export default function FormTableLayout({columns , rows, customFields = undefine
             backgroundColor={'white'}
             borderRadius={5}
             >
+            {addButton ? <Button
+                onClick={handleAddButton}
+                variant="contained"
+                color="primary">
+                    Thêm
+            </Button>: <></>}
             <DataGrid
                 density='comfortable'
                 columns={columns}

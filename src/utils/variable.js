@@ -1,0 +1,1 @@
+export const dateSQL = 'YYYY-MM-DD'

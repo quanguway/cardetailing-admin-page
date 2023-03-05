@@ -7,14 +7,15 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 
+
 const ProductPage = () => {
 
   const navigate = useNavigate();
 
     const columns = [
-        { field: 'product_code', headerName: 'code', flex: 1 },
-        { field: 'type', flex:1 },
+        // { field: 'product_code', headerName: 'code', flex: 1 },
         { field: 'title',flex:1 },
+        { field: 'type', flex:1 },
         { field: 'category_paths', headerName: 'category',flex:1 },
         { field: 'image', flex:1, renderCell: (params) => <img alt='avatar' width={100} height={100} src={params.value} /> },
         {
@@ -39,7 +40,7 @@ const ProductPage = () => {
                 icon={<IconPencil />}
                 label="Edit"
                 onClick={() => {
-                  navigate('form', {state: { data: params.row, mode: 'update', api: apiConfig.PRODUCT_API.EDIT }}); 
+                  navigate('update', {state: { data: params.row}}); 
                 }}
                 showInMenu
               />,
@@ -49,7 +50,7 @@ const ProductPage = () => {
 
     return (
         <Box>
-            <TableSimpleLayout customFields={['gender']} columns={columns} apiGet={apiConfig.PRODUCT_API.GET_ALL} />
+            <TableSimpleLayout apiGet={apiConfig.PRODUCT_API.GET_ALL} customFields={['gender']} columns={columns} handleAddButton={() => navigate('create')} />
         </Box>
     );
 };

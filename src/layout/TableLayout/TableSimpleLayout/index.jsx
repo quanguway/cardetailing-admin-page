@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 
 
-export default function TableSimpleLayout({columns ,apiGet, customFields = undefined, handleDelete, handleEdit}) {
+export default function TableSimpleLayout({columns ,apiGet, customFields = undefined, handleDelete, handleEdit, handleAddButton = () => {}}) {
     const [isLoading, setLoading] = useState(true);
     const [rows, setRows] = useState([]);
 
@@ -46,6 +46,12 @@ export default function TableSimpleLayout({columns ,apiGet, customFields = undef
             backgroundColor={'white'}
             borderRadius={1}
             >
+            <Button
+            onClick={handleAddButton}
+            variant="contained"
+            color="primary">
+                Thêm
+            </Button>
             <DataGrid
                 density='comfortable'
                 columns={columns}

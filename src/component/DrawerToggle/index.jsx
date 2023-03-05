@@ -10,8 +10,7 @@ import { TableToggleItem } from "./TableToggleItem";
 
 export default function DrawerToggle({open, handleToggle, data, columns, columnChild, width, infoToggle, anchor}) {
 
-    
-    console.log(data);
+
     return (
         <Drawer
                 anchor={anchor ?? "right"}

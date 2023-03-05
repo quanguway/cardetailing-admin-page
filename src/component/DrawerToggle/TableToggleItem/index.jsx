@@ -6,8 +6,6 @@ import React, { useState } from 'react';
 
 export function TableToggleItem ({element, columns}) {
     const [openToggleData, setOpenToggleData] = useState(false)
-    console.log("dasd" + element);
-    console.log("cols" + columns);
     return (
         <>
             <tr>

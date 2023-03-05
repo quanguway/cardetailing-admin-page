@@ -41,10 +41,7 @@ const StaffForm = () => {
     },[])
 
     const handleSubmit = async() => {
-        // console.log('asdasd');
-        // console.log(address[address?.length-1]);
         const addrLength = address?.length-1
-        console.log(gender);
         var params = {
             id: state.data?.id ?? undefined ,
             item: {
@@ -130,8 +127,6 @@ const StaffForm = () => {
         //     name: 'avatar'
         // },
     ]
-
-    // console.log(fields);
 
     return (
         <Box>
