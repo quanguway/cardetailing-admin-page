@@ -44,6 +44,12 @@ export const apiConfig = {
         DELETE: `${appConfig.URL_API}/unit`,
         GET_BY_PRODUCT_ID: `${appConfig.URL_API}/unit/product`
     },
+    SLOT_API: {
+        GET_ALL: `${appConfig.URL_API}/slot`,
+        UPDATE: `${appConfig.URL_API}/slot/update`,
+        DELETE: `${appConfig.URL_API}/slot`,
+        GET_BY_PRODUCT_ID: `${appConfig.URL_API}/slot/product`
+    },
     PRICE_HEADER: {
         GET_ALL: `${appConfig.URL_API}/price-header`,
         UPDATE: `${appConfig.URL_API}/price-header/update`,

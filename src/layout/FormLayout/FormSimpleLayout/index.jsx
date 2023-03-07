@@ -100,6 +100,24 @@ export default function FormSimpleLayout({fields, mode = 'update' | 'create', ha
                                         renderInput={(params) => <TextField name={item.name}  {...params} label={item.label} />}
                                     />
                                 )
+                                case 'combo-multiple':
+                                return (
+                                    <Autocomplete
+                                        key={index}
+                                        id="combo-box-demo"
+                                        value={{title: item.useState[0]?.title ?? "" }}
+                                        getOptionLabel={option => option?.title ?? "" }
+                                        options={item.values ?? []}
+                                        fullWidth={true}
+                                        disabled={item.disabled ?? false}
+                                        onChange = {
+                                            (event, newValue) => {
+                                              item.useState[1](newValue);
+                                            }
+                                          }
+                                        renderInput={(params) => <TextField {...params} label={item.label} />}
+                                    />
+                                )
                             case 'textarea':
                                 return (
                                     <TextField

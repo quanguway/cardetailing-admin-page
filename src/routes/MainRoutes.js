@@ -128,6 +128,19 @@ const MainRoutes = {
             path: '/promotion',   
             element: <PromotionPage />
         },
+
+        // {
+        //     path: '/booking/create',   
+        //     element: <BookingCreate />
+        // },
+        // {
+        //     path: '/booking/update',   
+        //     element: <BookingUpdate />
+        // },
+        {
+            path: '/booking',   
+            element: <BookingPage />
+        },
     ]
 };
 

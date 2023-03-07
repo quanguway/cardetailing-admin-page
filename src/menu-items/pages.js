@@ -10,21 +10,44 @@ const pages = {
     type: 'group',
     children: [
         {
+            id: 'sale',
+            title: 'Bán hàng',
+            type: 'collapse',
+            icon: IconBuildingStore,
+            children: [
+                {
+                    id: 'booking',
+                    title: 'Xếp lịch & chỗ',
+                    type: 'item',
+                    url: '/booking',
+                    target: true
+                },
+                {
+                    id: 'order',
+                    title: 'Hóa đơn',
+                    type: 'item',
+                    url: '/order',
+                    target: true
+                },
+                
+            ]
+        },
+        {
             id: 'user',
-            title: 'User',
+            title: 'Người dùng',
             type: 'collapse',
             icon: IconUser,
             children: [
                 {
                     id: 'address',
-                    title: 'Address',
+                    title: 'Địa chỉ',
                     type: 'item',
                     url: '/address',
                     target: true
                 },
                 {
                     id: 'staff',
-                    title: 'Staff',
+                    title: 'Nhân viên',
                     type: 'item',
                     url: '/staff',
                     target: true
@@ -33,70 +56,47 @@ const pages = {
         },
         {
             id: 'product',
-            title: 'Product',
+            title: 'Dịch vụ',
             type: 'collapse',
             icon: IconArchive ,
             children: [
                 {
                     id: 'category',
-                    title: 'Catagory',
+                    title: 'Loại dịch vụ',
                     type: 'item',
                     url: '/product-category',
                     target: true
                 },
                 {
                     id: 'products',
-                    title: 'Product',
+                    title: 'Dịch vụ',
                     type: 'item',
                     url: '/product',
                     target: true
                 },
                 {
                     id: 'unit',
-                    title: 'Unit',
+                    title: 'Đơn vị',
                     type: 'item',
                     url: '/unit',
                     target: true
                 },
                 {
                     id: 'promotion',
-                    title: 'Promotion',
+                    title: 'Khuyến mãi',
                     type: 'item',
                     url: '/promotion',
                     target: true
                 },
                 {
                     id: 'price',
-                    title: 'Price',
+                    title: 'Bản giá',
                     type: 'item',
                     url: '/price',
                     target: true
                 },
             ]
-        },
-        {
-            id: 'sale',
-            title: 'Sale',
-            type: 'collapse',
-            icon: IconBuildingStore,
-            children: [
-                {
-                    id: 'booking',
-                    title: 'Booking',
-                    type: 'item',
-                    url: '/booking',
-                    target: true
-                },
-                {
-                    id: 'order',
-                    title: 'Order',
-                    type: 'item',
-                    url: '/order',
-                    target: true
-                },
-                
-            ]
-        }
+        }, 
     ]
 };
 
