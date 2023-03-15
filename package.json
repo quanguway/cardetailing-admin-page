@@ -13,6 +13,7 @@
         "@mui/system": "^5.8.6",
         "@mui/utils": "^5.8.6",
         "@mui/x-data-grid": "^5.17.23",
+        "@mui/x-data-grid-generator": "^6.0.0",
         "@mui/x-date-pickers": "^6.0.0",
         "@nosferatu500/react-sortable-tree": "^4.2.2",
         "@tabler/icons": "^1.72.0",

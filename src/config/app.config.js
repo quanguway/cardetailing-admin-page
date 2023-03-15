@@ -10,10 +10,23 @@ export const apiConfig = {
         GET_BY_ID: `${appConfig.URL_API}/address/id`,
         GET_MANY_BY_IDs: `${appConfig.URL_API}/address/ids`
     },
+    CUSTOMER_API: {
+        GET_ALL: `${appConfig.URL_API}/customer`,
+        UPDATE: `${appConfig.URL_API}/customer/update`,
+        CREATE: `${appConfig.URL_API}/customer/create`,
+        DELETE: `${appConfig.URL_API}/customer`,
+        GET_BY_PHONE: `${appConfig.URL_API}/customer/phone`,
+    },
     PRODUCT_CATEGORY: {
         GET_ALL: `${appConfig.URL_API}/product-category`,
         SAVE: `${appConfig.URL_API}/product-category/save`,
         GET_MANY_BY_IDs: `${appConfig.URL_API}/product-category/ids`,
+    },
+    CAR_INFO: {
+        GET_ALL: `${appConfig.URL_API}/car-info`,
+    },
+    CAR_DETAIL: {
+        GET_BY_CUSTOMER: `${appConfig.URL_API}/car-detail/customer`,
     },
     STAFF_API: {
         GET_ALL: `${appConfig.URL_API}/staff`,
@@ -30,6 +43,7 @@ export const apiConfig = {
     BOOKING_API: {
         GET_ALL: `${appConfig.URL_API}/booking`,
         UPDATE: `${appConfig.URL_API}/booking/update`,
+        CREATE: `${appConfig.URL_API}/booking/create`,
         DELETE: `${appConfig.URL_API}/booking`
     },
     BOOKING_DETAIL_API: {

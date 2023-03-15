@@ -32,6 +32,7 @@ const PricePage = Loadable(lazy(() => import('views/admin/price')));
 
 const BookingForm = Loadable(lazy(() => import('views/admin/booking/form')));
 const BookingPage = Loadable(lazy(() => import('views/admin/booking')));
+const BookingHandle = Loadable(lazy(() => import('views/admin/booking/handleBooking')));
 
 const OrderCreate = Loadable(lazy(() => import('views/admin/order/create')));
 const OrderPage = Loadable(lazy(() => import('views/admin/order')));
@@ -140,6 +141,10 @@ const MainRoutes = {
         {
             path: '/booking',   
             element: <BookingPage />
+        },
+        {
+            path: '/booking/handle',   
+            element: <BookingHandle />
         },
     ]
 };

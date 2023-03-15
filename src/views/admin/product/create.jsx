@@ -44,7 +44,6 @@ const ProductCreate = () => {
     const handleSubmit = async() => {
         var params = {
             item: {
-
                 product_code: '123',
                 type: category[1].title.toUpperCase(),
                 title: title,
