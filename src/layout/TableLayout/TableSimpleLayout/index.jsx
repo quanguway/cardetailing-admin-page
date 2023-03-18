@@ -36,8 +36,6 @@ export default function TableSimpleLayout({columns ,apiGet, customFields = undef
         })
     },[])
 
-    console.log(rows);
-    
 
     return (
         <Box 

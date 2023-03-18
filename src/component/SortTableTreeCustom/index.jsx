@@ -54,7 +54,7 @@ export default function SortableTreeCustom ({data, setData}) {
            <SortableTree
                 treeData={data}
                 onlyExpandSearchedNodes={true}
-                onChange={(treeData, node) => {console.log(node); setData(treeData)}}
+                onChange={(treeData, node) => {setData(treeData)}}
                 getNodeKey={({ node }) => node.id }
                 searchQuery={searchString}
                 searchFocusOffset={searchFocusIndex}

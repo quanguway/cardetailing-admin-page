@@ -50,7 +50,6 @@ const PromotionPage = () => {
                 onClick={() => {
                   handleToggle()
                   setRow(params.row);
-                  console.log(params.row);
                 }}
                 showInMenu
               />,

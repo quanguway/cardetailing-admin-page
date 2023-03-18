@@ -55,6 +55,8 @@ const BookingPage = () => {
   const [slotSelected, setSlotSelected] = useState();
   const [slots, setSlots] = useState([]);
 
+  console.log(slotSelected);
+
   useEffect(() => {
     axios.get(apiConfig.SLOT_API.GET_ALL).then((value) => {
       setSlots(value.data)
@@ -62,6 +64,7 @@ const BookingPage = () => {
   }, [])
 
   const handleBooking = (event, item) => {
+    console.log(item);
     setSlotSelected(item);
     handleNext()
   }
@@ -186,36 +189,42 @@ const BookingPage = () => {
     })
   }, [])
 
-  const serviceFields = [
-    
-  ]
+  const serviceFields = [];
 
-  const testOption =[
-    { value: 93223, label: 'Select One' },
-    { value: 23233, label: 'Enrollment' },
-    { value: 0, label: 'No Enrollment' }
-];
+  const handleConfirmChange = (rowId, newValue) => {
+    const updatedData = serviceRows.map((x) => {
+      if (x.id === rowId) {
+        return {
+          ...x,
+          staff: newValue
+        };
+      }
+      return x;
+    });
+    setServiceRows(updatedData);
+  }
 
   const serviceColumns = [
     { field: 'id', headerName: 'Mã dịch vụ', flex: 1 },
     { field: 'title', headerName: 'Tên dịch vụ', flex:1 },
-    // { field: 'time', headerName: 'Thời gian xử lý', flex: 1 },
+    { field: 'time', headerName: 'Thời gian xử lý', flex: 1 },
     { field: 'price_line', headerName: 'Giá', flex: 1 },
     { 
-      field: 'time', 
-      headerName: 'Enrollment', 
+      field: 'staff', 
+      headerName: 'Staff', 
       width: 180, 
-      type: 'singleSelect',
-      valueOptions: testOption,
-      valueGetter: ({ value, colDef }) => {
-        const option = colDef.valueOptions.find(
-          ({ value: optionValue }) => value === optionValue
-        );
-        if(! option) return ''
-        return option.label;
-      },
-      editable: true
+      renderCell: (params) => (
+        <Autocomplete
+          size='small'
+          options={staffList}
+          value={ params.row.staff }
+          sx={{ width: 300 }}
+          onChange={(event, newValue) => { handleConfirmChange(params.row.id, newValue)}}
+          renderInput={(params) => <TextField {...params} />}
+        />
+      ),
     }
+    
   ]
 
 
@@ -245,13 +254,19 @@ const BookingPage = () => {
     setActiveStep(0);
   };
 
+  
 
   const handleFinish = () => {
     const addrLength = customerAddress?.length-1;
-    const bookingId = uuid()
+    const bookingId = uuid();
     const customerId = uuid();
-    // serviceRowSelected
-    const booking_details = serviceRowSelected.map((item) => ({booking_id: bookingId, product_id: item.id, price_id: item.price_line_id}))
+    console.log(serviceRowSelected);
+    const booking_details = serviceRowSelected.map((item) => ({
+      booking_id: bookingId, 
+      product_id: item.id, 
+      price_id: item.price_line_id,
+      staff_id: item.staff.id
+    }))
     const total = serviceRowSelected.reduce((accumulator, item) => {
       return accumulator + item.price_line;
     }, 0);
@@ -277,7 +292,6 @@ const BookingPage = () => {
     }
 
     axios.post(apiConfig.BOOKING_API.CREATE, params);
-    // handleNext();
     window.location.reload();
   }
 
@@ -296,8 +310,6 @@ const BookingPage = () => {
       </Box>
     )
   }
-
-  console.log(serviceRowSelected);
 
   useEffect(() => {
     if(oldCustomerCarDetail) {
@@ -390,13 +402,6 @@ const BookingPage = () => {
                 setServiceRowSelected(selectedRows)
               }}
               selectionModel={serviceRowSelectedIds}
-              // getRowId={(row) => row.id}
-              // onCellEditCommit={(params) => {console.log(params.id);}}
-              onEditRowsModelChange={(params) => {
-                console.log('dasd');
-                console.log(params);
-              }}
-              
             />
           </Box>
         </Box>)

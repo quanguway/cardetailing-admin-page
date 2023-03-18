@@ -73,7 +73,6 @@ const OrderCreate = () => {
         
         axios.get(apiConfig.PRICE_LINE.GET_BY_PRODUCT_ID_AND_UNIT_ID, { params: { product_id: product.id, unit_id: unit.id, } })
         .then((value) => {
-            console.log(value.data);
             setPrice(value.data)
             setPriceValue(value.data.price ?? 0)
         });
@@ -84,7 +83,6 @@ const OrderCreate = () => {
         const customOrderDetail = listOrderDetailRows.map(({ product, total, unit, price ,...listOrderDetailRows}) => {return {
             ...listOrderDetailRows,
         }})
-        console.log(customOrderDetail)
         var params = {
             item: {
                 id: uuid(),

@@ -55,8 +55,6 @@ const StaffForm = () => {
             }
             
         };
-        // log
-        console.log(params);
         if(state.mode == 'UPDATE') {
             await axios.post(apiConfig.STAFF_API.UPDATE, params).then(() => {
                 navigate('/staff');

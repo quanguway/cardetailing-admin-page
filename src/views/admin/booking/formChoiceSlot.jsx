@@ -38,8 +38,7 @@ export default function FormChoiceSlot({handleBookingItem ,slots}) {
                     'aria-labelledby': 'basic-button',
                   }}
                 >
-                  {console.log(item.is_empty == 1)}
-                  <MenuItem disabled={isDisableBooking} onClick={handleBookingItem}>Đặt chỗ</MenuItem>
+                  <MenuItem disabled={isDisableBooking} onClick={(event) => handleBookingItem(event, item)}>Đặt chỗ</MenuItem>
                   <MenuItem onClick={handleClose}>Hiển thị thông tin</MenuItem>
                 </Menu>
               </>

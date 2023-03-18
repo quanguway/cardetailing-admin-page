@@ -35,7 +35,6 @@ const ProductUpdate = () => {
     useEffect(() => {
         const params = {ids: state.data.category_path_ids}
         axios.get(apiConfig.PRODUCT_CATEGORY.GET_MANY_BY_IDs, {params}).then((value) => {
-            console.log(value.data);
             setCategory(value.data);
         })
     },[])
