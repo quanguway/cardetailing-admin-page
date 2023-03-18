@@ -36,7 +36,7 @@ export default function TreeLayout({apiGet, apiSave}) {
 
     return (
         <Box>
-            <Button onClick={handleSaveData} variant='contained'>Save</Button>
+            <Button onClick={handleSaveData} variant='contained'>Lưu thông tin</Button>
             <SortableTreeCustom 
                 data={data}
                 setData={setData} />

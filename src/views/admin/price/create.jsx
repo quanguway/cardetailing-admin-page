@@ -1,6 +1,6 @@
-import { Box, Button, } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { apiConfig } from 'config/app.config';
-import { useLocation, useNavigate  } from "react-router-dom";
+import { useLocation, useNavigate } from 'react-router-dom';
 import FormSimpleLayout from 'layout/FormLayout/FormSimpleLayout';
 import { useState, useEffect } from 'react';
 import { renderGender, renderYesNo, YesNoToBool } from 'utils/dataToView';
@@ -13,17 +13,16 @@ import dayjs from 'dayjs';
 import { v4 as uuid } from 'uuid';
 import { dateSQL } from 'utils/variable';
 
-
 const PriceCreate = () => {
     const navigate = useNavigate();
-    const [openForm, setOPenForm ] = useState(false);
-    const [listProducts, setListProduct] = useState([])
-    const [listUnit, setListUnit] = useState([])
+    const [openForm, setOPenForm] = useState(false);
+    const [listProducts, setListProduct] = useState([]);
+    const [listUnit, setListUnit] = useState([]);
 
-    const [title, setTitle] = useState()
-    const [startDate, setStartDate] = useState(dayjs(new Date()))
-    const [endDate, setEndDate] = useState(dayjs(new Date()))
-    const [isActive, setIsActive] = useState('Có')
+    const [title, setTitle] = useState();
+    const [startDate, setStartDate] = useState(dayjs(new Date()));
+    const [endDate, setEndDate] = useState(dayjs(new Date()));
+    const [isActive, setIsActive] = useState('Có');
 
     // price line
 
@@ -36,36 +35,35 @@ const PriceCreate = () => {
 
     useEffect(() => {
         axios.get(apiConfig.PRODUCT_API.GET_ALL).then((value) => {
-            setListProduct(value.data)
-        })
+            setListProduct(value.data);
+        });
         axios.get(apiConfig.UNIT_API.GET_ALL).then((value) => {
-            setListUnit(value.data)
-        })
-    },[])
+            setListUnit(value.data);
+        });
+    }, []);
 
     const handleToggle = () => {
-        setOPenForm(!openForm)
-    }
+        setOPenForm(!openForm);
+    };
 
-    const handleSubmit = async() => {
-        const princeLinecustom = priceLineRows.map(({product, product_title, unit,unit_title ,...orther}) =>  orther)
+    const handleSubmit = async () => {
+        const princeLinecustom = priceLineRows.map(
+            ({ product, product_title, unit, unit_title, ...orther }) => orther
+        );
         var params = {
             priceHeader: {
                 id: uuid(),
                 title: title,
                 start_date: startDate.format(dateSQL),
-                end_date: endDate.format(dateSQL),
+                end_date: endDate.format(dateSQL)
             },
-            priceLines: princeLinecustom,
-            
+            priceLines: princeLinecustom
         };
 
         await axios.post(apiConfig.PRICE_HEADER.CREATE, params).then(() => {
             navigate('/price');
         });
-        
     };
-
 
     const handleSubmitPriceLine = async () => {
         const rows = {
@@ -77,132 +75,152 @@ const PriceCreate = () => {
             product_title: product.title,
             unit: unit,
             unit_id: unit.id,
-            unit_title: unit.title,
-        }
-        setPriceLineRows([...priceLineRows, rows])
-        handleToggle()
-    }
+            unit_title: unit.title
+        };
+        setPriceLineRows([...priceLineRows, rows]);
+        handleToggle();
+    };
 
     const fields = [
         {
-            label: 'Title',
+            label: 'Tên bảng giá',
             name: 'title',
             useState: [title, setTitle]
         },
         {
-            label: 'isActive',
+            label: 'Kích hoạt',
             useState: [isActive, setIsActive],
             values: [
                 {
-                    value: 'Có',
-                    disabled: true
+                    value: 'Có'
+                    //disabled: true
                 },
                 {
-                    value: 'Không',
-                },
+                    value: 'Không'
+                }
             ],
             type: 'radio'
         },
         {
-            label: 'start date',
+            label: 'Ngày áp dụng',
             useState: [startDate, setStartDate],
             type: 'date-picker'
         },
         {
-            label: 'end date',
+            label: 'Ngày kết thúc',
             useState: [endDate, setEndDate],
             type: 'date-picker'
-        },
-    ]
+        }
+    ];
 
     const priceLineFields = [
         {
-            label: 'price',
-            useState: [price, setPrice] 
+            label: 'Dịch vụ & sản phẩm',
+            type: 'combo',
+            values: listProducts,
+            useState: [product, setProduct]
         },
         {
-            label: 'isActive',
+            label: 'Đơn vị',
+            type: 'combo',
+            values: listUnit,
+            useState: [unit, setUnit]
+        },
+        {
+            label: 'Giá sản phẩm',
+            useState: [price, setPrice]
+        },
+        {
+            label: 'Kích hoạt',
             useState: [isActivePriceLine, setIsActivePriceLine],
             values: [
                 {
-                    value: 'Có',
-                    disabled: true
+                    value: 'Có'
+                    //disabled: true
                 },
                 {
-                    value: 'Không',
-                },
+                    value: 'Không'
+                }
             ],
             type: 'radio'
-        },
-        {
-            label: 'Product',
-            type: 'combo',
-            values: listProducts,
-            useState: [product, setProduct],
-        },
-        {
-            label: 'Unit',
-            type: 'combo',
-            values: listUnit,
-            useState: [unit, setUnit],
-        },
-    ]
+        }
+    ];
 
     const priceLineCols = [
-        { field: 'price', flex: 1 },
-        { field: 'is_active', flex: 1 },
-        { field: 'product_title', flex: 1 },
-        { field: 'unit_title', flex: 1 },
+        { field: 'product_title', flex: 1, headerName: 'Tên dịch vụ' },
+        { field: 'price', flex: 1, headerName: 'Giá' },
+        { field: 'unit_title', flex: 1, headerName: 'Đơn vị' },
+        { field: 'is_active', flex: 1, headerName: 'Kích hoạt' },
         {
             field: 'actions',
             type: 'actions',
-            headerName: 'actions',
-            flex:1,
+            headerName: 'Thao tác',
+            flex: 1,
             getActions: (params) => [
-              <GridActionsCellItem
-                icon={<IconTrash />}
-                label="Delete"
-                onClick={() => {
-                  if(confirm("Do you want delete this item ?")) {
-                        setPriceLineRows(priceLineRows.filter( (item) => item.id !== params.row.id) )
-                    }
-                }}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<IconPencil />}
-                label="Edit"
-                onClick={() => {
-                    setPriceLineId(params.row.id)
-                    setPrice(params.row.price);
-                    setIsActivePriceLine("Không");
-                    setProduct(params.row.product);
-                    setUnit(params.row.unit);
-                    handleToggle();
-                }}
-                showInMenu
-              />,
-            ],
-        },
-        
-    ]
+                <GridActionsCellItem
+                    icon={<IconTrash />}
+                    label="Xóa"
+                    onClick={() => {
+                        if (
+                            confirm('Bạn muốn xóa sản phẩm này khỏi bảng giá ?')
+                        ) {
+                            setPriceLineRows(
+                                priceLineRows.filter(
+                                    (item) => item.id !== params.row.id
+                                )
+                            );
+                        }
+                    }}
+                    showInMenu
+                />,
+                <GridActionsCellItem
+                    icon={<IconPencil />}
+                    label="Chỉnh sửa"
+                    onClick={() => {
+                        setPriceLineId(params.row.id);
+                        setPrice(params.row.price);
+                        setIsActivePriceLine('Không');
+                        setProduct(params.row.product);
+                        setUnit(params.row.unit);
+                        handleToggle();
+                    }}
+                    showInMenu
+                />
+            ]
+        }
+    ];
 
     const handleAddButton = () => {
-        setPriceLineId("")
-        setPrice("");
-        setIsActivePriceLine("Có");
+        setPriceLineId('');
+        setPrice('');
+        setIsActivePriceLine('Có');
         setProduct();
         setUnit();
         handleToggle();
-    }
+    };
 
     return (
         <Box>
-            <FormSimpleLayout fields={fields} handleSubmit={handleSubmit} />
-            
-            <FormTableLayout columns={priceLineCols} rows={priceLineRows ?? [] } handleAddButton={handleAddButton}/>
-            <FormToggle open={openForm} handleToggle={handleToggle} fields={priceLineFields} handleSubmit={handleSubmitPriceLine}/>
-            
+            <FormSimpleLayout
+                fields={fields}
+                handleSubmit={handleSubmit}
+                nameForm="Thêm bảng giá"
+                returnButton={true}
+                nameButtonSave="Lưu thông tin bảng giá"
+            />
+
+            <FormTableLayout
+                nameTable="Danh sách chi tiết"
+                columns={priceLineCols}
+                rows={priceLineRows ?? []}
+                handleAddButton={handleAddButton}
+            />
+            <FormToggle
+                open={openForm}
+                handleToggle={handleToggle}
+                fields={priceLineFields}
+                handleSubmit={handleSubmitPriceLine}
+            />
         </Box>
     );
 };

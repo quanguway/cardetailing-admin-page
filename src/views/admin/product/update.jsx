@@ -67,32 +67,31 @@ const ProductUpdate = () => {
         //     useState: [productCode, setProductCode]
         // },
         {
-            label: 'title',
-            useState: [title, setTitle],
-            
+            label: 'Tên dịch vụ',
+            useState: [title, setTitle]
         },
         {
-            label: 'Description',
+            label: 'Mô tả',
             useState: [description, setDescription],
             type: 'textarea'
         },
         {
-            label: 'Note',
+            label: 'Chú thích',
             useState: [note, setNote],
             type: 'textarea'
         },
         {
-            label: 'Time',
-            useState: [time, setTime],
+            label: 'Thời gian dự kiến',
+            useState: [time, setTime]
         },
         {
-            label: 'Category',
+            label: 'Loại dịch vụ',
             useState: [category, setCategory],
             type: 'tree-simple',
             lengthItem: 2,
-            labels: ['Product/Service', 'Loại']
-        },
-    ]
+            labels: ['Sản phẩm & Dịch vụ', 'Loại']
+        }
+    ];
 
 
     return (

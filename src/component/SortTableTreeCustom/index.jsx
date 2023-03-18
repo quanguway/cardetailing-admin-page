@@ -16,7 +16,7 @@ export default function SortableTreeCustom ({data, setData}) {
     const handleRemoveNode = (rowInfo) => {
         if (
             window.confirm(
-              `Are you sure you want to delete this node?`
+              `Bạn có chắc chắn muốn xóa thông tin này ?`
             )
           ) {
             setData((state) => {
@@ -49,7 +49,7 @@ export default function SortableTreeCustom ({data, setData}) {
     return (
         <Box height={400}>
           <Box my={2}>
-            <TextField value={searchString} onChange={(event) => {setSearchString(event.target.value)}} label="Search" variant="outlined" />
+            <TextField value={searchString} onChange={(event) => {setSearchString(event.target.value)}} label="Tìm kiếm" variant="outlined" />
           </Box>
            <SortableTree
                 treeData={data}
