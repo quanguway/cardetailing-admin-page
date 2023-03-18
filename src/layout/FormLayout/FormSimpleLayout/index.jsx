@@ -31,7 +31,8 @@ export default function FormSimpleLayout({
     nameForm,
     fields,
     mode = 'update' | 'create',
-    handleSubmit = () => {}
+    handleSubmit = () => {},
+    children
 }) {
     const navigate = useNavigate();
     const [isLoading, setLoading] = useState(true);
@@ -254,8 +255,9 @@ export default function FormSimpleLayout({
                                 />
                             );
                     }
-                })}
+                })}                
                 <br />
+                {children}
                 <Box display={'flex'} justifyContent={'right'}>
                     {returnButton && (
                         <Button

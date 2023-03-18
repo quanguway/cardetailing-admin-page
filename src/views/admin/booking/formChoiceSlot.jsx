@@ -20,7 +20,7 @@ export default function FormChoiceSlot({handleBookingItem, handleDetail ,slots})
         <Box>
             {slots.map((item, index) => (
               <>
-                <ButtonBase onClick={(event) => handleClick(event, item)} >
+                <ButtonBase onClick={(event) => {item.is_empty == true ? handleBookingItem(event, item) : handleDetail(event, item) }} >
                   <Box display={'flex'} flexDirection={'column'} width={'250px'} borderRadius={2} border={'1px solid'} m={2}>
                     <Box display={'flex'} width={'100%'} justifyContent={'center'} borderRadius={'8px 8px 0 0'} alignItems={'center'} height={50} bgcolor={item.is_empty ? 'green':  'red'}>
                       <Typography variant="h2" color={'white'}>{item.title}</Typography> 
@@ -30,17 +30,6 @@ export default function FormChoiceSlot({handleBookingItem, handleDetail ,slots})
                     </Box>
                   </Box>
                 </ButtonBase>
-                <Menu
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleClose}
-                  MenuListProps={{
-                    'aria-labelledby': 'basic-button',
-                  }}
-                >
-                  <MenuItem disabled={isDisableBooking} onClick={(event) => handleBookingItem(event, item)}>Đặt chỗ</MenuItem>
-                  <MenuItem onClick={(event) => handleDetail(event, item)}>Hiển thị thông tin</MenuItem>
-                </Menu>
               </>
               ))}
               

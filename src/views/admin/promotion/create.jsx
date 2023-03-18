@@ -28,25 +28,32 @@ const PromotionCreate = () => {
 
     // price line
 
-    const [priceLineId, setPriceLineId] = useState();
     const [promotionRows, setPromotionRows] = useState([]);
+
     const [titlePromotionLine, setTitlePromotionLine] = useState();
     const [promotionCode, setPromotionCode] = useState();
     const [startDate, setStartDate] = useState(dayjs(new Date()));
     const [endDate, setEndDate] = useState(dayjs(new Date()));
-    const [type, setType] = useState();
-    const [statusPromotionLine, setStatusPromotionLine] = useState("Có");
 
     const [reductionAmount, setReductionAmount] = useState();
     const [percent, setPercent] = useState();
+    const [getProduct, setGetProduct] = useState(null)
+
+    const [conditionProduct, setConditionProduct] = useState();
+    const [quantityProductBuy, setQuanlityProductBuy] = useState();
+    const [minimumTotal, setMinimumTotal] = useState();
+
     const [maxQuantityPerCustomer, setNoteMaxQuantityPerCustomer] = useState()
     const [maxQuantityPerCustomerPerDay, setMaxQuantityPerCustomerPerDay] = useState()
 
 
     const [promotionOption, setPromotionOption] = useState();
+    const [conditionOption, setConditionOption] = useState();
+    
 
     useEffect(() => {
         axios.get(apiConfig.PRODUCT_API.GET_ALL).then((value) => {
+            console.log(value.data);
             setListProduct(value.data)
         })
         axios.get(apiConfig.UNIT_API.GET_ALL).then((value) => {
@@ -55,11 +62,22 @@ const PromotionCreate = () => {
     },[])
 
     useEffect(() => {
-        setReductionAmount('');
-        setPercent('')
+        setReductionAmount(null);
+        setPercent(null);
+        setGetProduct(null);
     }, [promotionOption])
 
+    useEffect(() => {
+        setConditionProduct(null);
+        setQuanlityProductBuy(null);
+        setMinimumTotal(null);
+    }, [conditionOption])
+
     const handleToggle = () => {
+        setTitlePromotionLine('');
+        setPromotionCode('');
+        setNoteMaxQuantityPerCustomer('')
+        setMaxQuantityPerCustomerPerDay('')
         setOPenForm(!openForm)
     }
 
@@ -89,6 +107,11 @@ const PromotionCreate = () => {
             promotion_code: promotionCode,
             type: promotionOption.value,
             reduction_amount: reductionAmount,
+            product_title: getProduct?.title ?? '',
+            product_received_id: getProduct?.id ?? null,
+            product_buy_id: conditionProduct?.id ?? null,
+            quantity_product_buy: quantityProductBuy ?? 1,
+            minimum_total: minimumTotal ?? 0,
             percent: percent,
             start_date: startDate.format(dateSQL),
             end_date: endDate.format(dateSQL)
@@ -180,6 +203,7 @@ const PromotionCreate = () => {
         { field: 'type', flex: 1},
         { field: 'percent', flex: 1},
         { field: 'reduction_amount', flex: 1},
+        { field: 'product_title', flex: 1},
 
         // { field: 'status', flex: 1 },
         {
@@ -193,7 +217,7 @@ const PromotionCreate = () => {
                 label="Delete"
                 onClick={() => {
                   if(confirm("Do you want delete this item ?")) {
-                        setPriceLineRows(priceLineRows.filter( (item) => item.id !== params.row.id) )
+                        setPromotionRows(promotionRows.filter( (item) => item.id !== params.row.id) )
                     }
                 }}
                 showInMenu
@@ -217,8 +241,67 @@ const PromotionCreate = () => {
 
     const promotionOptions = [
         {value:'PERCENT', label:'Giảm giá theo %'},
-        {value: 'PRICE', label: 'Giảm giá theo giá'},
+        {value: 'PRICE', label: 'Giảm giá theo số tiền'},
+        {value: 'GET_PRODUCT', label: 'Tặng dịch vụ'}
     ]
+
+    const conditionOptions = [
+        {value:'CONDITION_PRODUCT', label:'Dịch vụ'},
+        {value: 'CONDITION_PRICE', label: 'Giá'},
+    ]
+
+    console.log(listProducts);
+
+    const RenderConditionOPtion = () => {
+        switch (conditionOption?.value) {
+            case 'CONDITION_PRODUCT':
+               return (
+                <>
+                    <Autocomplete
+                        sx={{ marginTop: '20px' }}
+                        disablePortal
+                        value={{
+                            title: conditionProduct?.title ?? ''
+                        }}
+                        getOptionLabel={(option) =>
+                            option?.title ?? ''
+                        }
+                        options={listProducts ?? []}
+                        fullWidth={true}
+                        onChange={(event, newValue) => {
+                            setConditionProduct(newValue);
+                        }}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params} label={'Tặng dịch vụ'}
+                            />
+                        )}
+                    />
+                    <TextField 
+                        label={'Số lượng dịch vụ'}
+                        fullWidth={true}
+                        defaultValue={quantityProductBuy}
+                        onChange={(event) =>  {setQuanlityProductBuy(event.target.value)}}
+                        />
+                    
+                </>
+               )     
+            case 'CONDITION_PRICE':
+                return (
+                    <>
+                        
+                        <TextField 
+                        label={'Tổng tiền tối thiểu'}
+                        fullWidth={true}
+                        defaultValue={minimumTotal}
+                        onChange={(event) =>  {setMinimumTotal(event.target.value)}}
+                    />
+                    </>
+                )
+            default:
+                return <></>
+        }
+    }
 
     const RenderPromotionOPtion = () => {
         switch (promotionOption?.value) {
@@ -244,10 +327,37 @@ const PromotionCreate = () => {
                         />
                     </>
                 )
+            case 'GET_PRODUCT':
+                return (
+                    <>
+                        <Autocomplete
+                            sx={{ marginTop: '20px' }}
+                            disablePortal
+                            value={{
+                                title: getProduct?.title ?? ''
+                            }}
+                            getOptionLabel={(option) =>
+                                option?.title ?? ''
+                            }
+                            options={listProducts ?? []}
+                            fullWidth={true}
+                            onChange={(event, newValue) => {
+                                setGetProduct(newValue);
+                            }}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params} label={'Tặng dịch vụ'}
+                                />
+                            )}
+                        />
+                    </>
+                )
             default:
                 return <></>
         }
     }
+
+    console.log(conditionOption);
 
     return (
         <Box>
@@ -255,6 +365,20 @@ const PromotionCreate = () => {
             
             <FormTableLayout columns={subCols} rows={promotionRows  ?? [] } handleAddButton={handleAddButton}/>
             <FormToggle open={openForm} handleToggle={handleToggle} fields={subFields} handleSubmit={handleSubmitToggle}>
+
+                <Autocomplete
+                    disablePortal
+                    options={conditionOptions}
+                    fullWidth={true}
+                    onChange = {
+                        (event, newValue) => {
+                            setConditionOption(newValue);
+                        }
+                    }
+                    renderInput={(params) => <TextField {...params} label={'Điều kiện giảm giá'} />}
+                />
+                <RenderConditionOPtion/>
+
                 <Autocomplete
                     disablePortal
                     options={promotionOptions}

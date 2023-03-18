@@ -34,7 +34,7 @@ const PriceCreate = () => {
     const [priceLineRows, setPriceLineRows] = useState([]);
 
     useEffect(() => {
-        axios.get(apiConfig.PRODUCT_API.GET_ALL).then((value) => {
+        axios.get(apiConfig.PRODUCT_API.GET_ALL_WITHOUT_PRICE).then((value) => {
             setListProduct(value.data);
         });
         axios.get(apiConfig.UNIT_API.GET_ALL).then((value) => {
