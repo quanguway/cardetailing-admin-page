@@ -1,4 +1,4 @@
-import { Box, Button, } from '@mui/material';
+import { Autocomplete, Box, Button, TextField, } from '@mui/material';
 import { apiConfig } from 'config/app.config';
 import { useLocation, useNavigate  } from "react-router-dom";
 import FormSimpleLayout from 'layout/FormLayout/FormSimpleLayout';
@@ -24,17 +24,26 @@ const PromotionCreate = () => {
     const [description, setDescription] = useState()
     const [status, setStatus] = useState("Có")
     const [note, setNote] = useState()
+    
 
     // price line
 
     const [priceLineId, setPriceLineId] = useState();
-    const [listPromotionLine, setListPromotionLine] = useState();
+    const [promotionRows, setPromotionRows] = useState([]);
     const [titlePromotionLine, setTitlePromotionLine] = useState();
     const [promotionCode, setPromotionCode] = useState();
     const [startDate, setStartDate] = useState(dayjs(new Date()));
     const [endDate, setEndDate] = useState(dayjs(new Date()));
     const [type, setType] = useState();
     const [statusPromotionLine, setStatusPromotionLine] = useState("Có");
+
+    const [reductionAmount, setReductionAmount] = useState();
+    const [percent, setPercent] = useState();
+    const [maxQuantityPerCustomer, setNoteMaxQuantityPerCustomer] = useState()
+    const [maxQuantityPerCustomerPerDay, setMaxQuantityPerCustomerPerDay] = useState()
+
+
+    const [promotionOption, setPromotionOption] = useState();
 
     useEffect(() => {
         axios.get(apiConfig.PRODUCT_API.GET_ALL).then((value) => {
@@ -45,43 +54,47 @@ const PromotionCreate = () => {
         })
     },[])
 
+    useEffect(() => {
+        setReductionAmount('');
+        setPercent('')
+    }, [promotionOption])
+
     const handleToggle = () => {
         setOPenForm(!openForm)
     }
 
     const handleSubmit = async() => {
-        const princeLinecustom = priceLineRows.map(({product, product_title, unit,unit_title ,...orther}) =>  orther)
+        // const promotionRowsCustomer = promotionRows.map((item) =>  ({...item, id: uuid()}))
         var params = {
-            priceHeader: {
+            promotion: {
                 id: uuid(),
                 title: title,
-                start_date: startDate.format(dateSQL),
-                end_date: endDate.format(dateSQL),
+                description: description,
+                note: note,
             },
-            priceLines: princeLinecustom,
+            promotionDetail: promotionRows,
             
         };
 
-        await axios.post(apiConfig.PRICE_HEADER.CREATE, params).then(() => {
-            navigate('/price');
+        await axios.post(apiConfig.PROMOTION_API.CREATE, params).then(() => {
+            // navigate('/price');
         });
         
     };
 
 
-    const handleSubmitPriceLine = async () => {
+    const handleSubmitToggle = async () => {
         const rows = {
             id: uuid(),
-            price: price,
-            is_active: YesNoToBool(isActivePriceLine),
-            product: product,
-            product_id: product.id,
-            product_title: product.title,
-            unit: unit,
-            unit_id: unit.id,
-            unit_title: unit.title,
+            promotion_code: promotionCode,
+            type: promotionOption.value,
+            reduction_amount: reductionAmount,
+            percent: percent,
+            start_date: startDate.format(dateSQL),
+            end_date: endDate.format(dateSQL)
+            
         }
-        setPriceLineRows([...priceLineRows, rows])
+        setPromotionRows([...promotionRows ,rows])
         handleToggle()
     }
 
@@ -91,19 +104,19 @@ const PromotionCreate = () => {
             name: 'title',
             useState: [title, setTitle]
         },
-        {
-            label: 'status',
-            useState: [status, setStatus],
-            values: [
-                {
-                    value: 'Có',
-                },
-                {
-                    value: 'Không',
-                },
-            ],
-            type: 'radio'
-        },
+        // {
+        //     label: 'status',
+        //     useState: [status, setStatus],
+        //     values: [
+        //         {
+        //             value: 'Có',
+        //         },
+        //         {
+        //             value: 'Không',
+        //         },
+        //     ],
+        //     type: 'radio'
+        // },
         {
             label: 'description',
             useState: [description, setDescription],
@@ -120,7 +133,6 @@ const PromotionCreate = () => {
     const subFields = [
         {
             label: 'Promotion Code',
-            disabled: true,
             useState: [promotionCode, setPromotionCode],
         },
         {
@@ -137,33 +149,39 @@ const PromotionCreate = () => {
             useState: [endDate, setEndDate],
             type: 'date-picker'
         },
+        // {
+        //     label: 'status',
+        //     useState: [statusPromotionLine, setStatusPromotionLine],
+        //     values: [
+        //         {
+        //             value: 'Có',
+        //             disabled: true
+        //         },
+        //         {
+        //             value: 'Không',
+        //         },
+        //     ],
+        //     type: 'radio'
+        // },
         {
-            label: 'status',
-            useState: [statusPromotionLine, setStatusPromotionLine],
-            values: [
-                {
-                    value: 'Có',
-                    disabled: true
-                },
-                {
-                    value: 'Không',
-                },
-            ],
-            type: 'radio'
+            label: 'Mỗi khách hàng được sử dụng tối đa',
+            useState: [maxQuantityPerCustomer, setNoteMaxQuantityPerCustomer]
         },
         {
-            label: 'max quanlity',
-            useState: [titlePromotionLine, setTitlePromotionLine] 
-        },
-        
+            label: 'Số lần sử dụng tối đa trong ngày',
+            useState: [maxQuantityPerCustomerPerDay, setMaxQuantityPerCustomerPerDay]
+        }
     ]
 
     const subCols = [
-        { field: 'title', flex: 1 },
         { field: 'promotion_code', flex: 1 },
         { field: 'start_date', flex: 1 },
         { field: 'end_date', flex: 1 },
-        { field: 'status', flex: 1 },
+        { field: 'type', flex: 1},
+        { field: 'percent', flex: 1},
+        { field: 'reduction_amount', flex: 1},
+
+        // { field: 'status', flex: 1 },
         {
             field: 'actions',
             type: 'actions',
@@ -197,12 +215,59 @@ const PromotionCreate = () => {
         handleToggle();
     }
 
+    const promotionOptions = [
+        {value:'PERCENT', label:'Giảm giá theo %'},
+        {value: 'PRICE', label: 'Giảm giá theo giá'},
+    ]
+
+    const RenderPromotionOPtion = () => {
+        switch (promotionOption?.value) {
+            case 'PERCENT':
+               return (
+                <>
+                    <TextField 
+                        label={'Nhập %'}
+                        fullWidth={true}
+                        value={reductionAmount}
+                        onChange={(event) =>  {setReductionAmount(event.target.value)}}
+                    />
+                </>
+               )     
+            case 'PRICE':
+                return (
+                    <>
+                        <TextField 
+                            label={'Nhập số tiền'}
+                            fullWidth={true}
+                            defaultValue={percent}
+                            onChange={(event) =>  {setPercent(event.target.value)}}
+                        />
+                    </>
+                )
+            default:
+                return <></>
+        }
+    }
+
     return (
         <Box>
             <FormSimpleLayout fields={fields} handleSubmit={handleSubmit} />
             
-            <FormTableLayout columns={subCols} rows={listPromotionLine  ?? [] } handleAddButton={handleAddButton}/>
-            <FormToggle open={openForm} handleToggle={handleToggle} fields={subFields} handleSubmit={handleSubmitPriceLine}/>
+            <FormTableLayout columns={subCols} rows={promotionRows  ?? [] } handleAddButton={handleAddButton}/>
+            <FormToggle open={openForm} handleToggle={handleToggle} fields={subFields} handleSubmit={handleSubmitToggle}>
+                <Autocomplete
+                    disablePortal
+                    options={promotionOptions}
+                    fullWidth={true}
+                    onChange = {
+                        (event, newValue) => {
+                            setPromotionOption(newValue);
+                        }
+                    }
+                    renderInput={(params) => <TextField {...params} label={'Loại giảm giá'} />}
+                />
+                <RenderPromotionOPtion/>
+            </FormToggle>
             
         </Box>
     );

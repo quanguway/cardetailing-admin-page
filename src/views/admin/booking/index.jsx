@@ -8,48 +8,17 @@ import { DataGrid } from '@mui/x-data-grid';
 import FormSimpleLayoutV2 from 'layout/FormLayout/FormSimpleLayoutV2';
 import FormChoiceSlot from './formChoiceSlot';
 import { genderToBool, renderGender } from 'utils/dataToView';
+import { useNavigate } from 'react-router';
 // import ChoiceSlotForm from './choiceSlotForm';
 
 
 const steps = ['Chọn Vị trí', 'Thông tin khác hàng', 'Thông tin xe', 'Chọn dịch vụ'];
 
-// const slots = [
-//   {
-//     id: 1,
-//     is_empty: true,
-//     title: 'Vị trí số 1'
-//   },
-//   {
-//     id: 2,
-//     is_empty: true,
-//     title: 'Vị trí số 2'
-//   },
-//   {
-//     id: 3,
-//     is_empty: false,
-//     title: 'Vị trí số 3'
-//   },
-//   {
-//     id: 4,
-//     is_empty: true,
-//     title: 'Vị trí số 4'
-//   },
-//   {
-//     id: 5,
-//     is_empty: true,
-//     title: 'Vị trí số 5'
-//   },
-//   {
-//     id: 6,
-//     is_empty: true,
-//     title: 'Vị trí số 6'
-//   }
-// ]
-
 const BookingPage = () => {
 
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
+  const navigate = useNavigate();
 
   // ------------------------ Chọn vị trí -------------------------------------------
   const [slotSelected, setSlotSelected] = useState();
@@ -64,9 +33,13 @@ const BookingPage = () => {
   }, [])
 
   const handleBooking = (event, item) => {
-    console.log(item);
     setSlotSelected(item);
     handleNext()
+  }
+
+  const handleDetail = (event, item) => {
+    setSlotSelected(item);
+    navigate('detail', {state: { data: item }}); 
   }
   
 
@@ -260,20 +233,24 @@ const BookingPage = () => {
     const addrLength = customerAddress?.length-1;
     const bookingId = uuid();
     const customerId = uuid();
-    console.log(serviceRowSelected);
+    const carDetailId = uuid();
+
     const booking_details = serviceRowSelected.map((item) => ({
       booking_id: bookingId, 
       product_id: item.id, 
       price_id: item.price_line_id,
       staff_id: item.staff.id
     }))
+    
     const total = serviceRowSelected.reduce((accumulator, item) => {
       return accumulator + item.price_line;
     }, 0);
+
     const params = {
       "id": bookingId,
       "total": total,
       "slot_id": slotSelected.id,
+      "car_detail_id": carDetailId,
       "customer": {
         id: customerId,
         full_name: customerFullName,
@@ -283,7 +260,7 @@ const BookingPage = () => {
         address: customerAddress[addrLength]
       },
       "car_detail": {
-        id: uuid(),
+        id: carDetailId,
         car_info_id: carBranch.id,
         number_plate: carNumberPlate,
         customer_id: customerId
@@ -322,7 +299,11 @@ const BookingPage = () => {
     switch (activeStep) {
       case 0:
         // return <FormChoiceSlot handleClick={(event, item) => handleBooking(event, item)} slots={slots} selectedSlot={[slots, setSlots]} />;
-        return <FormChoiceSlot handleBookingItem={(event, item) => handleBooking(event, item)} slots={slots} selectedSlot={[slots, setSlots]} />;
+        return <FormChoiceSlot 
+          handleDetail={(event, item) => handleDetail(event, item)} 
+          handleBookingItem={(event, item) => handleBooking(event, item)} 
+          slots={slots} 
+          selectedSlot={[slots, setSlots]} />;
       case 1:
         return <FormSimpleLayoutV2 label={'Thông tin khác hàng'} fields={customerFields}>
           <TextField
@@ -385,7 +366,7 @@ const BookingPage = () => {
       case 3:
         return (
         <Box>
-          <FormSimpleLayoutV2 label={'Chọn dịch vụ và gán nhân viên'} fields={serviceFields}/>;
+          <FormSimpleLayoutV2 label={'Chọn dịch vụ và gán nhân viên'} fields={serviceFields} />;
           <Box height={400}>
             <DataGrid
               // density='standard'
