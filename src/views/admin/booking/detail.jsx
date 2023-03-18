@@ -5,6 +5,8 @@ import { apiConfig } from 'config/app.config';
 import TableSimpleLayout from 'layout/TableLayout/TableSimpleLayout';
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
+import { v4 as uuid } from 'uuid';
+
 
 const BookingDetail = () => {
 
@@ -15,6 +17,7 @@ const BookingDetail = () => {
     const [customerInfo, setCustomerInfo] = useState([]);
     const [carDetailInfo, setCarDetailInfo] = useState([])
     const [bookDetailRow, setBookDetailRow] = useState([]);
+    const [orderPayment, setOrderPayment] = useState();
 
     useEffect(() => {
         axios.get(apiConfig.BOOKING_API.GET_BY_ID, {params:{id: state.data.booking_id}}).then((value) => {
@@ -46,10 +49,32 @@ const BookingDetail = () => {
                     'label': 'Biển số xe',
                     'value': data.car_detail.number_plate,
                 },
-            ])
-            console.log(customerInfo);
+            ]);
+
+            const orderId = uuid();
+            const total = data.booking_details.reduce((partialSum, item) => partialSum + item.price.price, 0);
+            const orderDetails = data.booking_details.map((item) => {
+                return {
+                    type: 'SERVICE',
+                    status: 'SERVICE',
+                    product_id: item.product.id,
+                    price_line_id: item.price.id,
+
+                }
+            })
+            setOrderPayment({
+                order: {
+                    id: orderId,
+                    customer_id : data.customer.id,
+                    total: total,
+                    status: 'SERVICE',
+                },
+                order_details: orderDetails
+            })
         })
     },[])
+
+    console.log(orderPayment);
 
     const RenderInfoCommon = () => {
         return (
@@ -88,6 +113,14 @@ const BookingDetail = () => {
         )
     }
 
+    const handlePayment = () => {
+        console.log(orderPayment);
+        const param = {
+            ...orderPayment
+        }
+        console.log(param);
+    }
+
     const bookDetailColumns = [
         { field: 'service_title', headerName: 'Tên dịch vụ', flex:1 },
         { field: 'service_time', headerName: 'Thời gian xử lý', flex: 1 },
@@ -104,10 +137,9 @@ const BookingDetail = () => {
             <Box sx={{bgcolor: 'background.paper'}}>
                 <Box height={400}>
                     <DataGrid
-                    columns={bookDetailColumns}
-                    rows={bookDetailRow}
-                    disableSelectionOnClick
-
+                        columns={bookDetailColumns}
+                        rows={bookDetailRow}
+                        disableSelectionOnClick
                     />
                 </Box>
             </Box>
@@ -115,14 +147,19 @@ const BookingDetail = () => {
     }
 
     return (
-        <Grid container columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-            <Grid item xs={6}>
-                <RenderInfoCommon />
-            </Grid>
-            <Grid item xs={6}>
-                <RenderInfoService />
-            </Grid>
-        </Grid >
+        <Box>
+            <Grid container columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                <Grid item xs={6}>
+                    <RenderInfoCommon />
+                </Grid>
+                <Grid item xs={6}>
+                    <RenderInfoService />
+                </Grid>
+            </Grid >
+            <Button onClick={handlePayment}>
+                Thanh toán
+            </Button> 
+        </Box>
     );
 }
 
