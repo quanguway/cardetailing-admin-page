@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Autocomplete, Box, IconButton, TextField } from '@mui/material';
 import FormSimpleLayout from "layout/FormLayout/FormSimpleLayout";
 
-export default function FormToggle({open, handleToggle, fields, width, anchor, mode, api, handleSubmit}) {
+export default function FormToggle({open, handleToggle, fields, width, anchor, mode, api, handleSubmit, children}) {
 
     return (
         <Drawer
@@ -19,6 +19,7 @@ export default function FormToggle({open, handleToggle, fields, width, anchor, m
             >
                 <PerfectScrollbar component="div">
                     <FormSimpleLayout mode={mode} fields={fields} api={api} handleSubmit={handleSubmit} />
+                    {children}
                 </PerfectScrollbar>
             </Drawer>
     )

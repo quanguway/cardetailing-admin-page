@@ -16,7 +16,6 @@ export default function InputTypeTreeSimple ({useStateValue, name, labels, lengt
     //     useStateValue[1](data)
     // },[data])
  
-    console.log(useStateValue[0]);
 
     const handleChange = (newValue, indexFrom) => {
         const dataDeleted = useStateValue[0].filter((value, index) => index < indexFrom );

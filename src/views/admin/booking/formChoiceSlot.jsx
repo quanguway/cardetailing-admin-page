@@ -3,7 +3,7 @@ import React from "react";
 
 
 
-export default function FormChoiceSlot({handleBookingItem ,slots}) {
+export default function FormChoiceSlot({handleBookingItem, handleDetail ,slots}) {
     
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [isDisableBooking, setIsDisableBooking] = React.useState(false);
@@ -39,7 +39,7 @@ export default function FormChoiceSlot({handleBookingItem ,slots}) {
                   }}
                 >
                   <MenuItem disabled={isDisableBooking} onClick={(event) => handleBookingItem(event, item)}>Đặt chỗ</MenuItem>
-                  <MenuItem onClick={handleClose}>Hiển thị thông tin</MenuItem>
+                  <MenuItem onClick={(event) => handleDetail(event, item)}>Hiển thị thông tin</MenuItem>
                 </Menu>
               </>
               ))}

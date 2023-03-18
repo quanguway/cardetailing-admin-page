@@ -42,6 +42,7 @@ export const apiConfig = {
     },
     BOOKING_API: {
         GET_ALL: `${appConfig.URL_API}/booking`,
+        GET_BY_ID: `${appConfig.URL_API}/booking/id`,
         UPDATE: `${appConfig.URL_API}/booking/update`,
         CREATE: `${appConfig.URL_API}/booking/create`,
         DELETE: `${appConfig.URL_API}/booking`
@@ -88,7 +89,8 @@ export const apiConfig = {
     PROMOTION_API: {
         GET_ALL: `${appConfig.URL_API}/promotion`,
         UPDATE: `${appConfig.URL_API}/promotion/update`,
-        DELETE: `${appConfig.URL_API}/promotion`
+        DELETE: `${appConfig.URL_API}/promotion`,
+        CREATE: `${appConfig.URL_API}/promotion/create`,
     },
     ORDER_API: {
         GET_ALL: `${appConfig.URL_API}/order`,
