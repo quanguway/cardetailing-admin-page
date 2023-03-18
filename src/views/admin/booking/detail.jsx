@@ -113,12 +113,15 @@ const BookingDetail = () => {
         )
     }
 
-    const handlePayment = () => {
+    const handlePayment = async () => {
         console.log(orderPayment);
-        const param = {
+        const params = {
             ...orderPayment
         }
-        console.log(param);
+
+        await axios.post(apiConfig.ORDER_API.PAYMENT, params);
+
+        
     }
 
     const bookDetailColumns = [

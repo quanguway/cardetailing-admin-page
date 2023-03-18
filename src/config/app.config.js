@@ -36,6 +36,7 @@ export const apiConfig = {
     },
     PRODUCT_API: {
         GET_ALL: `${appConfig.URL_API}/product`,
+        GET_ALL_WITHOUT_PRICE: `${appConfig.URL_API}/product/without-price`,
         UPDATE: `${appConfig.URL_API}/product/update`,
         DELETE: `${appConfig.URL_API}/product`,
         CREATE: `${appConfig.URL_API}/product/create`
@@ -97,6 +98,7 @@ export const apiConfig = {
         UPDATE: `${appConfig.URL_API}/order/update`,
         DELETE: `${appConfig.URL_API}/order`,
         CREATE: `${appConfig.URL_API}/order/create`,
+        PAYMENT: `${appConfig.URL_API}/order/payment`,
     },
     ROLE_API: {
         GET_ALL: `${appConfig.URL_API}/role`,
