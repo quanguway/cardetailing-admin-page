@@ -5,7 +5,7 @@ import { IconUser, IconBuildingStore, IconArchive   } from '@tabler/icons';
 
 const pages = {
     id: 'catalog',
-    title: 'Catalog',
+    title: 'Danh mục',
     caption: '',
     type: 'group',
     children: [
@@ -90,7 +90,7 @@ const pages = {
                 },
                 {
                     id: 'price',
-                    title: 'Bản giá',
+                    title: 'Bảng giá',
                     type: 'item',
                     url: '/price',
                     target: true

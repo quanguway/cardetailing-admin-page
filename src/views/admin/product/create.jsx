@@ -1,6 +1,6 @@
-import { Box, Button, } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { apiConfig } from 'config/app.config';
-import { useLocation, useNavigate  } from "react-router-dom";
+import { useLocation, useNavigate } from 'react-router-dom';
 import FormSimpleLayout from 'layout/FormLayout/FormSimpleLayout';
 import { useState, useEffect } from 'react';
 import { renderGender, renderYesNo, YesNoToBool } from 'utils/dataToView';
@@ -13,35 +13,31 @@ import dayjs from 'dayjs';
 import { v4 as uuid } from 'uuid';
 import { dateSQL } from 'utils/variable';
 
-
 const ProductCreate = () => {
     const navigate = useNavigate();
-    const [openForm, setOPenForm ] = useState(false);
-    const [listProducts, setListProduct] = useState([])
-    const [listUnit, setListUnit] = useState([])
+    const [openForm, setOPenForm] = useState(false);
+    const [listProducts, setListProduct] = useState([]);
+    const [listUnit, setListUnit] = useState([]);
 
-    const [productCode, setProductCode] = useState()
-    const [title, setTitle] = useState()
-    const [description, setDescription] = useState()
-    const [time, setTime] = useState()
+    const [productCode, setProductCode] = useState();
+    const [title, setTitle] = useState();
+    const [description, setDescription] = useState();
+    const [time, setTime] = useState();
     // const [status, setTime] = useState('0')
     const [note, setNote] = useState();
     const [category, setCategory] = useState();
 
-    
-
     useEffect(() => {
         axios.get(apiConfig.PRODUCT_CATEGORY.GET_ALL).then((value) => {
             setCategory([value.data[0]]);
-        })
-    },[])
-
+        });
+    }, []);
 
     const handleToggle = () => {
-        setOPenForm(!openForm)
-    }
+        setOPenForm(!openForm);
+    };
 
-    const handleSubmit = async() => {
+    const handleSubmit = async () => {
         var params = {
             item: {
                 product_code: '123',
@@ -52,13 +48,11 @@ const ProductCreate = () => {
                 note: note,
                 category_id: category[2].id
             }
-            
         };
 
         await axios.post(apiConfig.PRODUCT_API.CREATE, params).then(() => {
             navigate('/product');
         });
-        
     };
 
     const fields = [
@@ -67,37 +61,40 @@ const ProductCreate = () => {
         //     useState: [productCode, setProductCode]
         // },
         {
-            label: 'title',
-            useState: [title, setTitle],
-            
+            label: 'Tên dịch vụ',
+            useState: [title, setTitle]
         },
         {
-            label: 'Description',
+            label: 'Mô tả',
             useState: [description, setDescription],
             type: 'textarea'
         },
         {
-            label: 'Note',
+            label: 'Chú thích',
             useState: [note, setNote],
             type: 'textarea'
         },
         {
-            label: 'Time',
-            useState: [time, setTime],
+            label: 'Thời gian dự kiến',
+            useState: [time, setTime]
         },
         {
-            label: 'Category',
+            label: 'Loại dịch vụ',
             useState: [category, setCategory],
             type: 'tree-simple',
             lengthItem: 2,
-            labels: ['Product/Service', 'Loại']
-        },
-    ]
+            labels: ['Sản phẩm & Dịch vụ', 'Loại']
+        }
+    ];
 
-
+   // console.log(category);
     return (
         <Box>
-            <FormSimpleLayout fields={fields} handleSubmit={handleSubmit} />
+            <FormSimpleLayout
+                fields={fields}
+                handleSubmit={handleSubmit}
+                nameForm="Thêm dịch vụ"
+            />
         </Box>
     );
 };

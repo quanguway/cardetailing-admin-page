@@ -25,24 +25,24 @@ const UnitPage = () => {
   ]
 
   const columnsChildShow = {
-    label: 'unitExchanges',
+    label: 'Đơn vị quy đổi',
     columns: [
       'allow_sale', 'is_active', 'is_base_unit', 'is_report', 'value', 
     ]
   }
 
     const columns = [
-        { field: 'title', flex: 1 },
-        { field: 'description', flex: 1 },
+        { field: 'title', flex: 1, headerName: "Tên đơn vị" },
+        { field: 'description', flex: 1, headerName: "Mô tả"  },
         {
             field: 'actions',
             type: 'actions',
-            headerName: 'actions',
+            headerName: 'Thao tác',
             flex:1,
             getActions: (params) => [
               <GridActionsCellItem
                 icon={<IconEye />}
-                label="Show"
+                label="Chi tiết"
                 onClick={() => {
                   handleToggle()
                   setRow(params.row);
@@ -51,9 +51,9 @@ const UnitPage = () => {
               />,
               <GridActionsCellItem
                 icon={<IconTrash />}
-                label="Delete"
+                label="Xóa"
                 onClick={() => {
-                  if(confirm("Do you want delete this item ?")) {
+                  if(confirm("Bạn có muốn  xóa đơn vị này ?")) {
                         axios.delete(apiConfig.UNIT_API.DELETE, { data: { id: params.id }}).then(() => {
                             window.location.reload();
                         })
@@ -63,7 +63,7 @@ const UnitPage = () => {
               />,
               <GridActionsCellItem
                 icon={<IconPencil />}
-                label="Edit"
+                label="Chỉnh sửa"
                 onClick={() => {
                   navigate('form', {state: { data: params.row, mode: 'UPDATE', api: apiConfig.UNIT_API.EDIT }}); 
                 }}
@@ -75,7 +75,7 @@ const UnitPage = () => {
 
     return (
         <Box>
-            <TableSimpleLayout columns={columns} apiGet={apiConfig.UNIT_API.GET_ALL} handleAddButton={() => navigate('create')} />
+            <TableSimpleLayout  nameButton="Thêm đơn vị" columns={columns} apiGet={apiConfig.UNIT_API.GET_ALL} handleAddButton={() => navigate('create')} />
             <DrawerToggle open={open} handleToggle={handleToggle} data={row} columns={columnsShow} columnChild={columnsChildShow}/>
         </Box>
     );
