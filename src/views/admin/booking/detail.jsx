@@ -19,6 +19,8 @@ const BookingDetail = () => {
     const [bookDetailRow, setBookDetailRow] = useState([]);
     const [orderPayment, setOrderPayment] = useState();
 
+    console.log(state);
+
     useEffect(() => {
         axios.get(apiConfig.BOOKING_API.GET_BY_ID, {params:{id: state.data.booking_id}}).then((value) => {
             const data = value.data;
@@ -69,7 +71,8 @@ const BookingDetail = () => {
                     total: total,
                     status: 'SERVICE',
                 },
-                order_details: orderDetails
+                order_details: orderDetails,
+                slot_id: state.data.id,
             })
         })
     },[])
@@ -120,7 +123,7 @@ const BookingDetail = () => {
         }
 
         await axios.post(apiConfig.ORDER_API.PAYMENT, params);
-
+        navigate('/booking'); 
         
     }
 
@@ -152,10 +155,10 @@ const BookingDetail = () => {
     return (
         <Box>
             <Grid container columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                <Grid item xs={6}>
+                <Grid item xs={12}>
                     <RenderInfoCommon />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12}>
                     <RenderInfoService />
                 </Grid>
             </Grid >

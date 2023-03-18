@@ -251,6 +251,7 @@ const BookingPage = () => {
       "total": total,
       "slot_id": slotSelected.id,
       "car_detail_id": carDetailId,
+      "date_created": new Date(),
       "customer": {
         id: customerId,
         full_name: customerFullName,
