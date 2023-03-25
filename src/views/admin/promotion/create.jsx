@@ -49,6 +49,8 @@ const PromotionCreate = () => {
 
     const [promotionOption, setPromotionOption] = useState();
     const [conditionOption, setConditionOption] = useState();
+
+    const [maximumReductionAmount, setMaxReductionAmount] = useState();
     
 
     useEffect(() => {
@@ -281,7 +283,7 @@ const PromotionCreate = () => {
                         label={'Số lượng dịch vụ'}
                         fullWidth={true}
                         defaultValue={quantityProductBuy}
-                        onChange={(event) =>  {setQuanlityProductBuy(event.target.value)}}
+                        onBlur={(event) =>  {setQuanlityProductBuy(event.target.value)}}
                         />
                     
                 </>
@@ -294,7 +296,7 @@ const PromotionCreate = () => {
                         label={'Tổng tiền tối thiểu'}
                         fullWidth={true}
                         defaultValue={minimumTotal}
-                        onChange={(event) =>  {setMinimumTotal(event.target.value)}}
+                        onBlur={(event) =>  {setMinimumTotal(event.target.value)}}
                     />
                     </>
                 )
@@ -312,7 +314,19 @@ const PromotionCreate = () => {
                         label={'Nhập %'}
                         fullWidth={true}
                         value={reductionAmount}
-                        onChange={(event) =>  {setReductionAmount(event.target.value)}}
+                        onBlur={(event) =>  {setReductionAmount(event.target.value)}}
+                    />
+                    <TextField 
+                        label={'Số tiền giảm tối đa'}
+                        fullWidth={true}
+                        value={reductionAmount}
+                        onBlur={(event) =>  {setReductionAmount(event.target.value)}}
+                    />
+                    <TextField 
+                        label={'Tổng ngân thu'}
+                        fullWidth={true}
+                        value={reductionAmount}
+                        onBlur={(event) =>  {setReductionAmount(event.target.value)}}
                     />
                 </>
                )     
@@ -323,7 +337,7 @@ const PromotionCreate = () => {
                             label={'Nhập số tiền'}
                             fullWidth={true}
                             defaultValue={percent}
-                            onChange={(event) =>  {setPercent(event.target.value)}}
+                            onBlur={(event) =>  {setPercent(event.target.value)}}
                         />
                     </>
                 )
