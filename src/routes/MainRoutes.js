@@ -4,7 +4,7 @@ import { lazy } from 'react';
 import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
 import { element } from 'prop-types';
-import CustomerPage from 'views/admin/customer';
+// import CustomerPage from 'views/admin/customer';
 import CustomerUpdate from 'views/admin/customer/update';
 
 // dashboard routing

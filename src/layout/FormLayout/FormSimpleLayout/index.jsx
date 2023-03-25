@@ -178,7 +178,7 @@ export default function FormSimpleLayout({
                                     rows={3}
                                     label={item.label}
                                     value={item.useState[0]}
-                                    onBlur={(event) =>
+                                    onChange={(event) =>
                                         handleOnchange(event, item.useState[1])
                                     }
                                     maxRows={5}
@@ -247,7 +247,7 @@ export default function FormSimpleLayout({
                                     label={item.label}
                                     value={item.useState[0]}
                                     fullWidth={true}
-                                    onBlur={(event) => {
+                                    onChange={(event) => {
                                         item.useState[1](event.target.value);
                                     }}
                                     name={item.name}
