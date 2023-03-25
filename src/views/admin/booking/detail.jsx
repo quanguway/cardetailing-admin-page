@@ -36,6 +36,8 @@ const BookingDetail = () => {
                         id: item.id,
                         service_title: item.product.title,
                         service_price: item.price.price,
+                        service_price_final: item.price_final,
+                        service_product_received: item.product_recived_title,
                         service_time: item.product.time,
                         staff_name: item.staff.full_name
                     }))
@@ -75,7 +77,7 @@ const BookingDetail = () => {
 
                 const orderId = uuid();
                 const total = data.booking_details.reduce(
-                    (partialSum, item) => partialSum + item.price.price,
+                    (partialSum, item) => partialSum + item.price_final,
                     0
                 );
                 const totalTime = data.booking_details.reduce(
@@ -164,6 +166,8 @@ const BookingDetail = () => {
         { field: 'service_title', headerName: 'Tên dịch vụ', flex: 1 },
         { field: 'service_time', headerName: 'Thời gian xử lý', flex: 1 },
         { field: 'service_price', headerName: 'Giá', flex: 1 },
+        { field: 'service_price_final', headerName: 'Giá cuối củng', flex: 1 },
+        { field: 'service_product_received', headerName: 'Dịch vụ được tằng', flex: 1 },
         {
             field: 'staff_name',
             flex: 1

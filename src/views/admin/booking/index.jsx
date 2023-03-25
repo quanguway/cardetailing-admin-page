@@ -239,6 +239,8 @@ const BookingPage = () => {
         { field: 'title', headerName: 'Tên dịch vụ', flex: 1 },
         { field: 'time', headerName: 'Thời gian xử lý (Phút)', flex: 1 },
         { field: 'price_line', headerName: 'Giá', flex: 1 },
+        { field: 'price_final', headerName: 'Giá Cuối', flex: 1 },
+        { field: 'product_recived_title', headerName: 'Dịch vụ được tặng', flex: 1 },
         {
             field: 'staff',
             headerName: 'Nhân viên xử lý',

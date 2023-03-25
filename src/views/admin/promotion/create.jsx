@@ -107,7 +107,7 @@ const PromotionCreate = () => {
         const rows = {
             id: uuid(),
             promotion_code: promotionCode,
-            type: promotionOption.value,
+            type: conditionOption.value,
             reduction_amount: reductionAmount,
             product_title: getProduct?.title ?? '',
             product_received_id: getProduct?.id ?? null,
@@ -297,7 +297,7 @@ const PromotionCreate = () => {
                         fullWidth={true}
                         defaultValue={minimumTotal}
                         onBlur={(event) =>  {setMinimumTotal(event.target.value)}}
-                    />
+                        />
                     </>
                 )
             default:
@@ -313,10 +313,10 @@ const PromotionCreate = () => {
                     <TextField 
                         label={'Nhập %'}
                         fullWidth={true}
-                        value={reductionAmount}
-                        onBlur={(event) =>  {setReductionAmount(event.target.value)}}
+                        value={percent}
+                        onBlur={(event) =>  {setPercent(event.target.value)}}
                     />
-                    <TextField 
+                    {/* <TextField 
                         label={'Số tiền giảm tối đa'}
                         fullWidth={true}
                         value={reductionAmount}
@@ -327,7 +327,7 @@ const PromotionCreate = () => {
                         fullWidth={true}
                         value={reductionAmount}
                         onBlur={(event) =>  {setReductionAmount(event.target.value)}}
-                    />
+                    /> */}
                 </>
                )     
             case 'PRICE':
@@ -336,8 +336,8 @@ const PromotionCreate = () => {
                         <TextField 
                             label={'Nhập số tiền'}
                             fullWidth={true}
-                            defaultValue={percent}
-                            onBlur={(event) =>  {setPercent(event.target.value)}}
+                            defaultValue={reductionAmount}
+                            onBlur={(event) =>  {setReductionAmount(event.target.value)}}
                         />
                     </>
                 )
