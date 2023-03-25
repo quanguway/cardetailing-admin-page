@@ -57,7 +57,6 @@ const BookingPage = () => {
     };
 
     const handleDetail = (item) => {
-        
         setSlotSelected(item);
         navigate('detail', { state: { data: item } });
     };
@@ -354,6 +353,56 @@ const BookingPage = () => {
         }
     }, [oldCustomerCarDetail]);
 
+    const handleChangePhone = async (event) => {
+        const phone = event.target.value;
+        setCustomerPhone(phone);
+
+        if (phone.length === 10) {
+            await axios
+                .get(apiConfig.CUSTOMER_API.GET_BY_PHONE, {
+                    params: {
+                        phone: phone
+                    }
+                })
+                .then((value) => {
+                    console.log(value.data);
+                    setOldCustomerInfo(value.data);
+                });
+        }
+    };
+
+    useEffect(() => {
+        if (oldCustomerInfo) {
+            setCustomerEmail(oldCustomerInfo.email);
+            setCustomerFullName(oldCustomerInfo.full_name);
+            setCustomerGender(renderGender(oldCustomerInfo.gender));
+            setCustomerNote(oldCustomerInfo.note);
+            axios
+                .get(apiConfig.ADDRESS_API.GET_MANY_BY_IDs, {
+                    params: {
+                        ids: oldCustomerInfo.address_paths
+                    }
+                })
+                .then((value) => {
+                    console.log(value.data);
+                    setCustomerAddress(value.data);
+                });
+
+            axios
+                .get(apiConfig.CAR_DETAIL.GET_BY_CUSTOMER, {
+                    params: {
+                        customer_id: oldCustomerInfo.id
+                    }
+                })
+                .then((value) => {
+                    console.log(value.data);
+                    setOldCustomerCarDetails(value.data);
+                });
+
+            setIsOldCustomer(true);
+        }
+    }, [oldCustomerInfo]);
+
     const RenderStepContent = () => {
         switch (activeStep) {
             case 0:
@@ -381,14 +430,11 @@ const BookingPage = () => {
                             //helperText="Some important text"
                             variant="outlined"
                             label={'Số điện thoại'}
-                            defaultValue={customerPhone}
+                            value={customerPhone}
                             fullWidth={true}
-                            onBlur={(event) =>
-                                setCustomerPhone(event.target.value)
-                            }
-                            //onChange={(e) => {console.log(event.target.value); }}
+                            onChange={(event) => handleChangePhone(event)}
                         />
-                        <FormGroup>
+                        {/* <FormGroup>
                             <FormControlLabel
                                 control={
                                     <Checkbox
@@ -469,7 +515,7 @@ const BookingPage = () => {
                                 }
                                 label="Khách hàng cũ"
                             />
-                        </FormGroup>
+                        </FormGroup> */}
                         {isOldCustomer ? (
                             <Autocomplete
                                 value={{
