@@ -12,6 +12,7 @@ import FormToggle from 'component/DrawerToggle/FormToggle';
 import dayjs from 'dayjs';
 import { v4 as uuid } from 'uuid';
 import { dateSQL } from 'utils/variable';
+import Swal from 'sweetalert2';
 
 const PriceCreate = () => {
     const navigate = useNavigate();
@@ -57,15 +58,43 @@ const PriceCreate = () => {
                 start_date: startDate.format(dateSQL),
                 end_date: endDate.format(dateSQL),
                 is_active: YesNoToBool(isActive)
-            
             },
 
             priceLines: princeLinecustom
         };
 
-        await axios.post(apiConfig.PRICE_HEADER.CREATE, params).then(() => {
-            navigate('/price');
-        });
+        await axios
+            .post(apiConfig.PRICE_HEADER.CREATE, params)
+            .then((reponse) => {
+                console.log(reponse.data);
+                if (reponse.data.status === 'FAIL') {
+                    var note = '';
+                    reponse.data.data.map(
+                        (item) =>
+                            (note +=
+                                ' Dịch vụ <b>' +
+                                item.productTitle +
+                                ' / ' +
+                                item.unitTitle +
+                                '</b> đang kích hoạt trong bảng giá <b>' +
+                                item.headerTitle +
+                                '</b> <br/>')
+                    );
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Tạo bảng giá không thành công',
+                        html: `<div> ${note} </div>`
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Tạo bảng giá thành công',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    navigate('/price');
+                }
+            });
     };
 
     const handleSubmitPriceLine = async () => {
