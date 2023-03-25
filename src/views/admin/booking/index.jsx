@@ -91,6 +91,7 @@ const BookingPage = () => {
             label: 'Email',
             useState: [customerEmail, setCustomerEmail]
         },
+
         {
             label: 'Giới tính',
             useState: [customerGender, setCustomerGender],
@@ -100,6 +101,7 @@ const BookingPage = () => {
                 },
                 {
                     value: 'Nữ'
+
                 }
             ],
             type: 'radio'

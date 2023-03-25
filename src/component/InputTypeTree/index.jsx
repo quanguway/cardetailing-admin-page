@@ -54,7 +54,7 @@ export default function InputTypeTree ({useStateValue, name, labels}) {
                                 }
                             }
                             renderInput={(params) => <TextField {...params} label={labels[index]} />}
-                    />): index < 4 ? <TextField value={useStateValue[0][index+1]?.title ?? ""} label={labels[index]} onChange={(event) => handleChange({id: uuid(),level: index+1 , title: event.target.value, parent_id: useStateValue[0][index].id} ,index+1)} /> : <></>
+                    />): index < 4 ? <TextField value={useStateValue[0][index+1]?.title ?? ""} label={labels[index]} onBlur={(event) => handleChange({id: uuid(),level: index+1 , title: event.target.value, parent_id: useStateValue[0][index].id} ,index+1)} /> : <></>
             }): <></>}
         </Box >
     )

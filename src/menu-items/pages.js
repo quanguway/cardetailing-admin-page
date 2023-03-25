@@ -59,6 +59,7 @@ const pages = {
                     url: '/customer',
                     target: true
                 },
+
             ]
         },
         {

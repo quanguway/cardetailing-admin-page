@@ -21,6 +21,8 @@ const BookingDetail = () => {
     const [orderSumTime, setOrderSumTime] = useState();
     const [orderCreateDate, setOrderCreateDate] = useState();
 
+    console.log(state);
+
     useEffect(() => {
         axios
             .get(apiConfig.BOOKING_API.GET_BY_ID, {
@@ -107,6 +109,7 @@ const BookingDetail = () => {
             });
     }, []);
 
+
     console.log(orderPayment);
 
     const RenderInfoCommon = () => {
@@ -153,6 +156,7 @@ const BookingDetail = () => {
         };
 
         await axios.post(apiConfig.ORDER_API.PAYMENT, params);
+
         navigate('/booking');
     };
 
@@ -182,6 +186,7 @@ const BookingDetail = () => {
 
     return (
         <Box>
+
             <Box
                 sx={{
                     height: '160px',
@@ -280,6 +285,7 @@ const BookingDetail = () => {
                     <Grid item xs={8}>
                         <RenderInfoService />
                     </Grid>
+
                 </Grid>
             </Box>
         </Box>

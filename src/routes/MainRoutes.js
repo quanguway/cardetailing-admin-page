@@ -56,6 +56,9 @@ const BookingDetail = Loadable(
 const OrderCreate = Loadable(lazy(() => import('views/admin/order/create')));
 const OrderPage = Loadable(lazy(() => import('views/admin/order')));
 
+
+const CustomerPage = Loadable(lazy(() => import('views/admin/customer')));
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -134,6 +137,8 @@ const MainRoutes = {
             element: <OrderPage />
         },
 
+        //  -------------- promotion -------------------
+
         {
             path: '/promotion/create',
             element: <PromotionCreate />
@@ -147,6 +152,7 @@ const MainRoutes = {
             element: <PromotionPage />
         },
 
+
         // {
         //     path: '/booking/create',
         //     element: <BookingCreate />
@@ -155,6 +161,7 @@ const MainRoutes = {
         //     path: '/booking/update',
         //     element: <BookingUpdate />
         // },
+
 
         {
             path: '/booking/detail',
@@ -176,6 +183,7 @@ const MainRoutes = {
             path: '/customer',
             element: <CustomerPage />
         }
+
     ]
 };
 
