@@ -6,21 +6,33 @@ import Loadable from 'ui-component/Loadable';
 import { element } from 'prop-types';
 
 // dashboard routing
-const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
+const DashboardDefault = Loadable(
+    lazy(() => import('views/dashboard/Default'))
+);
 
 // page routing
 const AddressPage = Loadable(lazy(() => import('views/admin/address')));
-const ProductCategoryPage = Loadable(lazy(() => import('views/admin/productCategory')));
+const ProductCategoryPage = Loadable(
+    lazy(() => import('views/admin/productCategory'))
+);
 const StaffPage = Loadable(lazy(() => import('views/admin/staff')));
 const StaffForm = Loadable(lazy(() => import('views/admin/staff/form')));
 
 const ProductPage = Loadable(lazy(() => import('views/admin/product')));
-const ProductCreate = Loadable(lazy(() => import('views/admin/product/create')));
-const ProductUpdate = Loadable(lazy(() => import('views/admin/product/update')));
+const ProductCreate = Loadable(
+    lazy(() => import('views/admin/product/create'))
+);
+const ProductUpdate = Loadable(
+    lazy(() => import('views/admin/product/update'))
+);
 
 const PromotionPage = Loadable(lazy(() => import('views/admin/promotion')));
-const PromotionCreate = Loadable(lazy(() => import('views/admin/promotion/create')));
-const PromotionUpdate = Loadable(lazy(() => import('views/admin/promotion/update')));
+const PromotionCreate = Loadable(
+    lazy(() => import('views/admin/promotion/create'))
+);
+const PromotionUpdate = Loadable(
+    lazy(() => import('views/admin/promotion/update'))
+);
 
 const UnitPage = Loadable(lazy(() => import('views/admin/unit')));
 const UnitCreate = Loadable(lazy(() => import('views/admin/unit/create')));
@@ -32,11 +44,16 @@ const PricePage = Loadable(lazy(() => import('views/admin/price')));
 
 const BookingForm = Loadable(lazy(() => import('views/admin/booking/form')));
 const BookingPage = Loadable(lazy(() => import('views/admin/booking')));
-const BookingHandle = Loadable(lazy(() => import('views/admin/booking/handleBooking')));
-const BookingDetail = Loadable(lazy(() => import('views/admin/booking/detail')));
+const BookingHandle = Loadable(
+    lazy(() => import('views/admin/booking/handleBooking'))
+);
+const BookingDetail = Loadable(
+    lazy(() => import('views/admin/booking/detail'))
+);
 
 const OrderCreate = Loadable(lazy(() => import('views/admin/order/create')));
 const OrderPage = Loadable(lazy(() => import('views/admin/order')));
+
 
 const CustomerPage = Loadable(lazy(() => import('views/admin/customer')));
 
@@ -51,100 +68,110 @@ const MainRoutes = {
             element: <DashboardDefault />
         },
         {
-            path: 'address',   
+            path: 'address',
             element: <AddressPage />
         },
         {
             path: 'staff',
-            element: <StaffPage />,
+            element: <StaffPage />
         },
         {
-            path: '/staff/form',   
+            path: '/staff/form',
             element: <StaffForm />
         },
         {
-            path: 'product-category',   
+            path: 'product-category',
             element: <ProductCategoryPage />
         },
         {
-            path: 'product',   
+            path: 'product',
             element: <ProductPage />
         },
         {
-            path: '/product/create',   
+            path: '/product/create',
             element: <ProductCreate />
         },
         {
-            path: '/product/update',   
+            path: '/product/update',
             element: <ProductUpdate />
         },
         // ------------ unit --------------
         {
-            path: 'unit',   
+            path: 'unit',
             element: <UnitPage />
         },
         {
-            path: '/unit/create',   
+            path: '/unit/create',
             element: <UnitCreate />
         },
         {
-            path: '/unit/update',   
+            path: '/unit/update',
             element: <UnitUpdate />
         },
-        
+
         // ---------- price -------------
 
         {
-            path: '/price/create',   
+            path: '/price/create',
             element: <PriceCreate />
         },
         {
-            path: '/price/update',   
+            path: '/price/update',
             element: <PriceUpdate />
         },
         {
-            path: '/price',   
+            path: '/price',
             element: <PricePage />
         },
 
         // ------------ order ----------------
 
         {
-            path: '/order/create',   
+            path: '/order/create',
             element: <OrderCreate />
         },
         {
-            path: '/order',   
+            path: '/order',
             element: <OrderPage />
         },
 
         //  -------------- promotion -------------------
 
         {
-            path: '/promotion/create',   
+            path: '/promotion/create',
             element: <PromotionCreate />
         },
         {
-            path: '/promotion/update',   
+            path: '/promotion/update',
             element: <PromotionUpdate />
         },
         {
-            path: '/promotion',   
+            path: '/promotion',
             element: <PromotionPage />
         },
 
-        // ----------------------- booking -------------------
+
+        // {
+        //     path: '/booking/create',
+        //     element: <BookingCreate />
+        // },
+        // {
+        //     path: '/booking/update',
+        //     element: <BookingUpdate />
+        // },
+        
+
         {
-            path: '/booking',   
+            path: '/booking/detail',
+            element: <BookingDetail />
+        },
+        {
+            path: '/booking',
             element: <BookingPage />
         },
         {
-            path: '/booking/handle',   
+            path: '/booking/handle',
             element: <BookingHandle />
-        },
-        {
-            path: '/booking/detail',   
-            element: <BookingDetail />
         },
 
         // ------------------------ customer -----------------------

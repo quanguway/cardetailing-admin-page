@@ -69,6 +69,7 @@ const PricePage = () => {
                     icon={<IconEye />}
                     label="Chi tiết"
                     onClick={() => {
+                        console.log(params.row);
                         handleToggle();
                         setRow(params.row);
                     }}

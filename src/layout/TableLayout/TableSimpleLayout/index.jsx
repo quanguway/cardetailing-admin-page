@@ -11,6 +11,7 @@ import { renderGender } from 'utils/dataToView';
 import { useNavigate } from 'react-router-dom';
 
 export default function TableSimpleLayout({
+    disableButton,
     nameButton,
     columns,
     apiGet,
@@ -30,6 +31,7 @@ export default function TableSimpleLayout({
         axios.get(apiGet).then((data) => {
             let dataRows = data.data;
 
+            console.log(dataRows);
             if (customFields != undefined) {
                 customFields.forEach((customField) => {
                     switch (customField) {
@@ -58,16 +60,20 @@ export default function TableSimpleLayout({
             backgroundColor={'white'}
             borderRadius={1}
         >
-            <Box display={'flex'} justifyContent={'right'}>
-                <Button
-                    sx={{ margin: '10px 20px' }}
-                    onClick={handleAddButton}
-                    variant="contained"
-                    color="primary"
-                >
-                    {nameButton ? nameButton : 'Thêm'}
-                </Button>
-            </Box>
+            {disableButton ? (
+                <></>
+            ) : (
+                <Box display={'flex'} justifyContent={'right'}>
+                    <Button
+                        sx={{ margin: '10px 20px' }}
+                        onClick={handleAddButton}
+                        variant="contained"
+                        color="primary"
+                    >
+                        {nameButton ? nameButton : 'Thêm'}
+                    </Button>
+                </Box>
+            )}
             <DataGrid density="comfortable" columns={columns} rows={rows} />
         </Box>
     );

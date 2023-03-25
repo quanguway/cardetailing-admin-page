@@ -27,7 +27,7 @@ const OrderPage = () => {
   const columnsChildShow = {
     label: 'priceLine',
     columns: [
-      'promotion_code', 'start_date', 'end_date', 'max_quantity', 'max_quantity_per_customer', 'max_quantity_per_customer_per_day' 
+      'id', 'status', 'quality', 'total', 'max_quantity_per_customer', 'max_quantity_per_customer_per_day' 
     ]
   }
 
@@ -36,19 +36,20 @@ const OrderPage = () => {
   }
 
     const columns = [
-        { field: 'total', flex: 1 },
-        { field: 'final_total', flex: 1 },
+        { field: 'total', flex: 1, headerName: 'Tổng tiền'},
+        { field: 'final_total', flex: 1 ,  headerName: 'Tổng thanh toán'},
        {
             field: 'actions',
             type: 'actions',
-            headerName: 'actions',
+            headerName: 'Thao tác',
             flex:1,
             getActions: (params) => [
               <GridActionsCellItem
                 icon={<IconEye />}
                 label="Show"
                 onClick={() => {
-                  handleToggle()
+                  console.log(params.row)
+                  //handleToggle()
                   setRow(params.row);
                 }}
                 showInMenu
@@ -59,7 +60,7 @@ const OrderPage = () => {
 
     return (
         <Box>
-            <TableSimpleLayout columns={columns} apiGet={apiConfig.ORDER_API.GET_ALL} handleAddButton={() => navigate('create')} />
+            <TableSimpleLayout columns={columns} apiGet={apiConfig.ORDER_API.GET_ALL} disableButton={true} />
             <DrawerToggle width={1000} open={open} handleToggle={handleToggle} data={row} columns={columnsShow} columnChild={columnsChildShow} infoToggle={infoToggle}/>
         </Box>
     );

@@ -55,8 +55,11 @@ const PriceCreate = () => {
                 id: uuid(),
                 title: title,
                 start_date: startDate.format(dateSQL),
-                end_date: endDate.format(dateSQL)
+                end_date: endDate.format(dateSQL),
+                is_active: YesNoToBool(isActive)
+            
             },
+
             priceLines: princeLinecustom
         };
 

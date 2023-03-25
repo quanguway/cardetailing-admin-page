@@ -54,7 +54,7 @@ const ProductPage = () => {
     return (
         <Box>
             <TableSimpleLayout
-                apiGet={apiConfig.PRODUCT_API.GET_ALL}
+                apiGet={apiConfig.PRODUCT_API.GET_ALL_WITHOUT_PRICE}
                 customFields={['gender']}
                 columns={columns}
                 handleAddButton={() => navigate('create')}

@@ -56,7 +56,8 @@ const StaffForm = () => {
             
         };
         if(state.mode == 'UPDATE') {
-            await axios.post(apiConfig.STAFF_API.UPDATE, params).then(() => {
+            await axios.post(apiConfig.STAFF_API.UPDATE, params).then((rs) => {
+                console.log(rs);
                 navigate('/staff');
             });
         } else if(state.mode == 'CREATE') {

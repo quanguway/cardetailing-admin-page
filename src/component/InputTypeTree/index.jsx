@@ -22,14 +22,14 @@ export default function InputTypeTree ({useStateValue, name, labels}) {
     }
 
     return (
-        <Box display={'flex'}>
+        <Box display={'flex'} sx={{marginTop: "20px"}}>
             {(useStateValue[0] ?? []).length != 0 ? useStateValue[0].map((value, index) => {
                 return index < 3 ? (
                     useStateValue[0][index+1] ? 
                         <Autocomplete
                             disablePortal
                             disableClearable
-                            sx={{width: '200px'}}
+                            sx={{width: '200px', marginRight: "10px"}}
                             value={{title: useStateValue[0][index+1]?.title}}
                             getOptionLabel={option => option?.title}
                             options={useStateValue[0][index].children ?? []}
