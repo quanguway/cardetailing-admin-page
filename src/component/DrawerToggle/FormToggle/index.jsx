@@ -8,19 +8,19 @@ export default function FormToggle({open, handleToggle, fields, width, anchor, m
 
     return (
         <Drawer
-                anchor={anchor ?? "right"}
-                onClose={handleToggle}
-                open={open}
-                PaperProps={{
-                    sx: {
-                        width: width ?? 500
-                    }
-                }}
-            >
-                <PerfectScrollbar component="div">
-                    <FormSimpleLayout mode={mode} fields={fields} api={api} handleSubmit={handleSubmit} nameForm= "Thêm đơn giá dịch vụ" />
-                    {children}
-                </PerfectScrollbar>
-            </Drawer>
+            anchor={anchor ?? "right"}
+            onClose={handleToggle}
+            open={open}
+            PaperProps={{
+                sx: {
+                    width: width ?? 500
+                }
+            }}
+        >
+            <PerfectScrollbar component="div">
+                <FormSimpleLayout mode={mode} fields={fields} api={api} handleSubmit={handleSubmit} children={children} nameForm= "Thêm đơn giá dịch vụ" />
+
+            </PerfectScrollbar>
+        </Drawer>
     )
 }
