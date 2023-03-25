@@ -58,7 +58,8 @@ const pages = {
                     type: 'item',
                     url: '/customer',
                     target: true
-                }
+                },
+
             ]
         },
         {
