@@ -52,6 +52,13 @@ const pages = {
                     url: '/staff',
                     target: true
                 },
+                {
+                    id: 'customer',
+                    title: 'Khách hàng',
+                    type: 'item',
+                    url: '/customer',
+                    target: true
+                },
             ]
         },
         {

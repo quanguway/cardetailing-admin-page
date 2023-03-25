@@ -4,6 +4,8 @@ import { lazy } from 'react';
 import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
 import { element } from 'prop-types';
+import CustomerPage from 'views/admin/customer';
+import CustomerUpdate from 'views/admin/customer/update';
 
 // dashboard routing
 const DashboardDefault = Loadable(
@@ -153,7 +155,7 @@ const MainRoutes = {
         //     path: '/booking/update',
         //     element: <BookingUpdate />
         // },
-        
+
         {
             path: '/booking/detail',
             element: <BookingDetail />
@@ -166,6 +168,14 @@ const MainRoutes = {
             path: '/booking/handle',
             element: <BookingHandle />
         },
+        {
+            path: '/customer/update',
+            element: <CustomerUpdate />
+        },
+        {
+            path: '/customer',
+            element: <CustomerPage />
+        }
     ]
 };
 
