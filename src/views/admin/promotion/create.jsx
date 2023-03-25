@@ -50,8 +50,7 @@ const PromotionCreate = () => {
     const [promotionOption, setPromotionOption] = useState();
     const [conditionOption, setConditionOption] = useState();
 
-    // const [maximumReductionAmount, setMaxReductionAmount] = useState();
-    // const [maximumReductionAmount, setMaxReductionAmount] = useState();
+    const [maximumReductionAmount, setMaxReductionAmount] = useState();
     
 
     useEffect(() => {
