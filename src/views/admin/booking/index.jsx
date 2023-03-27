@@ -48,8 +48,6 @@ const BookingPage = () => {
         });
     }, []);
 
-    console.log(slotSelected);
-
     const handleBooking = (item) => {
         console.log(item);
         setSlotSelected(item);
@@ -100,7 +98,6 @@ const BookingPage = () => {
                 },
                 {
                     value: 'Nữ'
-
                 }
             ],
             type: 'radio'
@@ -239,7 +236,11 @@ const BookingPage = () => {
         { field: 'time', headerName: 'Thời gian xử lý (Phút)', flex: 1 },
         { field: 'price_line', headerName: 'Giá', flex: 1 },
         { field: 'price_final', headerName: 'Giá Cuối', flex: 1 },
-        { field: 'product_recived_title', headerName: 'Dịch vụ được tặng', flex: 1 },
+        {
+            field: 'product_recived_title',
+            headerName: 'Dịch vụ được tặng',
+            flex: 1
+        },
         {
             field: 'staff',
             headerName: 'Nhân viên xử lý',
@@ -285,7 +286,9 @@ const BookingPage = () => {
     };
 
     const handleFinish = async () => {
+
         const addrLength = customerAddress?.length - 1;
+        
         const bookingId = uuid();
         const customerId = uuid();
         const carDetailId = uuid();
@@ -306,8 +309,9 @@ const BookingPage = () => {
             total: total,
             slot_id: slotSelected.id,
             car_detail_id: carDetailId,
+            booking_details: booking_details,
             customer: {
-                id: customerId,
+                id: !isOldCustomer ? customerId : isOldCustomer.id,
                 full_name: customerFullName,
                 phone: customerPhone,
                 email: customerEmail,
@@ -315,14 +319,17 @@ const BookingPage = () => {
                 address: customerAddress[addrLength]
             },
             car_detail: {
-                id: carDetailId,
+                id: !oldCustomerCarDetail
+                    ? carDetailId
+                    : oldCustomerCarDetail.id,
                 car_info_id: carBranch.id,
                 number_plate: carNumberPlate,
                 customer_id: customerId
             },
-            booking_details: booking_details
+            isNewCustomer: !isOldCustomer ? true : false,
+            isNewCar: !oldCustomerCarDetail ? true : false
         };
-
+        console.log(params);
         await axios.post(apiConfig.BOOKING_API.CREATE, params);
         window.location.reload();
     };
@@ -349,6 +356,10 @@ const BookingPage = () => {
 
     useEffect(() => {
         if (oldCustomerCarDetail) {
+            setCarType({
+                ...oldCustomerCarDetail.car_info,
+                title: oldCustomerCarDetail.car_info.type
+            });
             setCarBranch({
                 ...oldCustomerCarDetail.car_info,
                 title: oldCustomerCarDetail.car_info.branch
@@ -377,16 +388,14 @@ const BookingPage = () => {
 
     useEffect(() => {
         if (oldCustomerInfo) {
+            console.log(oldCustomerInfo);
             setCustomerEmail(oldCustomerInfo.email);
             setCustomerFullName(oldCustomerInfo.full_name);
             setCustomerGender(renderGender(oldCustomerInfo.gender));
             setCustomerNote(oldCustomerInfo.note);
+            const params = { ids: oldCustomerInfo.address_paths };
             axios
-                .get(apiConfig.ADDRESS_API.GET_MANY_BY_IDs, {
-                    params: {
-                        ids: oldCustomerInfo.address_paths
-                    }
-                })
+                .get(apiConfig.ADDRESS_API.GET_MANY_BY_IDs, { params })
                 .then((value) => {
                     console.log(value.data);
                     setCustomerAddress(value.data);
@@ -434,9 +443,9 @@ const BookingPage = () => {
                             //helperText="Some important text"
                             variant="outlined"
                             label={'Số điện thoại'}
-                            value={customerPhone}
+                            defaultValue={customerPhone}
                             fullWidth={true}
-                            onChange={(event) => handleChangePhone(event)}
+                            onBlur={(event) => handleChangePhone(event)}
                         />
                         {/* <FormGroup>
                             <FormControlLabel
@@ -524,7 +533,7 @@ const BookingPage = () => {
                             <Autocomplete
                                 value={{
                                     number_plate:
-                                        oldCustomerCarDetail.number_plate
+                                        oldCustomerCarDetail?.number_plate
                                 }}
                                 getOptionLabel={(option) =>
                                     option?.number_plate ?? ''
