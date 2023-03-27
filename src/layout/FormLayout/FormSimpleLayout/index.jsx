@@ -226,6 +226,7 @@ export default function FormSimpleLayout({
                                             marginTop: '20px',
                                             marginRight: '10px'
                                         }}
+                                        disablePast
                                         disabled={item.disabled ?? false}
                                         label={item.label}
                                         defaultValue={item.useState[0]}

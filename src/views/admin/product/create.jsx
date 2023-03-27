@@ -12,6 +12,7 @@ import FormToggle from 'component/DrawerToggle/FormToggle';
 import dayjs from 'dayjs';
 import { v4 as uuid } from 'uuid';
 import { dateSQL } from 'utils/variable';
+import { random } from 'lodash';
 
 const ProductCreate = () => {
     const navigate = useNavigate();
@@ -19,7 +20,7 @@ const ProductCreate = () => {
     const [listProducts, setListProduct] = useState([]);
     const [listUnit, setListUnit] = useState([]);
 
-    const [productCode, setProductCode] = useState();
+    const [productCode, setProductCode] = useState('SERVICE_' + Math.floor(Math.random() * 10000));
     const [title, setTitle] = useState();
     const [description, setDescription] = useState();
     const [time, setTime] = useState();
@@ -31,7 +32,16 @@ const ProductCreate = () => {
         axios.get(apiConfig.PRODUCT_CATEGORY.GET_ALL).then((value) => {
             setCategory([value.data[0]]);
         });
+        axios.get(apiConfig.PRODUCT_API.GET_ALL_WITHOUT_PRICE).then((value) => {
+            setListProduct(value.data[0]);
+        })
+        
     }, []);
+
+    useEffect(() => {
+        const products = listProducts.filter((item) => (item.product_code == productCode));
+        // if (products.length() != 0) 
+    }, [productCode]);
 
     const handleToggle = () => {
         setOPenForm(!openForm);
@@ -40,7 +50,7 @@ const ProductCreate = () => {
     const handleSubmit = async () => {
         var params = {
             item: {
-                product_code: '123',
+                product_code: productCode,
                 type: category[1].title.toUpperCase(),
                 title: title,
                 description: description,
@@ -56,10 +66,10 @@ const ProductCreate = () => {
     };
 
     const fields = [
-        // {
-        //     label: 'Product Code',
-        //     useState: [productCode, setProductCode]
-        // },
+        {
+            label: 'Product Code',
+            useState: [productCode, setProductCode]
+        },
         {
             label: 'Tên dịch vụ',
             useState: [title, setTitle]
