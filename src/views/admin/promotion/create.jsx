@@ -3,7 +3,6 @@ import { apiConfig } from 'config/app.config';
 import { useLocation, useNavigate  } from "react-router-dom";
 import FormSimpleLayout from 'layout/FormLayout/FormSimpleLayout';
 import { useState, useEffect } from 'react';
-import { renderGender, renderYesNo, YesNoToBool } from 'utils/dataToView';
 import axios from 'axios';
 import FormTableLayout from 'layout/FormLayout/FormTableLayout';
 import { GridActionsCellItem } from '@mui/x-data-grid';
@@ -30,10 +29,14 @@ const PromotionCreate = () => {
 
     const [promotionRows, setPromotionRows] = useState([]);
 
+    const [promotionStartDate, setPromotionStartDate] = useState(dayjs(new Date()));
+    const [promotionEndDate, setPromotionEndDate] = useState(dayjs(new Date()).add(1, 'day'));
+
+
     const [titlePromotionLine, setTitlePromotionLine] = useState();
     const [promotionCode, setPromotionCode] = useState();
     const [startDate, setStartDate] = useState(dayjs(new Date()));
-    const [endDate, setEndDate] = useState(dayjs(new Date()));
+    const [endDate, setEndDate] = useState(dayjs(new Date()).add(1, 'day'));
 
     const [reductionAmount, setReductionAmount] = useState();
     const [percent, setPercent] = useState();
@@ -49,6 +52,7 @@ const PromotionCreate = () => {
 
     const [promotionOption, setPromotionOption] = useState();
     const [conditionOption, setConditionOption] = useState();
+    const [conditionPromotionOptions, setConditionPromotionOptions] = useState();
 
     const [maximumReductionAmount, setMaxReductionAmount] = useState();
     
@@ -68,11 +72,12 @@ const PromotionCreate = () => {
         setPercent(null);
         setGetProduct(null);
     }, [promotionOption])
-
+    
     useEffect(() => {
         setConditionProduct(null);
         setQuanlityProductBuy(null);
         setMinimumTotal(null);
+        setConditionPromotionOptions(promotionOptions.filter((item) => (item.condition === conditionOption?.value) ));
     }, [conditionOption])
 
     const handleToggle = () => {
@@ -151,6 +156,16 @@ const PromotionCreate = () => {
             label: 'note',
             useState: [note, setNote] ,
             type: 'textarea'
+        },
+        {
+            label: 'start date',
+            useState: [promotionStartDate, setPromotionStartDate],
+            type: 'date-picker'
+        },
+        {
+            label: 'end date',
+            useState: [promotionEndDate, setPromotionEndDate],
+            type: 'date-picker'
         },
     ]
 
@@ -242,17 +257,15 @@ const PromotionCreate = () => {
     }
 
     const promotionOptions = [
-        {value:'PERCENT', label:'Giảm giá theo %'},
-        {value: 'PRICE', label: 'Giảm giá theo số tiền'},
-        {value: 'GET_PRODUCT', label: 'Tặng dịch vụ'}
+        {value:'PERCENT',condition: 'CONDITION_PRICE' , label:'Giảm giá theo %'},
+        {value: 'PRICE', condition: 'CONDITION_PRICE' , label: 'Giảm giá theo số tiền'},
+        {value: 'GET_PRODUCT',condition: 'CONDITION_PRODUCT' ,label: 'Tặng dịch vụ'}
     ]
 
     const conditionOptions = [
-        {value:'CONDITION_PRODUCT', label:'Dịch vụ'},
-        {value: 'CONDITION_PRICE', label: 'Giá'},
+        {value:'CONDITION_PRODUCT', label:'Theo Dịch vụ'},
+        {value: 'CONDITION_PRICE', label: 'Theo tổng đơn giá'},
     ]
-
-    console.log(listProducts);
 
     const RenderConditionOPtion = () => {
         switch (conditionOption?.value) {
@@ -395,7 +408,7 @@ const PromotionCreate = () => {
 
                 <Autocomplete
                     disablePortal
-                    options={promotionOptions}
+                    options={conditionPromotionOptions}
                     fullWidth={true}
                     onChange = {
                         (event, newValue) => {
