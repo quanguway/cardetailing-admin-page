@@ -30,7 +30,6 @@ export default function TableSimpleLayout({
     useEffect(() => {
         axios.get(apiGet).then((data) => {
             let dataRows = data.data;
-
             console.log(dataRows);
             if (customFields != undefined) {
                 customFields.forEach((customField) => {
