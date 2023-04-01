@@ -52,7 +52,7 @@ const UnitForm = () => {
                 unit_exchange_value: element.unitExchange.value,
                 price: element.price.price
             }}))
-        })
+        }) 
     }, [])
 
     useEffect(() => {

@@ -3,16 +3,7 @@ import { apiConfig } from 'config/app.config';
 import { useLocation, useNavigate } from 'react-router-dom';
 import FormSimpleLayout from 'layout/FormLayout/FormSimpleLayout';
 import { useState, useEffect } from 'react';
-import { renderGender, renderYesNo, YesNoToBool } from 'utils/dataToView';
 import axios from 'axios';
-import FormTableLayout from 'layout/FormLayout/FormTableLayout';
-import { GridActionsCellItem } from '@mui/x-data-grid';
-import { IconPencil, IconTrash } from '@tabler/icons';
-import FormToggle from 'component/DrawerToggle/FormToggle';
-import dayjs from 'dayjs';
-import { v4 as uuid } from 'uuid';
-import { dateSQL } from 'utils/variable';
-import { random } from 'lodash';
 
 const ProductCreate = () => {
     const navigate = useNavigate();
@@ -20,7 +11,7 @@ const ProductCreate = () => {
     const [listProducts, setListProduct] = useState([]);
     const [listUnit, setListUnit] = useState([]);
 
-    const [productCode, setProductCode] = useState('SERVICE_' + Math.floor(Math.random() * 10000));
+    const [productCode, setProductCode] = useState();
     const [title, setTitle] = useState();
     const [description, setDescription] = useState();
     const [time, setTime] = useState();

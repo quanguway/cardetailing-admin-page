@@ -11,6 +11,7 @@ const ProductPage = () => {
 
     const columns = [
         // { field: 'product_code', headerName: 'code', flex: 1 },
+        { field: 'product_code', flex: 1, headerName: 'Mã dịch vụ' },
         { field: 'title', flex: 1, headerName: 'Tên dịch vụ' },
         // { field: 'type', flex:1, headerName: "Loại"  },
         { field: 'category_paths', flex: 1, headerName: 'Loại' },
