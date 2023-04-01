@@ -23,7 +23,9 @@ export const apiConfig = {
         GET_MANY_BY_IDs: `${appConfig.URL_API}/product-category/ids`
     },
     CAR_INFO: {
-        GET_ALL: `${appConfig.URL_API}/car-info`
+        GET_ALL: `${appConfig.URL_API}/car-info`,
+        CREATE: `${appConfig.URL_API}/car-info/create`,
+        UPDATE: `${appConfig.URL_API}/car-info/update`,
     },
     CAR_DETAIL: {
         GET_BY_CUSTOMER: `${appConfig.URL_API}/car-detail/customer`

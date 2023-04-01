@@ -4,6 +4,10 @@ import SortableTree, { removeNodeAtPath, addNodeUnderParent } from "@nosferatu50
 import { Box, IconButton, TextField } from '@mui/material';
 import { v4 as uuid } from 'uuid';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { apiConfig } from 'config/app.config';
+import DrawerToggle from 'component/DrawerToggle';
+import FormToggle from 'component/DrawerToggle/FormToggle';
 
 
 export default function SortableTreeCustom ({data, setData}) {
@@ -30,6 +34,31 @@ export default function SortableTreeCustom ({data, setData}) {
           }
     }
 
+    const handleToggle = () => {
+      setOPenForm(!openForm);
+    };
+
+    const [openForm, setOPenForm] = useState(false);
+    const [title, setTitle] = useState();
+
+    // treeFields = [
+    //   {
+    //       label: 'Tiêu đề',
+    //       name: 'title',
+    //       useState: [title, setTitle]
+    //   },
+    // ]
+
+    // const handleEditNode = (rowInfo) => {
+    //   <FormToggle 
+    //     open={openForm}
+    //     handleToggle={handleToggle}
+    //     fields={priceLineFields}
+    //     handleSubmit={handleSubmitPriceLine}
+    //   />
+    //   console.log(rowInfo);
+    // }
+
     const handleAddChild = (rowInfo) => {
         setData((state) => {
             return addNodeUnderParent({
@@ -52,9 +81,24 @@ export default function SortableTreeCustom ({data, setData}) {
             <TextField value={searchString} onChange={(event) => {setSearchString(event.target.value)}} label="Tìm kiếm" variant="outlined" />
           </Box>
            <SortableTree
+                
                 treeData={data}
                 onlyExpandSearchedNodes={true}
-                onChange={(treeData, node) => {setData(treeData)}}
+                onChange={(treeData, node) => { setData(treeData)}}
+                onMoveNode={(nodeMoved) => {
+                  const lengthPath = nodeMoved.path.length;
+                  const nodes = [];
+
+                  const params = { 
+                    node: {
+                      id: nodeMoved.node.id,
+                      level: lengthPath-1,
+                      parent_id: nodeMoved.path[lengthPath-2]
+                    }
+                  };
+                  // console.log(params);
+                  axios.post(apiConfig.ADDRESS_API.SAVE, params);
+                }}
                 getNodeKey={({ node }) => node.id }
                 searchQuery={searchString}
                 searchFocusOffset={searchFocusIndex}
@@ -65,14 +109,14 @@ export default function SortableTreeCustom ({data, setData}) {
                   );
                 }}
                 generateNodeProps={rowInfo => ({
-                    // buttons: [
-                    //     // add child
-                    //     <IconButton onClick={() => handleAddChild(rowInfo)} variant='contained' color="primary" size='small'><IconPlus /></IconButton >,
-                    //     // edit child
-                    //     <IconButton onClick={() => handleEditNode(rowInfo)} variant='contained' color="warning" size='small'><IconPencil/></IconButton >,
+                    buttons: [
+                        // add child
+                        <IconButton onClick={() => handleAddChild(rowInfo)} variant='contained' color="primary" size='small'><IconPlus /></IconButton >,
+                        // edit child
+                        <IconButton onClick={() => handleEditNode(rowInfo)} variant='contained' color="warning" size='small'><IconPencil/></IconButton >,
                     //     // remove child
                     //     <IconButton onClick={() => handleRemoveNode(rowInfo)} variant='contained' color="error" size='small'><IconTrash/></IconButton >,
-                    // ]
+                    ]
                         
                 })}
                 />

@@ -3,16 +3,7 @@ import { apiConfig } from 'config/app.config';
 import { useLocation, useNavigate } from 'react-router-dom';
 import FormSimpleLayout from 'layout/FormLayout/FormSimpleLayout';
 import { useState, useEffect } from 'react';
-import { renderGender, renderYesNo, YesNoToBool } from 'utils/dataToView';
 import axios from 'axios';
-import FormTableLayout from 'layout/FormLayout/FormTableLayout';
-import { GridActionsCellItem } from '@mui/x-data-grid';
-import { IconPencil, IconTrash } from '@tabler/icons';
-import FormToggle from 'component/DrawerToggle/FormToggle';
-import dayjs from 'dayjs';
-import { v4 as uuid } from 'uuid';
-import { dateSQL } from 'utils/variable';
-import { random } from 'lodash';
 
 const ProductCreate = () => {
     const navigate = useNavigate();
@@ -20,13 +11,26 @@ const ProductCreate = () => {
     const [listProducts, setListProduct] = useState([]);
     const [listUnit, setListUnit] = useState([]);
 
-    const [productCode, setProductCode] = useState('SERVICE_' + Math.floor(Math.random() * 10000));
+    const [productCode, setProductCode] = useState();
     const [title, setTitle] = useState();
     const [description, setDescription] = useState();
     const [time, setTime] = useState();
     // const [status, setTime] = useState('0')
     const [note, setNote] = useState();
     const [category, setCategory] = useState();
+
+
+    const [helperTitle, setHelperTitle] = useState();
+    const [helperCode, setHelperCode] = useState();
+    const [helperTime, setHelperTime] = useState();
+    const [helperCategory, setHelperCategory] = useState();
+
+
+    const [errorTitle, setErrorTitle] = useState(false);
+    const [errorCode, setErrorCode] = useState(false);
+    const [errorTime, setErrorTime] = useState(false);
+    const [errorCategory, setErrorCategory] = useState(false);
+
 
     useEffect(() => {
         axios.get(apiConfig.PRODUCT_CATEGORY.GET_ALL).then((value) => {
@@ -48,6 +52,41 @@ const ProductCreate = () => {
     };
 
     const handleSubmit = async () => {
+
+        if (!title || title.trim() === '') {
+            setErrorTitle(true);
+            setHelperTitle('* Tên sản phẩm không được trống');
+        } else {
+            setErrorTitle(false);
+            setHelperTitle('');
+        }
+        if (!productCode || productCode.trim() === '') {
+            setErrorCode(true);
+            setHelperCode('* Mã sản phẩm không được trống');
+        } else {
+            setErrorCode(false);
+            setHelperCode('');
+        }
+
+        if (!time || time.trim() === '') {
+            setErrorTime(true);
+            setHelperTime('* Thời gian không được trống');
+        } else {
+            setErrorTime(false);
+            setHelperTime('');
+        }
+
+        if (category.length === 1 ) {
+            setErrorCategory(true);
+            setHelperCategory('* Loại sản phẩm không được trống');
+        } else {
+            setErrorCategory(false);
+            setHelperCategory('');
+        }
+
+        if (errorCategory || errorCode || errorTime || errorTitle)
+            return;
+
         var params = {
             item: {
                 product_code: productCode,
@@ -67,17 +106,21 @@ const ProductCreate = () => {
 
     const fields = [
         {
-            label: 'Product Code',
-            useState: [productCode, setProductCode]
+            label: 'Mã dịch vụ',
+            useState: [productCode, setProductCode],
+            helper: helperCode,
+            isError: errorCode,
         },
         {
             label: 'Tên dịch vụ',
-            useState: [title, setTitle]
+            useState: [title, setTitle],
+            helper: helperTitle,
+            isError: errorTitle,
         },
         {
             label: 'Mô tả',
             useState: [description, setDescription],
-            type: 'textarea'
+            type: 'textarea',
         },
         {
             label: 'Chú thích',
@@ -86,14 +129,18 @@ const ProductCreate = () => {
         },
         {
             label: 'Thời gian dự kiến',
-            useState: [time, setTime]
+            useState: [time, setTime],
+            helper: helperTime,
+            isError: errorTime
         },
         {
             label: 'Loại dịch vụ',
             useState: [category, setCategory],
             type: 'tree-simple',
             lengthItem: 2,
-            labels: ['Sản phẩm & Dịch vụ', 'Loại']
+            labels: ['Sản phẩm & Dịch vụ', 'Loại'],
+            helper: helperCategory,
+            isError: errorCategory
         }
     ];
 

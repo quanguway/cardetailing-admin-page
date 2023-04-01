@@ -105,6 +105,21 @@ const pages = {
                 },
             ]
         }, 
+        {
+            id: 'catalog',
+            title: 'Thông tin chung',
+            type: 'collapse',
+            icon: IconArchive ,
+            children: [
+                {
+                    id: 'carInfo',
+                    title: 'Thông tin xe',
+                    type: 'item',
+                    url: '/car-info',
+                    target: true
+                },
+            ]
+        }
     ]
 };
 

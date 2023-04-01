@@ -44,7 +44,7 @@ const ProductUpdate = () => {
         var params = {
             id: state.data.id,
             item: {
-                product_code: '123',
+                product_code: productCode,
                 type: category[1].title.toUpperCase(),
                 title: title,
                 description: description,
@@ -62,10 +62,10 @@ const ProductUpdate = () => {
     };
 
     const fields = [
-        // {
-        //     label: 'Product Code',
-        //     useState: [productCode, setProductCode]
-        // },
+        {
+            label: 'Mã sản phẩm',
+            useState: [productCode, setProductCode]
+        },
         {
             label: 'Tên dịch vụ',
             useState: [title, setTitle]

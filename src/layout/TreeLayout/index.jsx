@@ -14,6 +14,7 @@ export default function TreeLayout({apiGet, apiSave}) {
     useEffect(() => {
         setLoading(false);
         axios.get(apiGet).then((value) => {
+            console.log(value.data);
             setData(value.data) ;
         })
     }, []);

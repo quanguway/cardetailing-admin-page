@@ -94,6 +94,8 @@ export default function FormSimpleLayout({
                                 <InputTypeTree
                                     useStateValue={item.useState}
                                     labels={item.labels}
+                                    helper= {item.helper}
+                                    isError= {item.isError}
                                 />
                             );
                         case 'tree-simple':
@@ -102,6 +104,8 @@ export default function FormSimpleLayout({
                                     lengthItem={item.lengthItem}
                                     useStateValue={item.useState}
                                     labels={item.labels}
+                                    helper= {item.helper}
+                                    isError= {item.isError}
                                 />
                             );
                         case 'file':
