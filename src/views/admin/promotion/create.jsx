@@ -12,6 +12,7 @@ import dayjs from 'dayjs';
 import { v4 as uuid } from 'uuid';
 import { dateSQL } from 'utils/variable';
 import Swal from 'sweetalert2';
+import { log } from 'util';
 
 const PromotionCreate = () => {
     const navigate = useNavigate();
@@ -179,17 +180,18 @@ const PromotionCreate = () => {
     //     checkCodePromotion();
     // },[code])
 
-    const handleSubmit = async () => {
-        if (
-            !(
-                !checkTitlePromotion() &&
-                !checkCodePromotion() &&
-                !checkPromotionDate()
-            )
-        ) {
-            return;
-        }
 
+    const handleSubmit = async () => {
+        // if (
+        //     !(
+        //         !checkTitlePromotion() &&
+        //         !checkCodePromotion() &&
+        //         !checkPromotionDate()
+        //     )
+        // ) {
+        //     return;
+        // }
+        console.log('prem');
         // const promotionRowsCustomer = promotionRows.map((item) =>  ({...item, id: uuid()}))
         var params = {
             promotion: {
@@ -202,9 +204,7 @@ const PromotionCreate = () => {
             },
             promotionDetail: promotionRows
         };
-
-        console.log(params);
-        await axios.post(apiConfig.PROMOTION_API.CREATE, params).then(() => {
+        await axios.post(apiConfig.PROMOTION_API.CREATE, params).then((value) => {
             navigate('/promotion');
         });
     };
