@@ -197,6 +197,7 @@ const PromotionCreate = () => {
                 title: title,
                 description: description,
                 note: note,
+                status: status === 'Kích hoạt' ? true : false,
                 date_start: promotionStartDate.format(dateSQL),
                 date_end: promotionEndDate.format(dateSQL)
             },

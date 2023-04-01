@@ -20,16 +20,9 @@ const BookingDetail = () => {
     const [orderSum, setOrderSum] = useState();
     const [orderSumTime, setOrderSumTime] = useState();
     const [orderCreateDate, setOrderCreateDate] = useState();
+    const [promotionCanUse, setPromotionCanUse] = useState();
 
     useEffect(() => {
-        axios
-            .get(apiConfig.PROMOTION_API.CHECKPROMOTIONORDER,{
-                params: { id: state.data.booking_id }
-            })
-            .then((value) => {
-                console.log(value.data);
-            });
-
         axios
             .get(apiConfig.BOOKING_API.GET_BY_ID, {
                 params: { id: state.data.booking_id }
@@ -117,7 +110,16 @@ const BookingDetail = () => {
             });
     }, []);
 
-    console.log(orderPayment);
+    useEffect(() => {
+        axios
+            .get(apiConfig.PROMOTION_API.CHECKPROMOTIONORDER, {
+                params: { id: state.data.booking_id, total: orderSum }
+            })
+            .then((value) => {
+                console.log(value.data.promotion_can_use);
+                setPromotionCanUse(value.data.promotion_can_use);
+            });
+    }, [orderSum]);
 
     const RenderInfoCommon = () => {
         return (
@@ -137,7 +139,14 @@ const BookingDetail = () => {
                         </ListItem>
                     ))}
                 </List>
-                <List sx={{ width: '100%', maxWidth: 360, padding: '14px' }}>
+                <List
+                    sx={{
+                        width: '100%',
+                        maxWidth: 360,
+                        padding: '14px',
+                        paddingTop: '0'
+                    }}
+                >
                     <h3>Thông tin xe</h3>
                     {carDetailInfo.map((item) => (
                         <ListItem sx={{ display: 'flex' }}>
@@ -197,7 +206,7 @@ const BookingDetail = () => {
 
     return (
         <Box>
-            <Box sx={{ height: 'auto' }}>
+            <Box sx={{ height: 'auto', lineHeight: '1.5' }}>
                 <Grid container columnSpacing={{ xs: 1, sm: 2, md: 2 }}>
                     <Grid item xs={4}>
                         <RenderInfoCommon />
@@ -299,16 +308,226 @@ const BookingDetail = () => {
                                         </Grid>
                                     </ListItem>
                                 </Grid>
-                                <Grid item xs={12}>
-                                    {/* <Button onClick={handlePayment}>Thanh toán</Button> */}
-                                    <Button
-                                        sx={{ margin: '10px 20px' }}
-                                        onClick={handlePayment}
-                                        variant="contained"
-                                        color="primary"
+                                <Grid
+                                    item
+                                    xs={12}
+                                    sx={{
+                                        margin: '10px 10px'
+                                    }}
+                                >
+                                    <Box
+                                        sx={{
+                                            borderRadius: '10px',
+                                            padding: '10px',
+                                            backgroundColor: '#f1ebeb',
+                                            height: '100%'
+                                        }}
                                     >
-                                        Thanh toán
-                                    </Button>
+                                        {promotionCanUse && (
+                                            <Grid
+                                                container
+                                                columnSpacing={{
+                                                    xs: 1,
+                                                    sm: 2,
+                                                    md: 2
+                                                }}
+                                            >
+                                                <Grid item xs={12}>
+                                                    <span>
+                                                        <b>
+                                                            Áp dụng khuyến mại:{' '}
+                                                            {
+                                                                promotionCanUse
+                                                                    .promotionLine
+                                                                    .promotion_code
+                                                            }
+                                                        </b>
+                                                    </span>
+                                                    <span>
+                                                        {' - '}
+                                                        {
+                                                            promotionCanUse
+                                                                .promotionLine
+                                                                .title
+                                                        }
+                                                    </span>
+                                                </Grid>
+                                                <Grid
+                                                    item
+                                                    xs={6}
+                                                    sx={{
+                                                        marginLeft: '10px'
+                                                    }}
+                                                >
+                                                    <span>
+                                                        Hình thức: giảm{'  '}
+                                                        {promotionCanUse
+                                                            .promotionLine
+                                                            .type ===
+                                                        'CONDITION_PRICE/PERCENT'
+                                                            ? promotionCanUse
+                                                                  .promotionLine
+                                                                  .percent + '%'
+                                                            : new Intl.NumberFormat(
+                                                                  'vi-VN',
+                                                                  {
+                                                                      style: 'currency',
+                                                                      currency:
+                                                                          'VND'
+                                                                  }
+                                                              ).format(
+                                                                  promotionCanUse
+                                                                      .promotionLine
+                                                                      .maximum_reduction_amount
+                                                              )}{' '}
+                                                        hóa đơn trên{' '}
+                                                        {new Intl.NumberFormat(
+                                                            'vi-VN',
+                                                            {
+                                                                style: 'currency',
+                                                                currency: 'VND'
+                                                            }
+                                                        ).format(
+                                                            promotionCanUse
+                                                                .promotionLine
+                                                                .minimum_total
+                                                        )}
+                                                    </span>
+                                                    <br />
+                                                    <span>
+                                                        Tối đa:
+                                                        {' ' +
+                                                            new Intl.NumberFormat(
+                                                                'vi-VN',
+                                                                {
+                                                                    style: 'currency',
+                                                                    currency:
+                                                                        'VND'
+                                                                }
+                                                            ).format(
+                                                                promotionCanUse
+                                                                    .promotionLine
+                                                                    .maximum_reduction_amount
+                                                            )}
+                                                    </span>
+                                                </Grid>
+                                                <Grid
+                                                    item
+                                                    xs={5}
+                                                    sx={{
+                                                        display: 'flex',
+                                                        flexDirection:
+                                                            'column-reverse',
+                                                        marginLeft: '5px'
+                                                    }}
+                                                >
+                                                    <Box>
+                                                        <Grid
+                                                            container
+                                                            columnSpacing={{
+                                                                xs: 1,
+                                                                sm: 2,
+                                                                md: 2
+                                                            }}
+                                                        >
+                                                            <Grid item xs={5}>
+                                                                <span>
+                                                                    Số tiền
+                                                                    giảm:
+                                                                </span>
+                                                            </Grid>
+                                                            <Grid
+                                                                item
+                                                                xs={6}
+                                                                sx={{
+                                                                    marginLeft:
+                                                                        '10px'
+                                                                }}
+                                                            >
+                                                                <span>
+                                                                    <b>
+                                                                        {new Intl.NumberFormat(
+                                                                            'vi-VN',
+                                                                            {
+                                                                                style: 'currency',
+                                                                                currency:
+                                                                                    'VND'
+                                                                            }
+                                                                        ).format(
+                                                                            promotionCanUse.soTienGiam
+                                                                        )}
+                                                                    </b>
+                                                                </span>
+                                                            </Grid>
+                                                        </Grid>
+                                                    </Box>
+                                                </Grid>
+                                            </Grid>
+                                        )}
+                                    </Box>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Grid
+                                        container
+                                        columnSpacing={{ xs: 1, sm: 2, md: 2 }}
+                                        sx={{ padding: '0 20px' }}
+                                    >
+                                        {/* <Grid item xs={5}></Grid> */}
+                                        <Grid item xs={8}>
+                                            <Grid
+                                                container
+                                                columnSpacing={{
+                                                    xs: 1,
+                                                    sm: 2,
+                                                    md: 2
+                                                }}
+                                                //sx={{ padding: '0 20px' }}
+                                            >
+                                                <Grid item xs={5}>
+                                                    <h3>Tổng thanh toán: </h3>
+                                                </Grid>
+                                                <Grid item xs={7}>
+                                                    <h3>
+                                                        {new Intl.NumberFormat(
+                                                            'vi-VN',
+                                                            {
+                                                                style: 'currency',
+                                                                currency: 'VND'
+                                                            }
+                                                        ).format(
+                                                            Number(orderSum) -
+                                                                Number(
+                                                                    promotionCanUse?.soTienGiam ??
+                                                                        0
+                                                                )
+                                                        )}
+                                                    </h3>
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Grid
+                                        container
+                                        columnSpacing={{ xs: 1, sm: 2, md: 2 }}
+                                        //sx={{ padding: '0 20px' }}
+                                    >
+                                        <Grid item xs={6}></Grid>
+                                        <Grid item xs={6}>
+                                            <Button
+                                                sx={{
+                                                    margin: '10px 15px',
+                                                    width: '300px'
+                                                }}
+                                                onClick={handlePayment}
+                                                variant="contained"
+                                                color="primary"
+                                            >
+                                                Thanh toán
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Box>
