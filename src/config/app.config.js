@@ -1,6 +1,6 @@
 export const appConfig = {
-    URL_API : 'http://localhost:8000',
-}
+    URL_API: 'http://localhost:8000'
+};
 
 export const apiConfig = {
     ADDRESS_API: {
@@ -15,24 +15,24 @@ export const apiConfig = {
         UPDATE: `${appConfig.URL_API}/customer/update`,
         CREATE: `${appConfig.URL_API}/customer/create`,
         DELETE: `${appConfig.URL_API}/customer`,
-        GET_BY_PHONE: `${appConfig.URL_API}/customer/phone`,
+        GET_BY_PHONE: `${appConfig.URL_API}/customer/phone`
     },
     PRODUCT_CATEGORY: {
         GET_ALL: `${appConfig.URL_API}/product-category`,
         SAVE: `${appConfig.URL_API}/product-category/save`,
-        GET_MANY_BY_IDs: `${appConfig.URL_API}/product-category/ids`,
+        GET_MANY_BY_IDs: `${appConfig.URL_API}/product-category/ids`
     },
     CAR_INFO: {
-        GET_ALL: `${appConfig.URL_API}/car-info`,
+        GET_ALL: `${appConfig.URL_API}/car-info`
     },
     CAR_DETAIL: {
-        GET_BY_CUSTOMER: `${appConfig.URL_API}/car-detail/customer`,
+        GET_BY_CUSTOMER: `${appConfig.URL_API}/car-detail/customer`
     },
     STAFF_API: {
         GET_ALL: `${appConfig.URL_API}/staff`,
         UPDATE: `${appConfig.URL_API}/staff/update`,
         CREATE: `${appConfig.URL_API}/staff/create`,
-        DELETE: `${appConfig.URL_API}/staff`,
+        DELETE: `${appConfig.URL_API}/staff`
     },
     PRODUCT_API: {
         GET_ALL: `${appConfig.URL_API}/product`,
@@ -57,6 +57,7 @@ export const apiConfig = {
     UNIT_API: {
         GET_ALL: `${appConfig.URL_API}/unit`,
         UPDATE: `${appConfig.URL_API}/unit/update`,
+        CREATE: `${appConfig.URL_API}/unit/create`,
         DELETE: `${appConfig.URL_API}/unit`,
         GET_BY_PRODUCT_ID: `${appConfig.URL_API}/unit/product`
     },
@@ -77,8 +78,7 @@ export const apiConfig = {
         UPDATE: `${appConfig.URL_API}/price-line/update`,
         DELETE: `${appConfig.URL_API}/price-line`,
         GET_BY_PRICE_HEADER_ID: `${appConfig.URL_API}/price-line/price-header-id`,
-        GET_BY_PRODUCT_ID_AND_UNIT_ID: `${appConfig.URL_API}/price-line/product-and-unit`,
-        
+        GET_BY_PRODUCT_ID_AND_UNIT_ID: `${appConfig.URL_API}/price-line/product-and-unit`
     },
     UNIT_EXCHANGE_API: {
         GET_ALL: `${appConfig.URL_API}/unit-exchange`,
@@ -91,18 +91,18 @@ export const apiConfig = {
         GET_ALL: `${appConfig.URL_API}/promotion`,
         UPDATE: `${appConfig.URL_API}/promotion/update`,
         DELETE: `${appConfig.URL_API}/promotion`,
-        CREATE: `${appConfig.URL_API}/promotion/create`,
+        CREATE: `${appConfig.URL_API}/promotion/create`
     },
     ORDER_API: {
         GET_ALL: `${appConfig.URL_API}/order`,
         UPDATE: `${appConfig.URL_API}/order/update`,
         DELETE: `${appConfig.URL_API}/order`,
         CREATE: `${appConfig.URL_API}/order/create`,
-        PAYMENT: `${appConfig.URL_API}/order/payment`,
+        PAYMENT: `${appConfig.URL_API}/order/payment`
     },
     ROLE_API: {
         GET_ALL: `${appConfig.URL_API}/role`,
         SAVE: `${appConfig.URL_API}/role/save`,
         DELETE: `${appConfig.URL_API}/role`
-    },
-}
+    }
+};

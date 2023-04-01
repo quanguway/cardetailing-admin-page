@@ -51,6 +51,23 @@ const PriceCreate = () => {
         const princeLinecustom = priceLineRows.map(
             ({ product, product_title, unit, unit_title, ...orther }) => orther
         );
+
+        if(princeLinecustom.length <= 0 ){
+            Swal.fire({
+                icon: 'error',
+                title: 'Chưa có sản phẩm trong bảng giá',
+            });
+            return;
+        }
+        console.log(title);
+        if(title === undefined){
+            Swal.fire({
+                icon: 'error',
+                title: 'Chưa nhập tên bảng giá',
+            });
+            return;
+        }
+
         var params = {
             priceHeader: {
                 id: uuid(),

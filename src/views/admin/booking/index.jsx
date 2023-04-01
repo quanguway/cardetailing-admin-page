@@ -48,8 +48,6 @@ const BookingPage = () => {
         });
     }, []);
 
-    console.log(slotSelected);
-
     const handleBooking = (item) => {
         console.log(item);
         setSlotSelected(item);
@@ -57,7 +55,6 @@ const BookingPage = () => {
     };
 
     const handleDetail = (item) => {
-        
         setSlotSelected(item);
         navigate('detail', { state: { data: item } });
     };
@@ -101,7 +98,6 @@ const BookingPage = () => {
                 },
                 {
                     value: 'Nữ'
-
                 }
             ],
             type: 'radio'
@@ -240,7 +236,11 @@ const BookingPage = () => {
         { field: 'time', headerName: 'Thời gian xử lý (Phút)', flex: 1 },
         { field: 'price_line', headerName: 'Giá', flex: 1 },
         { field: 'price_final', headerName: 'Giá Cuối', flex: 1 },
-        { field: 'product_recived_title', headerName: 'Dịch vụ được tặng', flex: 1 },
+        {
+            field: 'product_recived_title',
+            headerName: 'Dịch vụ được tặng',
+            flex: 1
+        },
         {
             field: 'staff',
             headerName: 'Nhân viên xử lý',
@@ -286,7 +286,9 @@ const BookingPage = () => {
     };
 
     const handleFinish = async () => {
+
         const addrLength = customerAddress?.length - 1;
+        
         const bookingId = uuid();
         const customerId = uuid();
         const carDetailId = uuid();
@@ -307,8 +309,9 @@ const BookingPage = () => {
             total: total,
             slot_id: slotSelected.id,
             car_detail_id: carDetailId,
+            booking_details: booking_details,
             customer: {
-                id: customerId,
+                id: !isOldCustomer ? customerId : isOldCustomer.id,
                 full_name: customerFullName,
                 phone: customerPhone,
                 email: customerEmail,
@@ -316,14 +319,17 @@ const BookingPage = () => {
                 address: customerAddress[addrLength]
             },
             car_detail: {
-                id: carDetailId,
+                id: !oldCustomerCarDetail
+                    ? carDetailId
+                    : oldCustomerCarDetail.id,
                 car_info_id: carBranch.id,
                 number_plate: carNumberPlate,
                 customer_id: customerId
             },
-            booking_details: booking_details
+            isNewCustomer: !isOldCustomer ? true : false,
+            isNewCar: !oldCustomerCarDetail ? true : false
         };
-
+        console.log(params);
         await axios.post(apiConfig.BOOKING_API.CREATE, params);
         window.location.reload();
     };
@@ -350,6 +356,10 @@ const BookingPage = () => {
 
     useEffect(() => {
         if (oldCustomerCarDetail) {
+            setCarType({
+                ...oldCustomerCarDetail.car_info,
+                title: oldCustomerCarDetail.car_info.type
+            });
             setCarBranch({
                 ...oldCustomerCarDetail.car_info,
                 title: oldCustomerCarDetail.car_info.branch
@@ -357,6 +367,54 @@ const BookingPage = () => {
             setCarNumberPlate(oldCustomerCarDetail.number_plate);
         }
     }, [oldCustomerCarDetail]);
+
+    const handleChangePhone = async (event) => {
+        const phone = event.target.value;
+        setCustomerPhone(phone);
+
+        if (phone.length === 10) {
+            await axios
+                .get(apiConfig.CUSTOMER_API.GET_BY_PHONE, {
+                    params: {
+                        phone: phone
+                    }
+                })
+                .then((value) => {
+                    console.log(value.data);
+                    setOldCustomerInfo(value.data);
+                });
+        }
+    };
+
+    useEffect(() => {
+        if (oldCustomerInfo) {
+            console.log(oldCustomerInfo);
+            setCustomerEmail(oldCustomerInfo.email);
+            setCustomerFullName(oldCustomerInfo.full_name);
+            setCustomerGender(renderGender(oldCustomerInfo.gender));
+            setCustomerNote(oldCustomerInfo.note);
+            const params = { ids: oldCustomerInfo.address_paths };
+            axios
+                .get(apiConfig.ADDRESS_API.GET_MANY_BY_IDs, { params })
+                .then((value) => {
+                    console.log(value.data);
+                    setCustomerAddress(value.data);
+                });
+
+            axios
+                .get(apiConfig.CAR_DETAIL.GET_BY_CUSTOMER, {
+                    params: {
+                        customer_id: oldCustomerInfo.id
+                    }
+                })
+                .then((value) => {
+                    console.log(value.data);
+                    setOldCustomerCarDetails(value.data);
+                });
+
+            setIsOldCustomer(true);
+        }
+    }, [oldCustomerInfo]);
 
     const RenderStepContent = () => {
         switch (activeStep) {
@@ -387,12 +445,9 @@ const BookingPage = () => {
                             label={'Số điện thoại'}
                             defaultValue={customerPhone}
                             fullWidth={true}
-                            onBlur={(event) =>
-                                setCustomerPhone(event.target.value)
-                            }
-                            //onChange={(e) => {console.log(event.target.value); }}
+                            onBlur={(event) => handleChangePhone(event)}
                         />
-                        <FormGroup>
+                        {/* <FormGroup>
                             <FormControlLabel
                                 control={
                                     <Checkbox
@@ -473,12 +528,12 @@ const BookingPage = () => {
                                 }
                                 label="Khách hàng cũ"
                             />
-                        </FormGroup>
+                        </FormGroup> */}
                         {isOldCustomer ? (
                             <Autocomplete
                                 value={{
                                     number_plate:
-                                        oldCustomerCarDetail.number_plate
+                                        oldCustomerCarDetail?.number_plate
                                 }}
                                 getOptionLabel={(option) =>
                                     option?.number_plate ?? ''

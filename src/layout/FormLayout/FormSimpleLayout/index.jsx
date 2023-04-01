@@ -241,8 +241,8 @@ export default function FormSimpleLayout({
                             return (
                                 <TextField
                                     key={index}
-                                    error={isError}
-                                    //helperText="Some important text"
+                                    error={item?.isError ? item.isError : false}
+                                    helperText={item?.helper}
                                     sx={{ marginTop: '20px' }}
                                     variant="outlined"
                                     label={item.label}
@@ -256,7 +256,7 @@ export default function FormSimpleLayout({
                                 />
                             );
                     }
-                })}                
+                })}
                 <br />
                 {children}
                 <Box display={'flex'} justifyContent={'right'}>
@@ -264,7 +264,7 @@ export default function FormSimpleLayout({
                         <Button
                             variant="outlined"
                             color="error"
-                            sx={{ marginRight: '20px', minWidth: '100px' }}
+                            sx={{ marginRight: '20px', minWidth: '100px', marginTop: '20px'  }}
                             onClick={() => navigate(-1)}
                         >
                             Quay Lại
@@ -274,9 +274,9 @@ export default function FormSimpleLayout({
                         variant="contained"
                         color="primary"
                         onClick={handleSubmit}
-                        sx={{ minWidth: '100px' }}
+                        sx={{ minWidth: '100px', marginTop: '20px' }}
                     >
-                        {nameButtonSave ? nameButtonSave : "Lưu"}
+                        {nameButtonSave ? nameButtonSave : 'Lưu'}
                     </Button>
                 </Box>
             </Box>
