@@ -63,7 +63,7 @@ const ProductUpdate = () => {
 
     const fields = [
         {
-            label: 'Product Code',
+            label: 'Mã sản phẩm',
             useState: [productCode, setProductCode]
         },
         {

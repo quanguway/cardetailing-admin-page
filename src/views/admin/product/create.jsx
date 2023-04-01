@@ -19,6 +19,19 @@ const ProductCreate = () => {
     const [note, setNote] = useState();
     const [category, setCategory] = useState();
 
+
+    const [helperTitle, setHelperTitle] = useState();
+    const [helperCode, setHelperCode] = useState();
+    const [helperTime, setHelperTime] = useState();
+    const [helperCategory, setHelperCategory] = useState();
+
+
+    const [errorTitle, setErrorTitle] = useState(false);
+    const [errorCode, setErrorCode] = useState(false);
+    const [errorTime, setErrorTime] = useState(false);
+    const [errorCategory, setErrorCategory] = useState(false);
+
+
     useEffect(() => {
         axios.get(apiConfig.PRODUCT_CATEGORY.GET_ALL).then((value) => {
             setCategory([value.data[0]]);
@@ -39,6 +52,41 @@ const ProductCreate = () => {
     };
 
     const handleSubmit = async () => {
+
+        if (!title || title.trim() === '') {
+            setErrorTitle(true);
+            setHelperTitle('* Tên sản phẩm không được trống');
+        } else {
+            setErrorTitle(false);
+            setHelperTitle('');
+        }
+        if (!productCode || productCode.trim() === '') {
+            setErrorCode(true);
+            setHelperCode('* Mã sản phẩm không được trống');
+        } else {
+            setErrorCode(false);
+            setHelperCode('');
+        }
+
+        if (!time || time.trim() === '') {
+            setErrorTime(true);
+            setHelperTime('* Thời gian không được trống');
+        } else {
+            setErrorTime(false);
+            setHelperTime('');
+        }
+
+        if (category.length === 1 ) {
+            setErrorCategory(true);
+            setHelperCategory('* Loại sản phẩm không được trống');
+        } else {
+            setErrorCategory(false);
+            setHelperCategory('');
+        }
+
+        if (errorCategory || errorCode || errorTime || errorTitle)
+            return;
+
         var params = {
             item: {
                 product_code: productCode,
@@ -58,17 +106,21 @@ const ProductCreate = () => {
 
     const fields = [
         {
-            label: 'Product Code',
-            useState: [productCode, setProductCode]
+            label: 'Mã dịch vụ',
+            useState: [productCode, setProductCode],
+            helper: helperCode,
+            isError: errorCode,
         },
         {
             label: 'Tên dịch vụ',
-            useState: [title, setTitle]
+            useState: [title, setTitle],
+            helper: helperTitle,
+            isError: errorTitle,
         },
         {
             label: 'Mô tả',
             useState: [description, setDescription],
-            type: 'textarea'
+            type: 'textarea',
         },
         {
             label: 'Chú thích',
@@ -77,14 +129,18 @@ const ProductCreate = () => {
         },
         {
             label: 'Thời gian dự kiến',
-            useState: [time, setTime]
+            useState: [time, setTime],
+            helper: helperTime,
+            isError: errorTime
         },
         {
             label: 'Loại dịch vụ',
             useState: [category, setCategory],
             type: 'tree-simple',
             lengthItem: 2,
-            labels: ['Sản phẩm & Dịch vụ', 'Loại']
+            labels: ['Sản phẩm & Dịch vụ', 'Loại'],
+            helper: helperCategory,
+            isError: errorCategory
         }
     ];
 

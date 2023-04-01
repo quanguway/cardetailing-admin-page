@@ -40,6 +40,10 @@ const UnitPage = Loadable(lazy(() => import('views/admin/unit')));
 const UnitCreate = Loadable(lazy(() => import('views/admin/unit/create')));
 const UnitUpdate = Loadable(lazy(() => import('views/admin/unit/update')));
 
+const CarInfoPage = Loadable(lazy(() => import('views/admin/carInfo')));
+const CarInfoCreate = Loadable(lazy(() => import('views/admin/carInfo/create')));
+const CarInfoUpdate = Loadable(lazy(() => import('views/admin/carInfo/update')));
+
 const PriceCreate = Loadable(lazy(() => import('views/admin/price/create')));
 const PriceUpdate = Loadable(lazy(() => import('views/admin/price/update')));
 const PricePage = Loadable(lazy(() => import('views/admin/price')));
@@ -150,6 +154,21 @@ const MainRoutes = {
         {
             path: '/promotion',
             element: <PromotionPage />
+        },
+
+        // ------------------- carInfo ---------------------
+
+        {
+            path: '/car-info/create',
+            element: <CarInfoCreate />
+        },
+        {
+            path: '/car-info/update',
+            element: <CarInfoUpdate />
+        },
+        {
+            path: '/car-info',
+            element: <CarInfoPage />
         },
 
 

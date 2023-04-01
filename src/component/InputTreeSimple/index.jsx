@@ -8,7 +8,8 @@ export default function InputTypeTreeSimple({
     useStateValue,
     name,
     labels,
-    lengthItem
+    lengthItem,
+    helper, isError
 }) {
     // const [data, useStateValue] = useState(useStateValue[0]);
 
@@ -27,6 +28,8 @@ export default function InputTypeTreeSimple({
         useStateValue[1]([...dataDeleted, newValue]);
     };
 
+    console.log(isError);
+    console.log(useStateValue);
     return (
         <Box display={'flex'} sx={{ marginTop: '20px' }}>
             {(useStateValue[0] ?? []).length != 0 ? (
@@ -48,6 +51,7 @@ export default function InputTypeTreeSimple({
                                 }}
                                 renderInput={(params) => (
                                     <TextField
+                                    
                                         {...params}
                                         label={labels[index]}
                                     />
@@ -69,6 +73,8 @@ export default function InputTypeTreeSimple({
                                 }}
                                 renderInput={(params) => (
                                     <TextField
+                                        error={isError}
+                                        helperText={helper}
                                         {...params}
                                         label={labels[index]}
                                     />

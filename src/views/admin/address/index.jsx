@@ -9,7 +9,7 @@ const AddressPage = () => {
     return (
         <Box>
             <TreeLayout 
-                apiGet={apiConfig.ADDRESS_API.GET}
+                apiGet={apiConfig.ADDRESS_API.GET_ALL}
                 apiSave={apiConfig.ADDRESS_API.SAVE}/>
         </Box>
     );

@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 
-export default function InputTypeTree ({useStateValue, name, labels}) {
+
+export default function InputTypeTree ({useStateValue, name, labels, helper, isError}) {
 
     // const [data, useStateValue] = useState(useStateValue[0]);
 
@@ -29,6 +30,7 @@ export default function InputTypeTree ({useStateValue, name, labels}) {
                         <Autocomplete
                             disablePortal
                             disableClearable
+                            
                             sx={{width: '200px', marginRight: "10px"}}
                             value={{title: useStateValue[0][index+1]?.title}}
                             getOptionLabel={option => option?.title}
@@ -53,7 +55,7 @@ export default function InputTypeTree ({useStateValue, name, labels}) {
                                     handleChange(newValue, index+1)
                                 }
                             }
-                            renderInput={(params) => <TextField {...params} label={labels[index]} />}
+                            renderInput={(params) => <TextField error={isError} helperText={helper} {...params} label={labels[index]} />}
                     />): index < 4 ? <TextField defaultValue={useStateValue[0][index+1]?.title ?? ""} label={labels[index]} onBlur={(event) => handleChange({id: uuid(),level: index+1 , title: event.target.value, parent_id: useStateValue[0][index].id} ,index+1)} /> : <></>
             }): <></>}
         </Box >
