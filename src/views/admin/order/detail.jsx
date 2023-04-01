@@ -8,7 +8,7 @@ import { useLocation, useNavigate } from 'react-router';
 import { v4 as uuid } from 'uuid';
 import moment from 'moment/moment';
 
-const BookingDetail = () => {
+const OrderDetail = () => {
     const { state } = useLocation();
     const navigate = useNavigate();
 
@@ -552,4 +552,4 @@ const BookingDetail = () => {
     );
 };
 
-export default BookingDetail;
+export default OrderDetail;
