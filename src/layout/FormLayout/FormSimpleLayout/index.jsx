@@ -226,6 +226,10 @@ export default function FormSimpleLayout({
                                             marginTop: '20px',
                                             marginRight: '10px'
                                         }}
+                                        error={
+                                            item?.isError ? item.isError : false
+                                        }
+                                        helperText={item?.helper}
                                         disablePast
                                         disabled={item.disabled ?? false}
                                         label={item.label}
@@ -264,7 +268,11 @@ export default function FormSimpleLayout({
                         <Button
                             variant="outlined"
                             color="error"
-                            sx={{ marginRight: '20px', minWidth: '100px', marginTop: '20px'  }}
+                            sx={{
+                                marginRight: '20px',
+                                minWidth: '100px',
+                                marginTop: '20px'
+                            }}
                             onClick={() => navigate(-1)}
                         >
                             Quay Lại

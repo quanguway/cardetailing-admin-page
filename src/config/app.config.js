@@ -91,7 +91,8 @@ export const apiConfig = {
         GET_ALL: `${appConfig.URL_API}/promotion`,
         UPDATE: `${appConfig.URL_API}/promotion/update`,
         DELETE: `${appConfig.URL_API}/promotion`,
-        CREATE: `${appConfig.URL_API}/promotion/create`
+        CREATE: `${appConfig.URL_API}/promotion/create`,
+        CHECKPROMOTIONORDER: `${appConfig.URL_API}/promotion/check-promotion-order`
     },
     ORDER_API: {
         GET_ALL: `${appConfig.URL_API}/order`,

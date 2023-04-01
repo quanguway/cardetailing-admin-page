@@ -21,9 +21,15 @@ const BookingDetail = () => {
     const [orderSumTime, setOrderSumTime] = useState();
     const [orderCreateDate, setOrderCreateDate] = useState();
 
-    console.log(state);
-
     useEffect(() => {
+        axios
+            .get(apiConfig.PROMOTION_API.CHECKPROMOTIONORDER,{
+                params: { id: state.data.booking_id }
+            })
+            .then((value) => {
+                console.log(value.data);
+            });
+
         axios
             .get(apiConfig.BOOKING_API.GET_BY_ID, {
                 params: { id: state.data.booking_id }
@@ -111,7 +117,6 @@ const BookingDetail = () => {
             });
     }, []);
 
-
     console.log(orderPayment);
 
     const RenderInfoCommon = () => {
@@ -165,13 +170,15 @@ const BookingDetail = () => {
     const bookDetailColumns = [
         { field: 'service_title', headerName: 'Tên dịch vụ', flex: 1 },
         { field: 'service_time', headerName: 'Thời gian xử lý', flex: 1 },
-        { field: 'service_price', headerName: 'Giá', flex: 1 },
-        { field: 'service_price_final', headerName: 'Giá cuối củng', flex: 1 },
-        { field: 'service_product_received', headerName: 'Dịch vụ được tằng', flex: 1 },
+        { field: 'service_price', headerName: 'Đơn giá', flex: 1 },
+        // { field: 'service_price', headerName: 'Giá', flex: 1 },
+        // { field: 'service_price_final', headerName: 'Thành tiền', flex: 1 },
         {
+            headerName: 'Nhân viên',
             field: 'staff_name',
             flex: 1
-        }
+        },
+        { headerName: 'Ghi chú', flex: 1 }
     ];
 
     const RenderInfoService = () => {
@@ -190,107 +197,135 @@ const BookingDetail = () => {
 
     return (
         <Box>
-
-            <Box
-                sx={{
-                    height: '160px',
-                    backgroundColor: 'red',
-                    marginBottom: '20px',
-                    padding: '14px',
-                    bgcolor: 'background.paper'
-                }}
-            >
-                <h3>Thông tin đơn</h3>
-                <Grid
-                    container
-                    columnSpacing={{ xs: 1, sm: 2, md: 2 }}
-                    //sx={{ padding: '0 20px' }}
-                >
-                    <Grid item xs={4}>
-                        <ListItem sx={{ display: 'flex' }}>
-                            <Grid container>
-                                <Grid item xs={5}>
-                                    <Typography>Thời gian bắt đầu:</Typography>
-                                </Grid>
-                                <Grid item xs={7}>
-                                    <Typography>
-                                        {moment(orderCreateDate).format(
-                                            'DD/MM/YYYY hh:mm A'
-                                        )}
-                                    </Typography>
-                                </Grid>
-                            </Grid>
-                        </ListItem>
-                        <ListItem sx={{ display: 'flex' }}>
-                            <Grid container>
-                                <Grid item xs={5}>
-                                    <Typography>Kết thúc (dự kiến):</Typography>
-                                </Grid>
-                                <Grid item xs={7}>
-                                    <Typography>
-                                        <b>
-                                            {moment(
-                                                Date.parse(orderCreateDate) +
-                                                    orderSumTime * 60000
-                                            ).format('DD/MM/YYYY hh:mm A')}
-                                        </b>
-                                    </Typography>
-                                </Grid>
-                            </Grid>
-                        </ListItem>
-                    </Grid>
-                    <Grid item xs={5}>
-                        <ListItem sx={{ display: 'flex' }}>
-                            <Grid container>
-                                <Grid item xs={4}>
-                                    <Typography>Trạng thái đơn :</Typography>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Typography>Đang xử lý</Typography>
-                                </Grid>
-                            </Grid>
-                        </ListItem>
-                        <ListItem sx={{ display: 'flex' }}>
-                            <Grid container>
-                                <Grid item xs={4}>
-                                    <Typography>Tổng đơn hàng :</Typography>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Typography>
-                                        <b>
-                                            {new Intl.NumberFormat('vi-VN', {
-                                                style: 'currency',
-                                                currency: 'VND'
-                                            }).format(orderSum)}
-                                        </b>
-                                    </Typography>
-                                </Grid>
-                            </Grid>
-                        </ListItem>
-                    </Grid>
-                    <Grid item xs={3}>
-                        {/* <Button onClick={handlePayment}>Thanh toán</Button> */}
-                        <Button
-                            sx={{ margin: '10px 20px' }}
-                            onClick={handlePayment}
-                            variant="contained"
-                            color="primary"
-                        >
-                            Thanh toán
-                        </Button>
-                    </Grid>
-                </Grid>
-            </Box>
-            <Box sx={{ height: '400px' }}>
+            <Box sx={{ height: 'auto' }}>
                 <Grid container columnSpacing={{ xs: 1, sm: 2, md: 2 }}>
                     <Grid item xs={4}>
                         <RenderInfoCommon />
                     </Grid>
                     <Grid item xs={8}>
-                        <RenderInfoService />
+                        <Box
+                            sx={{
+                                height: '100%',
+                                marginBottom: '20px',
+                                padding: '14px',
+                                bgcolor: 'background.paper'
+                            }}
+                        >
+                            <h3>Thông tin đơn</h3>
+                            <Grid
+                                container
+                                columnSpacing={{ xs: 1, sm: 2, md: 2 }}
+                                //sx={{ padding: '0 20px' }}
+                            >
+                                <Grid item xs={6}>
+                                    <ListItem sx={{ display: 'flex' }}>
+                                        <Grid container>
+                                            <Grid item xs={5}>
+                                                <Typography>
+                                                    Thời gian bắt đầu:
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={7}>
+                                                <Typography>
+                                                    {moment(
+                                                        orderCreateDate
+                                                    ).format(
+                                                        'DD/MM/YYYY hh:mm A'
+                                                    )}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </ListItem>
+                                    <ListItem sx={{ display: 'flex' }}>
+                                        <Grid container>
+                                            <Grid item xs={5}>
+                                                <Typography>
+                                                    Kết thúc (dự kiến):
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={7}>
+                                                <Typography>
+                                                    <b>
+                                                        {moment(
+                                                            Date.parse(
+                                                                orderCreateDate
+                                                            ) +
+                                                                orderSumTime *
+                                                                    60000
+                                                        ).format(
+                                                            'DD/MM/YYYY hh:mm A'
+                                                        )}
+                                                    </b>
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </ListItem>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <ListItem sx={{ display: 'flex' }}>
+                                        <Grid container>
+                                            <Grid item xs={5}>
+                                                <Typography>
+                                                    Trạng thái đơn :
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={5}>
+                                                <Typography>
+                                                    Đang xử lý
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </ListItem>
+                                    <ListItem sx={{ display: 'flex' }}>
+                                        <Grid container>
+                                            <Grid item xs={5}>
+                                                <Typography>
+                                                    Tổng đơn hàng :
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={5}>
+                                                <Typography>
+                                                    <b>
+                                                        {new Intl.NumberFormat(
+                                                            'vi-VN',
+                                                            {
+                                                                style: 'currency',
+                                                                currency: 'VND'
+                                                            }
+                                                        ).format(orderSum)}
+                                                    </b>
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </ListItem>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    {/* <Button onClick={handlePayment}>Thanh toán</Button> */}
+                                    <Button
+                                        sx={{ margin: '10px 20px' }}
+                                        onClick={handlePayment}
+                                        variant="contained"
+                                        color="primary"
+                                    >
+                                        Thanh toán
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Box>
                     </Grid>
-
                 </Grid>
+            </Box>
+
+            <Box
+                sx={{
+                    height: 'auto',
+                    marginTop: '20px',
+                    bgcolor: 'background.paper',
+                    padding: '14px'
+                }}
+            >
+                <h3>Danh sách dịch vụ</h3>
+                <RenderInfoService />
             </Box>
         </Box>
     );

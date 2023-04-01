@@ -18,8 +18,7 @@ export default function FormToggle({open, handleToggle, fields, width, anchor, m
             }}
         >
             <PerfectScrollbar component="div">
-                <FormSimpleLayout mode={mode} fields={fields} api={api} handleSubmit={handleSubmit} children={children} nameForm= "Thêm đơn giá dịch vụ" />
-
+                <FormSimpleLayout mode={mode} fields={fields} api={api} handleSubmit={handleSubmit} children={children} nameForm= "Thêm thông tin" />
             </PerfectScrollbar>
         </Drawer>
     )
