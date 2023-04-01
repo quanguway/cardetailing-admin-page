@@ -44,19 +44,22 @@ const OrderPage = () => {
             headerName: 'Thao tác',
             flex: 1,
             getActions: (params) => [
-                <GridActionsCellItem
-                    icon={<IconEye />}
-                    label="Show"
-                    onClick={() => {
-                        console.log(params.row);
-                        //handleToggle()
-                        setRow(params.row);
-                    }}
-                    showInMenu
-                />
-            ]
-        }
-    ];
+
+              <GridActionsCellItem
+                icon={<IconEye />}
+                label="Show"
+                onClick={() => {
+                  // console.log(params.row)
+                  //handleToggle()
+                  // setRow(params.row);
+                  navigate('detail', { state: { data: params.row } } )
+                }}
+                showInMenu
+              />,
+            ],
+        },
+    ]
+
 
     return (
         <Box>

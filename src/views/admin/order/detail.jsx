@@ -6,10 +6,9 @@ import TableSimpleLayout from 'layout/TableLayout/TableSimpleLayout';
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { v4 as uuid } from 'uuid';
-import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import moment from 'moment/moment';
 
-const BookingDetail = () => {
+const OrderDetail = () => {
     const { state } = useLocation();
     const navigate = useNavigate();
 
@@ -35,44 +34,43 @@ const BookingDetail = () => {
                     value.data.booking_details.map((item) => ({
                         id: item.id,
                         service_title: item.product.title,
-                        service_price: item?.price?.price ?? 0,
+                        service_price: item.price.price,
                         service_price_final: item.price_final,
                         service_product_received: item.product_recived_title,
                         service_time: item.product.time,
-                        staff_name: item?.staff?.full_name ?? '',
-                        type: item?.type ?? ''
+                        staff_name: item.staff.full_name
                     }))
                 );
                 setCustomerInfo([
                     {
                         label: 'Tên khách hàng',
-                        value: data.customer?.full_name ?? ''
+                        value: data.customer.full_name
                     },
                     {
                         label: 'Số diện thoại',
-                        value: data.customer?.phone ?? ''
+                        value: data.customer.phone
                     },
                     {
                         label: 'Thư điện tử',
-                        value: data.customer?.email ?? ''
+                        value: data.customer.email
                     },
                     {
                         label: 'Địa chỉ',
-                        value: data.customer?.addresses ?? ''
+                        value: data.customer.addresses
                     }
                 ]);
                 setCarDetailInfo([
                     {
                         label: 'Loại xe',
-                        value: data.car_detail?.car_info.type ?? ''
+                        value: data.car_detail.car_info.type
                     },
                     {
                         label: 'Tên xe',
-                        value: data.car_detail?.car_info.branch ?? ''
+                        value: data.car_detail.car_info.branch
                     },
                     {
                         label: 'Biển số xe',
-                        value: data.car_detail?.number_plate ?? ''
+                        value: data.car_detail.number_plate
                     }
                 ]);
 
@@ -94,13 +92,13 @@ const BookingDetail = () => {
                         type: 'SERVICE',
                         status: 'SERVICE',
                         product_id: item.product.id,
-                        price_line_id: item?.price?.id ?? null
+                        price_line_id: item.price.id
                     };
                 });
                 setOrderPayment({
                     order: {
                         id: orderId,
-                        customer_id: data?.customer?.id ?? null,
+                        customer_id: data.customer.id,
                         total: total,
                         status: 'SERVICE'
                     },
@@ -189,12 +187,7 @@ const BookingDetail = () => {
             field: 'staff_name',
             flex: 1
         },
-        {
-            headerName: 'Ghi chú',
-            flex: 1,
-            field: 'type',
-            renderCell: (params) => (params.value === 'GIFT' ? <CardGiftcardIcon></CardGiftcardIcon> : '')
-        }
+        { headerName: 'Ghi chú', flex: 1 }
     ];
 
     const RenderInfoService = () => {
@@ -322,7 +315,6 @@ const BookingDetail = () => {
                                         margin: '10px 10px'
                                     }}
                                 >
-
                                     {( Number(promotionCanUse?.soTienGiam) > 0) ? (
                                     <Box
                                         sx={{
@@ -333,7 +325,6 @@ const BookingDetail = () => {
                                         }}
                                     >
                                         
-
                                             <Grid
                                                 container
                                                 columnSpacing={{
@@ -473,11 +464,9 @@ const BookingDetail = () => {
                                                     </Box>
                                                 </Grid>
                                             </Grid>
-
                                         
                                     </Box>
                                     ) : <></>}
-
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Grid
@@ -563,4 +552,4 @@ const BookingDetail = () => {
     );
 };
 
-export default BookingDetail;
+export default OrderDetail;
