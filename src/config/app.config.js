@@ -25,7 +25,7 @@ export const apiConfig = {
     CAR_INFO: {
         GET_ALL: `${appConfig.URL_API}/car-info`,
         CREATE: `${appConfig.URL_API}/car-info/create`,
-        UPDATE: `${appConfig.URL_API}/car-info/update`,
+        UPDATE: `${appConfig.URL_API}/car-info/update`
     },
     CAR_DETAIL: {
         GET_BY_CUSTOMER: `${appConfig.URL_API}/car-detail/customer`
@@ -41,7 +41,7 @@ export const apiConfig = {
         GET_ALL_WITHOUT_PRICE: `${appConfig.URL_API}/product/without-price`,
         UPDATE: `${appConfig.URL_API}/product/update`,
         DELETE: `${appConfig.URL_API}/product`,
-        CREATE: `${appConfig.URL_API}/product/create`
+        CREATE: `${appConfig.URL_API}/product/create`,
     },
     BOOKING_API: {
         GET_ALL: `${appConfig.URL_API}/booking`,
@@ -94,7 +94,8 @@ export const apiConfig = {
         UPDATE: `${appConfig.URL_API}/promotion/update`,
         DELETE: `${appConfig.URL_API}/promotion`,
         CREATE: `${appConfig.URL_API}/promotion/create`,
-        CHECKPROMOTIONORDER: `${appConfig.URL_API}/promotion/check-promotion-order`
+        CHECKPROMOTIONORDER: `${appConfig.URL_API}/promotion/check-promotion-order`,
+        CHECKPROMOTIONSERVICE: `${appConfig.URL_API}/promotion/check-promotion-service`
     },
     ORDER_API: {
         GET_ALL: `${appConfig.URL_API}/order`,
