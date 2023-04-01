@@ -61,7 +61,77 @@ const OrderPage = () => {
     return (
         <Box>
             <TableSimpleLayout columns={columns} apiGet={apiConfig.ORDER_API.GET_ALL} disableButton={true} />
-            <DrawerToggle width={1000} open={open} handleToggle={handleToggle} data={row} columns={columnsShow} columnChild={columnsChildShow} infoToggle={infoToggle}/>
+            {/* <DrawerToggle width={1000} open={open} handleToggle={handleToggle} data={row} columns={columnsShow} columnChild={columnsChildShow} infoToggle={infoToggle}/> */}
+            <Drawer
+                anchor={'right'}
+                onClose={handleToggle}
+                open={open}
+                PaperProps={{
+                    sx: {
+                        width: 700
+                    }
+                }}
+            >
+                <PerfectScrollbar component="div">
+                    {row && (
+                        <Box
+                            sx={{
+                                width: '100%',
+                                padding: '20px'
+                            }}
+                        >
+                            <Box>
+                                <h3>Thông tin giảm giá</h3>
+                            </Box>
+                            <TextField
+                                //helperText="Some important text"
+                                sx={{
+                                    marginTop: '20px',
+                                    '& .MuiInputBase-input.Mui-disabled': {
+                                        WebkitTextFillColor: 'black'
+                                    }
+                                }}
+                                variant="outlined"
+                                label="Tiêu đề giảm giá"
+                                value={row.title}
+                                fullWidth={true}
+                                disabled={true}
+                            />
+                            <TextField
+                                //helperText="Some important text"
+                                sx={{
+                                    marginTop: '20px',
+                                    '& .MuiInputBase-input.Mui-disabled': {
+                                        WebkitTextFillColor: 'black'
+                                    }
+                                }}
+                                variant="outlined"
+                                label="Mô tả"
+                                value={
+                                    row.status
+                                        ? 'Đang hoạt động'
+                                        : 'Không hoạt động'
+                                }
+                                fullWidth={true}
+                                disabled={true}
+                            />
+                            
+                            {/* <Box height={320}>
+                                <DataGrid
+                                    density="comfortable"
+                                    columns={priceLineCols}
+                                    rows={row.priceLine ?? []}
+                                    sx={{
+                                        marginTop: '20px',
+                                        borderRadius: '20px',
+                                        border: '1px solid #90caf975'
+                                    }}
+                                />
+                            </Box> */}
+                        </Box>
+                    )}
+                </PerfectScrollbar>
+            </Drawer>
         </Box>
     );
 };
