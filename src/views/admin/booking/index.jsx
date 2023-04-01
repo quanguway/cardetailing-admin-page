@@ -286,9 +286,8 @@ const BookingPage = () => {
     };
 
     const handleFinish = async () => {
-
         const addrLength = customerAddress?.length - 1;
-        
+
         const bookingId = uuid();
         const customerId = uuid();
         const carDetailId = uuid();
@@ -297,12 +296,31 @@ const BookingPage = () => {
             booking_id: bookingId,
             product_id: item.id,
             price_id: item.price_line_id,
-            staff_id: item.staff.id
+            staff_id: item.staff.id,
+            type: 'SERVICE'
         }));
 
         const total = serviceRowSelected.reduce((accumulator, item) => {
             return accumulator + item.price_line;
         }, 0);
+
+        await axios
+            .get(apiConfig.PROMOTION_API.CHECKPROMOTIONSERVICE, {
+                params: { booking_details: booking_details }
+            })
+            .then((value) => {
+                value.data.result.map((item) => {
+                    booking_details.push({
+                        booking_id: bookingId,
+                        product_id: item,
+                        price_id: null,
+                        staff_id: null,
+                        type: 'GIFT'
+                    });
+                });
+            });
+
+        console.log(oldCustomerCarDetail);
 
         const params = {
             id: bookingId,
@@ -311,7 +329,7 @@ const BookingPage = () => {
             car_detail_id: carDetailId,
             booking_details: booking_details,
             customer: {
-                id: !isOldCustomer ? customerId : isOldCustomer.id,
+                id: !isOldCustomer ? customerId : oldCustomerInfo.id,
                 full_name: customerFullName,
                 phone: customerPhone,
                 email: customerEmail,
@@ -330,8 +348,9 @@ const BookingPage = () => {
             isNewCar: !oldCustomerCarDetail ? true : false
         };
         console.log(params);
-        await axios.post(apiConfig.BOOKING_API.CREATE, params);
-        window.location.reload();
+        await axios.post(apiConfig.BOOKING_API.CREATE, params).then(() => {
+            navigate('detail', { state: { data: { booking_id: bookingId } } });
+        });
     };
 
     // --------------------------------- render stepper ---------------------------------
@@ -626,7 +645,7 @@ const BookingPage = () => {
                     onClick={handleBack}
                     sx={{ mr: 1 }}
                 >
-                    Back
+                    Trở lại
                 </Button>
                 <Box sx={{ flex: '1 1 auto' }} />
                 <Button
@@ -636,7 +655,7 @@ const BookingPage = () => {
                             : handleNext
                     }
                 >
-                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                    {activeStep === steps.length - 1 ? 'Hoàn tất' : 'Tiếp tục'}
                 </Button>
             </Box>
         );
