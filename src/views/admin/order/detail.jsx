@@ -23,13 +23,14 @@ const OrderDetail = () => {
     const [promotionCanUse, setPromotionCanUse] = useState();
 
     useEffect(() => {
+        console.log(state.data.book_id);
+        setPromotionCanUse({promotionLine: {...state.data.promotion}, soTienGiam: state.data.promotion.amount})
         axios
             .get(apiConfig.BOOKING_API.GET_BY_ID, {
-                params: { id: state.data.booking_id }
+                params: { id: state.data.book_id }
             })
             .then((value) => {
                 const data = value.data;
-                console.log(data);
                 setBookDetailRow(
                     value.data.booking_details.map((item) => ({
                         id: item.id,
@@ -76,7 +77,7 @@ const OrderDetail = () => {
 
                 const orderId = uuid();
                 const total = data.booking_details.reduce(
-                    (partialSum, item) => partialSum + item.price_final,
+                    (partialSum, item) => partialSum + item.price.price,
                     0
                 );
                 const totalTime = data.booking_details.reduce(
@@ -100,6 +101,7 @@ const OrderDetail = () => {
                         id: orderId,
                         customer_id: data.customer.id,
                         total: total,
+                        final_total: Number(orderSum) - Number(promotionCanUse?.soTienGiam ?? 0),
                         status: 'SERVICE'
                     },
                     order_details: orderDetails,
@@ -110,14 +112,18 @@ const OrderDetail = () => {
             });
     }, []);
 
+    console.log(state.data);
+
+    console.log(state.data.book_id);
+
     useEffect(() => {
         axios
             .get(apiConfig.PROMOTION_API.CHECKPROMOTIONORDER, {
-                params: { id: state.data.booking_id, total: orderSum }
+                params: { id: state.data.book_id, total: orderSum }
             })
             .then((value) => {
-                console.log(value.data.promotion_can_use);
                 setPromotionCanUse(value.data.promotion_can_use);
+
             });
     }, [orderSum]);
 
@@ -517,7 +523,7 @@ const OrderDetail = () => {
                                     >
                                         <Grid item xs={6}></Grid>
                                         <Grid item xs={6}>
-                                            <Button
+                                            {/* <Button
                                                 sx={{
                                                     margin: '10px 15px',
                                                     width: '300px'
@@ -527,7 +533,7 @@ const OrderDetail = () => {
                                                 color="primary"
                                             >
                                                 Thanh toán
-                                            </Button>
+                                            </Button> */}
                                         </Grid>
                                     </Grid>
                                 </Grid>

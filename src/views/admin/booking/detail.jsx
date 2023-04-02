@@ -75,8 +75,9 @@ const BookingDetail = () => {
                 ]);
 
                 const orderId = uuid();
+                console.log(data.booking_details);
                 const total = data.booking_details.reduce(
-                    (partialSum, item) => partialSum + item.price_final,
+                    (partialSum, item) => partialSum + item.price.price,
                     0
                 );
                 const totalTime = data.booking_details.reduce(
@@ -100,7 +101,9 @@ const BookingDetail = () => {
                         id: orderId,
                         customer_id: data.customer.id,
                         total: total,
-                        status: 'SERVICE'
+                        status: 'SERVICE',
+                        book_id: state.data.booking_id,
+                        promotion_line_id: promotionCanUse.id
                     },
                     order_details: orderDetails,
                     slot_id: state.data.id
@@ -110,14 +113,16 @@ const BookingDetail = () => {
             });
     }, []);
 
+    console.log(orderPayment);
+
     useEffect(() => {
         axios
             .get(apiConfig.PROMOTION_API.CHECKPROMOTIONORDER, {
                 params: { id: state.data.booking_id, total: orderSum }
             })
             .then((value) => {
-                console.log(value.data.promotion_can_use);
                 setPromotionCanUse(value.data.promotion_can_use);
+                // setOrderPayment({ promotion: value.data.promotion_can_use.promotionLine, ...orderPayment});
             });
     }, [orderSum]);
 
@@ -168,12 +173,13 @@ const BookingDetail = () => {
     const handlePayment = async () => {
         console.log(orderPayment);
         const params = {
-            ...orderPayment
+            ...orderPayment,
+            promotion_line : promotionCanUse
         };
 
         await axios.post(apiConfig.ORDER_API.PAYMENT, params);
 
-        navigate('/booking');
+        // navigate('/booking');
     };
 
     const bookDetailColumns = [
