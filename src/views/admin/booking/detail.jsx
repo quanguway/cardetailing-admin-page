@@ -93,7 +93,7 @@ const BookingDetail = () => {
                 const orderDetails = data.booking_details.map((item) => {
                     console.log(item);
                     return {
-                        type: 'SERVICE',
+                        type: item.type,
                         status: 'SERVICE',
                         product_id: item.product.id,
                         price_line_id: item?.price?.id ?? null,
@@ -107,7 +107,8 @@ const BookingDetail = () => {
                         total: total,
                         status: 'SERVICE',
                         book_id: state.data.booking_id,
-                        promotion_line_id: promotionCanUse?.promotionLine?.id ?? null
+                        promotion_line_id:
+                            promotionCanUse?.promotionLine?.id ?? null
                     },
                     order_details: orderDetails,
                     slot_id: state.data.id
@@ -128,7 +129,7 @@ const BookingDetail = () => {
 
     const RenderInfoCommon = () => {
         return (
-            <Box sx={{ bgcolor: 'background.paper', maxHeight: '400px' }}>
+            <Box sx={{ bgcolor: 'background.paper', height: '100%' }}>
                 <List sx={{ width: '100%', maxWidth: 360, padding: '14px' }}>
                     <h3>Khách hàng</h3>
                     {customerInfo.map((item) => (
@@ -171,11 +172,13 @@ const BookingDetail = () => {
     };
 
     const handlePayment = async () => {
-        console.log(orderPayment);
         const params = {
             ...orderPayment,
-            promotion_line : promotionCanUse
+            promotion_line: promotionCanUse
         };
+
+        console.log(params);
+        console.log(promotionCanUse);
 
         await axios.post(apiConfig.ORDER_API.PAYMENT, params);
 
@@ -185,7 +188,7 @@ const BookingDetail = () => {
     const bookDetailColumns = [
         { field: 'service_title', headerName: 'Tên dịch vụ', flex: 1 },
         { field: 'service_time', headerName: 'Thời gian xử lý', flex: 1 },
-        { field: 'service_price', headerName: 'Đơn giá', flex: 1 },
+
         // { field: 'service_price', headerName: 'Giá', flex: 1 },
         // { field: 'service_price_final', headerName: 'Thành tiền', flex: 1 },
         {
@@ -197,7 +200,28 @@ const BookingDetail = () => {
             headerName: 'Ghi chú',
             flex: 1,
             field: 'type',
-            renderCell: (params) => (params.value === 'GIFT' ? <CardGiftcardIcon></CardGiftcardIcon> : '')
+            renderCell: (params) =>
+                params.value === 'GIFT' ? (
+                    <CardGiftcardIcon></CardGiftcardIcon>
+                ) : (
+                    ''
+                )
+        },
+        {
+            field: 'service_price',
+            headerName: 'Đơn giá',
+            flex: 1,
+            headerAlign: 'right',
+            renderCell: (params) => (
+                <div style={{ width: '100%', textAlign: 'right' }}>
+                    <b>
+                        {new Intl.NumberFormat('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND'
+                        }).format(params.value)}
+                    </b>
+                </div>
+            )
         }
     ];
 
@@ -326,18 +350,15 @@ const BookingDetail = () => {
                                         margin: '10px 10px'
                                     }}
                                 >
-
-                                    {( Number(promotionCanUse?.soTienGiam) > 0) ? (
-                                    <Box
-                                        sx={{
-                                            borderRadius: '10px',
-                                            padding: '10px',
-                                            backgroundColor: '#f1ebeb',
-                                            height: '100%'
-                                        }}
-                                    >
-                                        
-
+                                    {Number(promotionCanUse?.soTienGiam) > 0 ? (
+                                        <Box
+                                            sx={{
+                                                borderRadius: '10px',
+                                                padding: '10px',
+                                                backgroundColor: '#f1ebeb',
+                                                height: '100%'
+                                            }}
+                                        >
                                             <Grid
                                                 container
                                                 columnSpacing={{
@@ -477,11 +498,10 @@ const BookingDetail = () => {
                                                     </Box>
                                                 </Grid>
                                             </Grid>
-
-                                        
-                                    </Box>
-                                    ) : <></>}
-
+                                        </Box>
+                                    ) : (
+                                        <></>
+                                    )}
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Grid

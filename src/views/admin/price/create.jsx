@@ -31,16 +31,25 @@ const PriceCreate = () => {
     const [price, setPrice] = useState();
     const [isActivePriceLine, setIsActivePriceLine] = useState('Có');
     const [product, setProduct] = useState();
-    const [unit, setUnit] = useState();
+    const [unit, setUnit] = useState({
+        id: '276ac4a3-d5d6-11ed-a956-0242ac150002',
+        title: 'Lượt',
+        description: 'Không có mô tả',
+        unit_code: 'LUOT',
+        unitExchanges: null
+    });
     const [priceLineRows, setPriceLineRows] = useState([]);
 
     useEffect(() => {
         axios.get(apiConfig.PRODUCT_API.GET_ALL_WITHOUT_PRICE).then((value) => {
             setListProduct(value.data);
         });
-        axios.get(apiConfig.UNIT_API.GET_ALL).then((value) => {
-            setListUnit(value.data);
-        });
+        // axios.get(apiConfig.UNIT_API.GET_ALL).then((value) => {
+        //     console.log(value.data);
+        //     console.log(value.data[0]);
+        //     setListUnit(value.data);
+        //     setUnit(value.data[0]);
+        // });
     }, []);
 
     const handleToggle = () => {
@@ -115,16 +124,23 @@ const PriceCreate = () => {
     };
 
     const handleSubmitPriceLine = async () => {
+        const priceList = price.split('.');
         const rows = {
             id: uuid(),
-            price: price,
+            price: priceList.join(''),
             is_active: YesNoToBool(isActivePriceLine),
             product: product,
             product_id: product.id,
             product_title: product.title,
-            unit: unit,
-            unit_id: unit.id,
-            unit_title: unit.title
+            unit: {
+                id: '276ac4a3-d5d6-11ed-a956-0242ac150002',
+                title: 'Lượt',
+                description: 'Không có mô tả',
+                unit_code: 'LUOT',
+                unitExchanges: null
+            },
+            unit_id: '276ac4a3-d5d6-11ed-a956-0242ac150002',
+            unit_title: 'Lượt'
         };
         setPriceLineRows([...priceLineRows, rows]);
         handleToggle();
@@ -169,37 +185,53 @@ const PriceCreate = () => {
             values: listProducts,
             useState: [product, setProduct]
         },
-        {
-            label: 'Đơn vị',
-            type: 'combo',
-            values: listUnit,
-            useState: [unit, setUnit]
-        },
+        // {
+        //     label: 'Đơn vị',
+        //     type: 'combo',
+        //     values: listUnit,
+        //     useState: [unit, setUnit]
+        // },
         {
             label: 'Giá sản phẩm',
-            useState: [price, setPrice]
-        },
-        {
-            label: 'Kích hoạt',
-            useState: [isActivePriceLine, setIsActivePriceLine],
-            values: [
-                {
-                    value: 'Có'
-                    //disabled: true
-                },
-                {
-                    value: 'Không'
-                }
-            ],
-            type: 'radio'
+            useState: [price, setPrice],
+            type: 'text-price'
         }
+        // {
+        //     label: 'Kích hoạt',
+        //     useState: [isActivePriceLine, setIsActivePriceLine],
+        //     values: [
+        //         {
+        //             value: 'Có'
+        //             //disabled: true
+        //         },
+        //         {
+        //             value: 'Không'
+        //         }
+        //     ],
+        //     type: 'radio'
+        // }
     ];
 
     const priceLineCols = [
         { field: 'product_title', flex: 1, headerName: 'Tên dịch vụ' },
-        { field: 'price', flex: 1, headerName: 'Giá' },
-        { field: 'unit_title', flex: 1, headerName: 'Đơn vị' },
-        { field: 'is_active', flex: 1, headerName: 'Kích hoạt' },
+        {
+            field: 'price',
+            flex: 1,
+            headerName: 'Giá',
+            headerAlign: 'right',
+            renderCell: (params) => (
+                <div style={{ width: '100%', textAlign: 'right' }}>
+                    <b>
+                        {new Intl.NumberFormat('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND'
+                        }).format(params.value)}
+                    </b>
+                </div>
+            )
+        },
+        // { field: 'unit_title', flex: 1, headerName: 'Đơn vị' },
+        // { field: 'is_active', flex: 1, headerName: 'Kích hoạt' },
         {
             field: 'actions',
             type: 'actions',

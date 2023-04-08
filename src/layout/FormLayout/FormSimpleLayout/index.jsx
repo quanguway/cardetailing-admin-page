@@ -24,6 +24,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import InputTypeTreeSimple from 'component/InputTreeSimple';
 import { useNavigate } from 'react-router';
+import { NumericFormat } from 'react-number-format';
 
 export default function FormSimpleLayout({
     nameButtonSave,
@@ -71,12 +72,16 @@ export default function FormSimpleLayout({
         <Box>
             <Box
                 component={'form'}
-                sx={isBackgroud ? { 
-                    backgroundColor: 'white',
-                    borderRadius: '12px',
-                    padding: '16px',
-                    border: '1px solid #90caf975'
-                } : {}}
+                sx={
+                    isBackgroud
+                        ? {
+                              backgroundColor: 'white',
+                              borderRadius: '12px',
+                              padding: '16px',
+                              border: '1px solid #90caf975'
+                          }
+                        : {}
+                }
             >
                 <h3>{nameForm ? nameForm : 'Thêm thông tin'}</h3>
                 {fields.map((item, index) => {
@@ -95,8 +100,8 @@ export default function FormSimpleLayout({
                                 <InputTypeTree
                                     useStateValue={item.useState}
                                     labels={item.labels}
-                                    helper= {item.helper}
-                                    isError= {item.isError}
+                                    helper={item.helper}
+                                    isError={item.isError}
                                 />
                             );
                         case 'tree-simple':
@@ -105,8 +110,8 @@ export default function FormSimpleLayout({
                                     lengthItem={item.lengthItem}
                                     useStateValue={item.useState}
                                     labels={item.labels}
-                                    helper= {item.helper}
-                                    isError= {item.isError}
+                                    helper={item.helper}
+                                    isError={item.isError}
                                 />
                             );
                         case 'file':
@@ -245,6 +250,30 @@ export default function FormSimpleLayout({
                                         }
                                     />
                                 </LocalizationProvider>
+                            );
+                        case 'text-price':
+                            return (
+                                <NumericFormat
+                                    key={index}
+                                    customInput={TextField}
+                                    error={item?.isError ? item.isError : false}
+                                    helperText={item?.helper}
+                                    sx={{ marginTop: '20px' }}
+                                    variant="outlined"
+                                    label={item.label}
+                                    value={item.useState[0]}
+                                    fullWidth={true}
+                                    onChange={(event) => {
+                                        item.useState[1](
+                                            event.target.value.split(' VND')[0]
+                                        );
+                                    }}
+                                    thousandSeparator
+                                    valueIsNumericString
+                                    suffix=" VND"
+                                    name={item.name}
+                                    disabled={item.disabled ?? false}
+                                />
                             );
                         case 'text':
                         default:

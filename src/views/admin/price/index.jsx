@@ -34,9 +34,24 @@ const PricePage = () => {
     };
     const priceLineCols = [
         { field: 'product_title', flex: 1, headerName: 'Tên dịch vụ' },
-        { field: 'price', flex: 1, headerName: 'Giá' },
-        { field: 'unit_title', flex: 1, headerName: 'Đơn vị' },
-        { field: 'is_active', flex: 1, headerName: 'Kích hoạt' }
+        {
+            field: 'price',
+            flex: 1,
+            headerName: 'Giá',
+            headerAlign: 'right',
+            renderCell: (params) => (
+                <div style={{ width: '100%', textAlign: 'right' }}>
+                    <b>
+                        {new Intl.NumberFormat('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND'
+                        }).format(params.value)}
+                    </b>
+                </div>
+            )
+        }
+        // { field: 'unit_title', flex: 1, headerName: 'Đơn vị' },
+        // { field: 'is_active', flex: 1, headerName: 'Kích hoạt' }
     ];
 
     const columns = [
@@ -46,14 +61,14 @@ const PricePage = () => {
             flex: 1,
             headerName: 'Ngày áp dụng',
             valueFormatter: (params) =>
-                moment(params?.value).format('DD/MM/YYYY hh:mm A')
+                moment(params?.value).format('DD/MM/YYYY')
         },
         {
             field: 'end_date',
             flex: 1,
             headerName: 'Ngày kết thúc',
             valueFormatter: (params) =>
-                moment(params?.value).format('DD/MM/YYYY hh:mm A')
+                moment(params?.value).format('DD/MM/YYYY')
         },
         {
             field: 'actions',
@@ -177,7 +192,7 @@ const PricePage = () => {
                                 variant="outlined"
                                 label="Thời gian bắt đầu"
                                 value={moment(row.start_date).format(
-                                    'DD/MM/YYYY hh:mm A'
+                                    'DD/MM/YYYY'
                                 )}
                                 fullWidth={true}
                                 disabled={true}
@@ -193,7 +208,7 @@ const PricePage = () => {
                                 variant="outlined"
                                 label="thời gian kết thúc"
                                 value={moment(row.end_date).format(
-                                    'DD/MM/YYYY hh:mm A'
+                                    'DD/MM/YYYY'
                                 )}
                                 fullWidth={true}
                                 disabled={true}
