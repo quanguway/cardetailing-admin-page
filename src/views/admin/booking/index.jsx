@@ -349,7 +349,9 @@ const BookingPage = () => {
         };
         console.log(params);
         await axios.post(apiConfig.BOOKING_API.CREATE, params).then(() => {
-            navigate('detail', { state: { data: { booking_id: bookingId } } });
+            //navigate('detail', { state: { data: { booking_id: bookingId } } });
+            // navigate('/booking');
+            window.location.reload();
         });
     };
 
