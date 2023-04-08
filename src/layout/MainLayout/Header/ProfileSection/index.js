@@ -38,6 +38,7 @@ import User1 from 'assets/images/users/user-round.svg';
 
 // assets
 import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons';
+import { getAuth, removeAuth } from 'utils/auth';
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -54,9 +55,11 @@ const ProfileSection = () => {
     /**
      * anchorRef is used on different componets and specifying one type leads to other components throwing an error
      * */
+    console.log(getAuth());
     const anchorRef = useRef(null);
     const handleLogout = async () => {
-        console.log('Logout');
+        removeAuth();
+        navigate('/login');
     };
 
     const handleClose = (event) => {

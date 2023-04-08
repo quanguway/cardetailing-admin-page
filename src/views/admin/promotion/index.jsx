@@ -10,6 +10,8 @@ import DrawerToggle from 'component/DrawerToggle';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import moment from 'moment/moment';
 import Row from 'component/TableRow';
+import FormSimpleLayout from 'layout/FormLayout/FormSimpleLayout';
+import dayjs from 'dayjs';
 
 const PromotionPage = () => {
     const navigate = useNavigate();
@@ -101,7 +103,32 @@ const PromotionPage = () => {
         }
     ];
 
+
+    // const [title, setTitle] = useState(row?.title ?? '');
+    // const [startDate, setStartDate] = useState(dayjs(row?.startDate) ?? '');
+    // const [endDate, setEndDate] = useState(dayjs(row?.endDate) ?? '');
+
     console.log(row);
+
+    const fieldPromotion = [
+        // {
+        // label: 'Title',
+        // name: 'title',
+        // useState: [title, setTitle],
+        // disabled: true,
+        // },
+        // {
+        // label: 'Start date',
+        // useState: [startDate, setStartDate],
+        // disabled: true,
+        // type: 'date-picker'
+        // },
+        // {
+        // label: 'End date',
+        // useState: [endDate, setEndDate],
+        // type: 'date-picker'
+        // }
+    ]
 
     return (
         <Box>
@@ -141,73 +168,28 @@ const PromotionPage = () => {
                             <Box>
                                 <h3>Thông tin giảm giá</h3>
                             </Box>
-                            <TextField
-                                //helperText="Some important text"
-                                sx={{
-                                    marginTop: '20px',
-                                    '& .MuiInputBase-input.Mui-disabled': {
-                                        WebkitTextFillColor: 'black'
-                                    }
-                                }}
-                                variant="outlined"
-                                label="Tiêu đề giảm giá"
-                                value={row.title}
-                                fullWidth={true}
-                                disabled={true}
-                            />
-                            <TextField
-                                //helperText="Some important text"
-                                sx={{
-                                    marginTop: '20px',
-                                    '& .MuiInputBase-input.Mui-disabled': {
-                                        WebkitTextFillColor: 'black'
-                                    }
-                                }}
-                                variant="outlined"
-                                label="Trạng thái"
-                                value={
-                                    row.status
-                                        ? 'Đang hoạt động'
-                                        : 'Không hoạt động'
-                                }
-                                fullWidth={true}
-                                disabled={true}
-                            />
-                            <TextField
-                                //helperText="Some important text"
-                                sx={{
-                                    marginTop: '20px',
-                                    '& .MuiInputBase-input.Mui-disabled': {
-                                        WebkitTextFillColor: 'black'
-                                    }
-                                }}
-                                variant="outlined"
-                                label="Mô tả"
-                                value={row.description}
-                                rows={3}
-                                fullWidth={true}
-                                disabled={true}
-                            />
+                            
+                            <FormSimpleLayout fields={fieldPromotion} isBackgroud={false} />
 
                             <TableContainer component={Paper}>
                                 <Table aria-label="collapsible table">
                                     <TableHead>
-                                    <TableRow>
-                                        <TableCell />
-                                        {columnsChildShow.columns.map((item) => {
-                                            return (
-                                                <TableCell>{item}</TableCell>
-                                            )
-                                        })}
-                                    </TableRow>
+                                        <TableRow>
+                                            <TableCell />
+                                            {columnsChildShow.columns.map((item) => {
+                                                return (
+                                                    <TableCell>{item}</TableCell>
+                                                )
+                                            })}
+                                        </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                    {row.promotionLines.map((item) => (
-                                        <Row row={item} />
-                                    ))}
+                                        {row.promotionLines.map((item) => (
+                                            <Row row={item}/>
+                                        ))}
                                     </TableBody>
                                 </Table>
-                                </TableContainer>
+                            </TableContainer>
                             
                             {/* <Box height={320}>
                                 <DataGrid

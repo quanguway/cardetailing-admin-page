@@ -201,6 +201,7 @@ export default function FormSimpleLayoutV2({
                                     dateAdapter={AdapterDayjs}
                                 >
                                     <DatePicker
+                                        format="DD/MM/YYYY"
                                         disabled={item.disabled ?? false}
                                         label={item.label}
                                         defaultValue={item.useState[0]}

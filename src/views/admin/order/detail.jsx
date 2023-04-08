@@ -3,6 +3,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
 import { apiConfig } from 'config/app.config';
 import TableSimpleLayout from 'layout/TableLayout/TableSimpleLayout';
+import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { v4 as uuid } from 'uuid';
@@ -23,8 +24,7 @@ const OrderDetail = () => {
     const [promotionCanUse, setPromotionCanUse] = useState();
 
     useEffect(() => {
-        console.log(state.data.book_id);
-        setPromotionCanUse({promotionLine: {...state.data.promotion}, soTienGiam: state.data.promotion.amount})
+        console.log(state.data)
         axios
             .get(apiConfig.BOOKING_API.GET_BY_ID, {
                 params: { id: state.data.book_id }
@@ -77,7 +77,7 @@ const OrderDetail = () => {
 
                 const orderId = uuid();
                 const total = data.booking_details.reduce(
-                    (partialSum, item) => partialSum + item.price.price,
+                    (partialSum, item) => partialSum + item.price_final,
                     0
                 );
                 const totalTime = data.booking_details.reduce(
@@ -193,7 +193,10 @@ const OrderDetail = () => {
             field: 'staff_name',
             flex: 1
         },
-        { headerName: 'Ghi chú', flex: 1 }
+        {             headerName: 'Ghi chú',
+        flex: 1,
+        field: 'type',
+        renderCell: (params) => (params.value === 'GIFT' ? <CardGiftcardIcon></CardGiftcardIcon> : '')}
     ];
 
     const RenderInfoService = () => {

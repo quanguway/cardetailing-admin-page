@@ -22,6 +22,10 @@ export const apiConfig = {
         SAVE: `${appConfig.URL_API}/product-category/save`,
         GET_MANY_BY_IDs: `${appConfig.URL_API}/product-category/ids`
     },
+    AUTH: {
+        LOGIN: `${appConfig.URL_API}/auth/login`,
+        FORGOT_PASSWORD: `${appConfig.URL_API}/auth/forgot-password`,
+    },
     CAR_INFO: {
         GET_ALL: `${appConfig.URL_API}/car-info`,
         CREATE: `${appConfig.URL_API}/car-info/create`,

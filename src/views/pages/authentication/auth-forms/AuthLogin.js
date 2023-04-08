@@ -34,10 +34,15 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import Google from 'assets/images/icons/social-google.svg';
+import axios from 'axios';
+import { apiConfig } from 'config/app.config';
+import { getAuth, setAuth } from 'utils/auth';
+import { useNavigate } from 'react-router';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const FirebaseLogin = ({ ...others }) => {
+    const navigate = useNavigate();
     const theme = useTheme();
     const scriptedRef = useScriptRef();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
@@ -57,9 +62,13 @@ const FirebaseLogin = ({ ...others }) => {
         event.preventDefault();
     };
 
+    const handleSubmit = (event) => {
+        console.log('asdasd');
+    }
+
     return (
         <>
-            <Grid container direction="column" justifyContent="center" spacing={2}>
+            {/* <Grid container direction="column" justifyContent="center" spacing={2}>
                 <Grid item xs={12}>
                     <AnimateButton>
                         <Button
@@ -113,20 +122,20 @@ const FirebaseLogin = ({ ...others }) => {
                 </Grid>
                 <Grid item xs={12} container alignItems="center" justifyContent="center">
                     <Box sx={{ mb: 2 }}>
-                        <Typography variant="subtitle1">Sign in with Email address</Typography>
+                        <Typography variant="subtitle1">Sign in with phone address</Typography>
                     </Box>
                 </Grid>
-            </Grid>
+            </Grid> */}
 
             <Formik
                 initialValues={{
-                    email: 'info@codedthemes.com',
-                    password: '123456',
+                    // phone: 'info@codedthemes.com',
+                    // password: '123456',
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
-                    email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-                    password: Yup.string().max(255).required('Password is required')
+                    phone: Yup.string().max(10).required('Số điện thoại không được bỏ trống'),
+                    password: Yup.string().max(255).required('Mật khẩu không được bỏ trống')
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
@@ -144,23 +153,43 @@ const FirebaseLogin = ({ ...others }) => {
                     }
                 }}
             >
-                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+                {({ errors, handleBlur, handleChange, isSubmitting, touched, values }) => {
+
+                    const handleSubmit = (event) => {
+                        event.preventDefault();
+                        // console.log(errors);
+                        console.log(values);
+
+                        const params = {
+                            ...values
+                        }
+
+                        axios.post(apiConfig.AUTH.LOGIN, params).then((value) => {
+
+                            setAuth(value.data)
+
+                            console.log(getAuth());
+                            navigate('/booking') ;
+                        }).catch((err) => {
+                            console.log('haha');
+                        })
+                    }
+
+                    return (
                     <form noValidate onSubmit={handleSubmit} {...others}>
-                        <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-                            <InputLabel htmlFor="outlined-adornment-email-login">Email Address / Username</InputLabel>
+                        <FormControl fullWidth error={Boolean(touched.phone && errors.phone)} sx={{ ...theme.typography.customInput }}>
+                            <InputLabel htmlFor="outlined-adornment-phone-login">Số điện thoại</InputLabel>
                             <OutlinedInput
-                                id="outlined-adornment-email-login"
-                                type="email"
-                                value={values.email}
-                                name="email"
+                                value={values.phone}
+                                name="phone"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
-                                label="Email Address / Username"
+                                label="Số điện thoại"
                                 inputProps={{}}
                             />
-                            {touched.email && errors.email && (
-                                <FormHelperText error id="standard-weight-helper-text-email-login">
-                                    {errors.email}
+                            {touched.phone && errors.phone && (
+                                <FormHelperText error id="standard-weight-helper-text-phone-login">
+                                    {errors.phone}
                                 </FormHelperText>
                             )}
                         </FormControl>
@@ -170,7 +199,7 @@ const FirebaseLogin = ({ ...others }) => {
                             error={Boolean(touched.password && errors.password)}
                             sx={{ ...theme.typography.customInput }}
                         >
-                            <InputLabel htmlFor="outlined-adornment-password-login">Password</InputLabel>
+                            <InputLabel htmlFor="outlined-adornment-password-login">Mật khẩu</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-password-login"
                                 type={showPassword ? 'text' : 'password'}
@@ -201,7 +230,7 @@ const FirebaseLogin = ({ ...others }) => {
                             )}
                         </FormControl>
                         <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
-                            <FormControlLabel
+                            {/* <FormControlLabel
                                 control={
                                     <Checkbox
                                         checked={checked}
@@ -211,9 +240,9 @@ const FirebaseLogin = ({ ...others }) => {
                                     />
                                 }
                                 label="Remember me"
-                            />
+                            /> */}
                             <Typography variant="subtitle1" color="secondary" sx={{ textDecoration: 'none', cursor: 'pointer' }}>
-                                Forgot Password?
+                                Quên mật khẩu?
                             </Typography>
                         </Stack>
                         {errors.submit && (
@@ -238,7 +267,7 @@ const FirebaseLogin = ({ ...others }) => {
                             </AnimateButton>
                         </Box>
                     </form>
-                )}
+                )}}
             </Formik>
         </>
     );

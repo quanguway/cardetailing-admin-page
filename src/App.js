@@ -6,6 +6,7 @@ import { CssBaseline, StyledEngineProvider } from '@mui/material';
 
 // routing
 import Routes from 'routes';
+import { Navigate, Redirect } from 'react-router-dom';
 
 // defaultTheme
 import themes from 'themes';
