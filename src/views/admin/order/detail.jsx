@@ -24,22 +24,24 @@ const OrderDetail = () => {
     const [promotionCanUse, setPromotionCanUse] = useState();
 
     useEffect(() => {
-        console.log(state.data)
+        console.log(state.data);
         axios
             .get(apiConfig.BOOKING_API.GET_BY_ID, {
                 params: { id: state.data.book_id }
             })
             .then((value) => {
                 const data = value.data;
+                console.log(data);
                 setBookDetailRow(
                     value.data.booking_details.map((item) => ({
                         id: item.id,
                         service_title: item.product.title,
-                        service_price: item.price.price,
+                        service_price: item?.price?.price ?? 0,
                         service_price_final: item.price_final,
                         service_product_received: item.product_recived_title,
                         service_time: item.product.time,
-                        staff_name: item.staff.full_name
+                        staff_name: item?.staff?.full_name ?? '',
+                        type: item?.type ?? ''
                     }))
                 );
                 setCustomerInfo([
@@ -101,7 +103,9 @@ const OrderDetail = () => {
                         id: orderId,
                         customer_id: data.customer.id,
                         total: total,
-                        final_total: Number(orderSum) - Number(promotionCanUse?.soTienGiam ?? 0),
+                        final_total:
+                            Number(orderSum) -
+                            Number(promotionCanUse?.soTienGiam ?? 0),
                         status: 'SERVICE'
                     },
                     order_details: orderDetails,
@@ -123,7 +127,6 @@ const OrderDetail = () => {
             })
             .then((value) => {
                 setPromotionCanUse(value.data.promotion_can_use);
-
             });
     }, [orderSum]);
 
@@ -185,7 +188,22 @@ const OrderDetail = () => {
     const bookDetailColumns = [
         { field: 'service_title', headerName: 'Tên dịch vụ', flex: 1 },
         { field: 'service_time', headerName: 'Thời gian xử lý', flex: 1 },
-        { field: 'service_price', headerName: 'Đơn giá', flex: 1 },
+        {
+            field: 'service_price',
+            headerName: 'Đơn giá',
+            flex: 1,
+            headerAlign: 'right',
+            renderCell: (params) => (
+                <div style={{ width: '100%', textAlign: 'right' }}>
+                    <b>
+                        {new Intl.NumberFormat('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND'
+                        }).format(params.value)}
+                    </b>
+                </div>
+            )
+        },
         // { field: 'service_price', headerName: 'Giá', flex: 1 },
         // { field: 'service_price_final', headerName: 'Thành tiền', flex: 1 },
         {
@@ -193,10 +211,17 @@ const OrderDetail = () => {
             field: 'staff_name',
             flex: 1
         },
-        {             headerName: 'Ghi chú',
-        flex: 1,
-        field: 'type',
-        renderCell: (params) => (params.value === 'GIFT' ? <CardGiftcardIcon></CardGiftcardIcon> : '')}
+        {
+            headerName: 'Ghi chú',
+            flex: 1,
+            field: 'type',
+            renderCell: (params) =>
+                params.value === 'GIFT' ? (
+                    <CardGiftcardIcon></CardGiftcardIcon>
+                ) : (
+                    ''
+                )
+        }
     ];
 
     const RenderInfoService = () => {
@@ -258,7 +283,7 @@ const OrderDetail = () => {
                                         <Grid container>
                                             <Grid item xs={5}>
                                                 <Typography>
-                                                    Kết thúc (dự kiến):
+                                                    Kết thúc :
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={7}>
@@ -324,16 +349,15 @@ const OrderDetail = () => {
                                         margin: '10px 10px'
                                     }}
                                 >
-                                    {( Number(promotionCanUse?.soTienGiam) > 0) ? (
-                                    <Box
-                                        sx={{
-                                            borderRadius: '10px',
-                                            padding: '10px',
-                                            backgroundColor: '#f1ebeb',
-                                            height: '100%'
-                                        }}
-                                    >
-                                        
+                                    {Number(promotionCanUse?.soTienGiam) > 0 ? (
+                                        <Box
+                                            sx={{
+                                                borderRadius: '10px',
+                                                padding: '10px',
+                                                backgroundColor: '#f1ebeb',
+                                                height: '100%'
+                                            }}
+                                        >
                                             <Grid
                                                 container
                                                 columnSpacing={{
@@ -473,9 +497,10 @@ const OrderDetail = () => {
                                                     </Box>
                                                 </Grid>
                                             </Grid>
-                                        
-                                    </Box>
-                                    ) : <></>}
+                                        </Box>
+                                    ) : (
+                                        <></>
+                                    )}
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Grid

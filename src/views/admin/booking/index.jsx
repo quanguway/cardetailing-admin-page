@@ -25,6 +25,7 @@ import FormChoiceSlot from './formChoiceSlot';
 import { genderToBool, renderGender } from 'utils/dataToView';
 import { Navigate, useNavigate } from 'react-router';
 import { getAuth } from 'utils/auth';
+import FormSimpleLayout from 'layout/FormLayout/FormSimpleLayout';
 // import ChoiceSlotForm from './choiceSlotForm';
 
 const steps = [
@@ -145,7 +146,12 @@ const BookingPage = () => {
     const [carDetails, setCarDetails] = useState([]);
     const [carBranchs, setCarBranchs] = useState([]);
     const [carBranch, setCarBranch] = useState([]);
+    const [engine, setEngine] = useState();
+    const [chassis, setChassis] = useState();
+    const [number_seat, setNumber_seat] = useState();
+    const [color, setColor] = useState();
     const [carType, setCarType] = useState();
+
     const [carNumberPlate, setCarNumberPlate] = useState();
 
     useEffect(() => {
@@ -191,7 +197,7 @@ const BookingPage = () => {
             values: carBranchs
         },
         {
-            label: 'Biển số',
+            label: 'Biển số xe',
             useState: [carNumberPlate, setCarNumberPlate]
         }
     ];
@@ -343,7 +349,11 @@ const BookingPage = () => {
                     : oldCustomerCarDetail.id,
                 car_info_id: carBranch.id,
                 number_plate: carNumberPlate,
-                customer_id: customerId
+                customer_id: customerId,
+                engine: engine,
+                chassis: chassis,
+                color: color,
+                number_seat: number_seat
             },
             isNewCustomer: !isOldCustomer ? true : false,
             isNewCar: !oldCustomerCarDetail ? true : false
@@ -354,9 +364,7 @@ const BookingPage = () => {
 
         // });
         await axios.post(apiConfig.BOOKING_API.CREATE, params).then(() => {
-
             window.location.reload();
-
         });
     };
 
@@ -584,10 +592,81 @@ const BookingPage = () => {
                 );
             case 2:
                 return (
-                    <FormSimpleLayoutV2
-                        label={'Thông tin xe'}
-                        fields={carFields}
-                    />
+                    <FormSimpleLayout label={'Thông tin xe'} fields={carFields}>
+                        <Box>
+                            <Grid
+                                container
+                                columnSpacing={{ xs: 1, sm: 2, md: 2 }}
+                            >
+                                <Grid item xs={6}>
+                                    <TextField
+                                        // error={
+                                        //     item?.isError ? item.isError : false
+                                        // }
+                                        // helperText={item?.helper}
+                                        sx={{ marginTop: '20px' }}
+                                        variant="outlined"
+                                        label="Màu sắc"
+                                        value={color}
+                                        fullWidth={true}
+                                        onChange={(event) => {
+                                            setColor(event.target.value);
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <TextField
+                                        // key={index}
+                                        // error={
+                                        //     item?.isError ? item.isError : false
+                                        // }
+                                        // helperText={item?.helper}
+                                        sx={{ marginTop: '20px' }}
+                                        variant="outlined"
+                                        label="Số chỗ ngồi"
+                                        value={number_seat}
+                                        fullWidth={true}
+                                        onChange={(event) => {
+                                            setNumber_seat(event.target.value);
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <TextField
+                                        // error={
+                                        //     item?.isError ? item.isError : false
+                                        // }
+                                        // helperText={item?.helper}
+                                        sx={{ marginTop: '20px' }}
+                                        variant="outlined"
+                                        label="Số khung"
+                                        value={chassis}
+                                        fullWidth={true}
+                                        onChange={(event) => {
+                                            setChassis(event.target.value);
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <TextField
+                                        // key={index}
+                                        // error={
+                                        //     item?.isError ? item.isError : false
+                                        // }
+                                        // helperText={item?.helper}
+                                        sx={{ marginTop: '20px' }}
+                                        variant="outlined"
+                                        label="Số máy"
+                                        value={engine}
+                                        fullWidth={true}
+                                        onChange={(event) => {
+                                            setEngine(event.target.value);
+                                        }}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </Box>
+                    </FormSimpleLayout>
                 );
             case 3:
                 return (
@@ -596,7 +675,6 @@ const BookingPage = () => {
                             label={'Chọn dịch vụ và gán nhân viên'}
                             fields={serviceFields}
                         />
-                        ;
                         <Box height={400}>
                             <DataGrid
                                 // density='standard'
@@ -702,7 +780,9 @@ const BookingPage = () => {
                 {activeStep !== 0 && <ButtonNavigation />}
             </React.Fragment>
         </Box>
-    ) : <Navigate to={{ pathname: '/login' }} />;
+    ) : (
+        <Navigate to={{ pathname: '/login' }} />
+    );
 };
 
 export default BookingPage;
