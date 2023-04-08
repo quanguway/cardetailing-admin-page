@@ -5,6 +5,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import FormSimpleLayout from 'layout/FormLayout/FormSimpleLayout';
 import { useState } from 'react';
 import dayjs from 'dayjs';
+import moment from 'moment';
 
 // const rowsDetail = [
 //   {
@@ -18,14 +19,9 @@ import dayjs from 'dayjs';
 // ]
 
 
-
-
-
 export default function Row(props) {
     const { row, rowsDetail } = props;
     const [open, setOpen] = React.useState(false);
-
-    console.log(row);
 
     const [promotionCode, setPromotionCode] = useState(row.promotion_code);
     const [title, setTitle] = useState(row.title)
@@ -73,8 +69,8 @@ export default function Row(props) {
             </IconButton>
           </TableCell>
           <TableCell>{row.promotion_code}</TableCell>
-          <TableCell>{row.start_date}</TableCell>
-          <TableCell>{row.end_date}</TableCell>
+          <TableCell>{moment(row.start_date).format('DD/MM/YYYY')}</TableCell>
+          <TableCell>{moment(row.end_date).format('DD/MM/YYYY')}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -93,7 +89,7 @@ export default function Row(props) {
                   </>
                 ))}
               </Grid> */}
-              <FormSimpleLayout fields={rowsShowDetail} isBackgroud={false} nameForm={'Thông tin chung'} nameButtonSave={'Lưu chi tiết giảm giá'} />
+              <FormSimpleLayout fields={rowsShowDetail} isBackgroud={false} nameForm={'Thông tin dòng giảm giá'} nameButtonSave={'Lưu chi tiết giảm giá'} />
               </Box>
             </Collapse>
           </TableCell>

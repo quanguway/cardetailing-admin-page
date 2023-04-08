@@ -1,13 +1,70 @@
-import { Box, Button, ButtonBase, IconButton } from '@mui/material';
+import { Box, Button, ButtonBase, Drawer, IconButton } from '@mui/material';
 import TableSimpleLayout from 'layout/TableLayout/TableSimpleLayout';
 import { apiConfig } from 'config/app.config';
 import { GridActionsCellItem } from '@mui/x-data-grid';
-import { IconPlus, IconTrash, IconPencil } from '@tabler/icons';
+import { IconPlus, IconTrash, IconPencil, IconEye } from '@tabler/icons';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import PerfectScrollbar from 'react-perfect-scrollbar';
+import { useState } from 'react';
+import FormSimpleLayout from 'layout/FormLayout/FormSimpleLayout';
+import { useEffect } from 'react';
+import { renderGender } from 'utils/dataToView';
 
 const StaffPage = () => {
     const navigate = useNavigate();
+
+    const [open, setOpen] = useState(false);
+    const [row, setRow] = useState(null);
+    const handleToggle = () => {
+        setOpen(!open);
+    };
+
+    const [fullName, setFullName] = useState(row?.full_name ?? '');
+    const [phone, setPhone] = useState(row?.phone ?? '');
+    const [email, setEmail] = useState(row?.email ?? '');
+    const [gender, setGender] = useState(row?.gender ?? '');
+    const [address, setAddress] = useState(row?.address_path_title ?? '');
+
+    useEffect(() => {
+        setFullName(row?.full_name ?? '');
+        setPhone(row?.phone ?? '');
+        setEmail(row?.email ?? '');
+        setGender(renderGender(row?.gender) ?? '');
+        setAddress(row?.address_path_title ?? '');
+    }, [row]);
+    const fields = [
+        {
+            label: 'Full name',
+            disabled: true,
+            text_active: true,
+            useState: [fullName, setFullName]
+        },
+        {
+            label: 'Phone',
+            disabled: true,
+            text_active:true,
+            useState: [phone, setPhone]
+        },
+        {
+            label: 'Email',
+            disabled: true,
+            text_active: true,
+            useState: [email, setEmail]
+        },
+        {
+            label: 'Gender',
+            disabled: true,
+            text_active: true,
+            useState: [gender, setGender]
+        },
+        {
+            label: 'Address',
+            disabled: true,
+            text_active: true,
+            useState: [address, setAddress]
+        },
+    ]
 
     const columns = [
         { field: 'full_name', headerName: 'Họ và tên', flex: 1 },
@@ -22,6 +79,16 @@ const StaffPage = () => {
             headerName: 'Thao tác',
             flex: 1,
             getActions: (params) => [
+                <GridActionsCellItem
+                    icon={<IconEye />}
+                    label="Chi tiết"
+                    onClick={() => {
+                        console.log(params.row);
+                        handleToggle();
+                        setRow(params.row);
+                    }}
+                    showInMenu
+                />,
                 <GridActionsCellItem
                     icon={<IconTrash />}
                     label="Xóa"
@@ -51,7 +118,7 @@ const StaffPage = () => {
                         });
                     }}
                     showInMenu
-                />
+                />,
             ]
         }
     ];
@@ -83,6 +150,21 @@ const StaffPage = () => {
                     });
                 }}
             />
+            <Drawer
+                anchor={'right'}
+                onClose={handleToggle}
+                open={open}
+                PaperProps={{
+                    sx: {
+                        width: 500,
+                        padding: '14px'
+                    }
+                }}
+            >
+                <PerfectScrollbar component="div">
+                    <FormSimpleLayout fields={fields} isBackgroud={false} showButton={false}/>
+                </PerfectScrollbar>
+            </Drawer>
         </Box>
     );
 };

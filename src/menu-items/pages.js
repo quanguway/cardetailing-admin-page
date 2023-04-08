@@ -1,6 +1,8 @@
 // assets
 import { IconUser, IconBuildingStore, IconArchive   } from '@tabler/icons';
 import { roles } from 'utils/auth';
+import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
+import MenuIcon from '@mui/icons-material/Menu';
 
 // ==============================|| EXTRA PAGES MENU ITEMS ||============================== //
 
@@ -41,14 +43,14 @@ const pages = {
             type: 'collapse',
             icon: IconUser,
             children: [
-                {
-                    id: 'address',
-                    title: 'Địa chỉ',
-                    type: 'item',
-                    url: '/address',
-                    roles: [roles.ROLE_ADMIN],
-                    target: true
-                },
+                // {
+                //     id: 'address',
+                //     title: 'Địa chỉ',
+                //     type: 'item',
+                //     url: '/address',
+                //     roles: [roles.ROLE_ADMIN],
+                //     target: true
+                // },
                 {
                     id: 'staff',
                     title: 'Nhân viên',
@@ -69,19 +71,21 @@ const pages = {
             ]
         },
         {
+            id: 'promotion',
+            title: 'Khuyến mãi',
+            type: 'item',
+            url: '/promotion',
+            icon: CardGiftcardIcon,
+            roles: [roles.ROLE_ADMIN],
+            target: true
+        },
+        {
             id: 'product',
             title: 'Dịch vụ',
             type: 'collapse',
             icon: IconArchive ,
             children: [
-                {
-                    id: 'category',
-                    title: 'Loại dịch vụ',
-                    type: 'item',
-                    url: '/product-category',
-                    roles: [roles.ROLE_ADMIN],
-                    target: true
-                },
+
                 {
                     id: 'products',
                     title: 'Dịch vụ',
@@ -90,22 +94,15 @@ const pages = {
                     roles: [roles.ROLE_ADMIN],
                     target: true
                 },
-                {
-                    id: 'unit',
-                    title: 'Đơn vị',
-                    type: 'item',
-                    url: '/unit',
-                    roles: [roles.ROLE_ADMIN],
-                    target: true
-                },
-                {
-                    id: 'promotion',
-                    title: 'Khuyến mãi',
-                    type: 'item',
-                    url: '/promotion',
-                    roles: [roles.ROLE_ADMIN],
-                    target: true
-                },
+                // {
+                //     id: 'unit',
+                //     title: 'Đơn vị',
+                //     type: 'item',
+                //     url: '/unit',
+                //     roles: [roles.ROLE_ADMIN],
+                //     target: true
+                // },
+
                 {
                     id: 'price',
                     title: 'Bảng giá',
@@ -120,7 +117,7 @@ const pages = {
             id: 'catalog',
             title: 'Thông tin chung',
             type: 'collapse',
-            icon: IconArchive ,
+            icon: MenuIcon,
             children: [
                 {
                     id: 'carInfo',
@@ -128,6 +125,14 @@ const pages = {
                     type: 'item',
                     url: '/car-info',
                     roles: [roles.ROLE_ADMIN, roles.ROLE_CUSTOMER],
+                    target: true
+                },
+                {
+                    id: 'category',
+                    title: 'Loại dịch vụ',
+                    type: 'item',
+                    url: '/product-category',
+                    roles: [roles.ROLE_ADMIN],
                     target: true
                 },
             ]

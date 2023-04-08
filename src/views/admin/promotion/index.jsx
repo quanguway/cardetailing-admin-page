@@ -12,6 +12,7 @@ import moment from 'moment/moment';
 import Row from 'component/TableRow';
 import FormSimpleLayout from 'layout/FormLayout/FormSimpleLayout';
 import dayjs from 'dayjs';
+import { useEffect } from 'react';
 
 const PromotionPage = () => {
     const navigate = useNavigate();
@@ -103,31 +104,44 @@ const PromotionPage = () => {
         }
     ];
 
+    useEffect(() => {
+        setTitle(row?.title)
+        setPromotionCode(row?.promotionCode)
+        setStartDate(dayjs(row?.startDate) ?? '')
+        setEndDate(dayjs(row?.endDate))
+    }, [row])
 
-    // const [title, setTitle] = useState(row?.title ?? '');
-    // const [startDate, setStartDate] = useState(dayjs(row?.startDate) ?? '');
-    // const [endDate, setEndDate] = useState(dayjs(row?.endDate) ?? '');
+    const [promotionCode, setPromotionCode] = useState();
+    const [title, setTitle] = useState(row?.title ?? '');
+    const [startDate, setStartDate] = useState(dayjs(row?.date_end) ?? '');
+    const [endDate, setEndDate] = useState(dayjs(row?.date_end) ?? '');
 
-    console.log(row);
-
-    const fieldPromotion = [
-        // {
-        // label: 'Title',
-        // name: 'title',
-        // useState: [title, setTitle],
-        // disabled: true,
-        // },
-        // {
-        // label: 'Start date',
-        // useState: [startDate, setStartDate],
-        // disabled: true,
-        // type: 'date-picker'
-        // },
-        // {
-        // label: 'End date',
-        // useState: [endDate, setEndDate],
-        // type: 'date-picker'
-        // }
+    const fieldPromotion = [    
+        {
+            label: 'Promotion code',
+            text_active: true,
+            useState: [promotionCode, setPromotionCode],
+            disabled: true,
+        },
+        {
+            label: 'Title',
+            name: 'title',
+            text_active: true,
+            useState: [title, setTitle],
+            disabled: true,
+        },
+        
+        {
+            label: 'Start date',
+            useState: [startDate, setStartDate],
+            disabled: true,
+            type: 'date-picker'
+        },
+        {
+            label: 'End date',
+            useState: [endDate, setEndDate],
+            type: 'date-picker'
+        }
     ]
 
     return (
@@ -138,15 +152,6 @@ const PromotionPage = () => {
                 apiGet={apiConfig.PROMOTION_API.GET_ALL}
                 handleAddButton={() => navigate('create')}
             />
-            {/* <DrawerToggle
-                width={1000}
-                open={open}
-                handleToggle={handleToggle}
-                data={row}
-                columns={columnsShow}
-                columnChild={columnsChildShow}
-                infoToggle={infoToggle}
-            /> */}
             <Drawer
                 anchor={'right'}
                 onClose={handleToggle}
@@ -165,11 +170,8 @@ const PromotionPage = () => {
                                 padding: '20px'
                             }}
                         >
-                            <Box>
-                                <h3>Thông tin giảm giá</h3>
-                            </Box>
                             
-                            <FormSimpleLayout fields={fieldPromotion} isBackgroud={false} />
+                            <FormSimpleLayout fields={fieldPromotion} isBackgroud={false} nameForm={'Thông tin giảm giá'}/>
 
                             <TableContainer component={Paper}>
                                 <Table aria-label="collapsible table">
