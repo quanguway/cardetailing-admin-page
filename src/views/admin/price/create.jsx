@@ -21,8 +21,8 @@ const PriceCreate = () => {
     const [listUnit, setListUnit] = useState([]);
 
     const [title, setTitle] = useState();
-    const [startDate, setStartDate] = useState(dayjs(new Date()));
-    const [endDate, setEndDate] = useState(dayjs(new Date()));
+    const [startDate, setStartDate] = useState();
+    const [endDate, setEndDate] = useState();
     const [isActive, setIsActive] = useState('Có');
 
     // price line
@@ -52,18 +52,18 @@ const PriceCreate = () => {
             ({ product, product_title, unit, unit_title, ...orther }) => orther
         );
 
-        if(princeLinecustom.length <= 0 ){
+        if (princeLinecustom.length <= 0) {
             Swal.fire({
                 icon: 'error',
-                title: 'Chưa có sản phẩm trong bảng giá',
+                title: 'Chưa có sản phẩm trong bảng giá'
             });
             return;
         }
         console.log(title);
-        if(title === undefined){
+        if (title === undefined) {
             Swal.fire({
                 icon: 'error',
-                title: 'Chưa nhập tên bảng giá',
+                title: 'Chưa nhập tên bảng giá'
             });
             return;
         }

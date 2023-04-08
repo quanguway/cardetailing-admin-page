@@ -354,8 +354,9 @@ const BookingPage = () => {
 
         // });
         await axios.post(apiConfig.BOOKING_API.CREATE, params).then(() => {
-            window.location.reload()
-            
+
+            window.location.reload();
+
         });
     };
 
