@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -10,6 +10,7 @@ import AuthCardWrapper from '../AuthCardWrapper';
 import AuthLogin from '../auth-forms/AuthLogin';
 import Logo from 'ui-component/Logo';
 import AuthFooter from 'ui-component/cards/AuthFooter';
+import { getAuth } from 'utils/auth';
 
 // assets
 
@@ -18,8 +19,8 @@ import AuthFooter from 'ui-component/cards/AuthFooter';
 const Login = () => {
     const theme = useTheme();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
-
-    return (
+    console.log(getAuth());
+    return ! getAuth() ? (
         <AuthWrapper1>
             <Grid container direction="column" justifyContent="flex-end" sx={{ minHeight: '100vh' }}>
                 <Grid item xs={12}>
@@ -32,7 +33,7 @@ const Login = () => {
                                             <Logo />
                                         </Link>
                                     </Grid>
-                                    <Grid item xs={12}>
+                                    {/* <Grid item xs={12}>
                                         <Grid
                                             container
                                             direction={matchDownSM ? 'column-reverse' : 'row'}
@@ -58,13 +59,13 @@ const Login = () => {
                                                 </Stack>
                                             </Grid>
                                         </Grid>
-                                    </Grid>
+                                    </Grid> */}
                                     <Grid item xs={12}>
                                         <AuthLogin />
                                     </Grid>
-                                    <Grid item xs={12}>
+                                    {/* <Grid item xs={12}>
                                         <Divider />
-                                    </Grid>
+                                    </Grid> */}
                                     <Grid item xs={12}>
                                         <Grid item container direction="column" alignItems="center" xs={12}>
                                             <Typography
@@ -73,7 +74,7 @@ const Login = () => {
                                                 variant="subtitle1"
                                                 sx={{ textDecoration: 'none' }}
                                             >
-                                                Don&apos;t have an account?
+                                                Bạn có tài khoản chưa?
                                             </Typography>
                                         </Grid>
                                     </Grid>
@@ -82,12 +83,12 @@ const Login = () => {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item xs={12} sx={{ m: 3, mt: 1 }}>
+                {/* <Grid item xs={12} sx={{ m: 3, mt: 1 }}>
                     <AuthFooter />
-                </Grid>
+                </Grid> */}
             </Grid>
         </AuthWrapper1>
-    );
+    ) : <Navigate to={{ pathname: '/' }} />;
 };
 
 export default Login;

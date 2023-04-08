@@ -12,6 +12,7 @@ import NavItem from '../NavItem';
 // assets
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { IconChevronDown, IconChevronUp } from '@tabler/icons';
+import { getAuth, roles } from 'utils/auth';
 
 // ==============================|| SIDEBAR MENU LIST COLLAPSE ITEMS ||============================== //
 
@@ -33,7 +34,8 @@ const NavCollapse = ({ menu, level }) => {
             case 'collapse':
                 return <NavCollapse key={item.id} menu={item} level={level + 1} />;
             case 'item':
-                return <NavItem key={item.id} item={item} level={level + 1} />;
+                return  item.roles.find((item) => item === getAuth().role) ? 
+                    <NavItem key={item.id} item={item} level={level + 1} /> : <></>;
             default:
                 return (
                     <Typography key={item.id} variant="h6" color="error" align="center">

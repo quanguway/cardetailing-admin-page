@@ -144,13 +144,20 @@ const PriceUpdate = () => {
             type: 'actions',
             headerName: 'hành động',
             flex: 1,
-            getActions: (params) => [
+            getActions: (row) => [
                 <GridActionsCellItem
                     icon={<IconPencil />}
                     label="Hủy kích hoạt"
                     sx={{ backgroundColor: 'red' }}
-                    onClick={() => {
-                        console.log(params);
+                    onClick={async () => {
+                        const params = {
+                            id: row.id,
+                            item: {
+                                is_active: false,
+                            }
+                        }
+                        await axios.post(apiConfig.PRICE_LINE.UPDATE, params)
+                        window.location.reload();
                     }}
                     showInMenu
                 />

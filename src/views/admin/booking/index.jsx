@@ -23,7 +23,8 @@ import { DataGrid } from '@mui/x-data-grid';
 import FormSimpleLayoutV2 from 'layout/FormLayout/FormSimpleLayoutV2';
 import FormChoiceSlot from './formChoiceSlot';
 import { genderToBool, renderGender } from 'utils/dataToView';
-import { useNavigate } from 'react-router';
+import { Navigate, useNavigate } from 'react-router';
+import { getAuth } from 'utils/auth';
 // import ChoiceSlotForm from './choiceSlotForm';
 
 const steps = [
@@ -348,10 +349,14 @@ const BookingPage = () => {
             isNewCar: !oldCustomerCarDetail ? true : false
         };
         console.log(params);
+        // await axios.post(apiConfig.BOOKING_API.CREATE, params).then(() => {
+        //     // navigate('detail', { state: { data: { booking_id: bookingId } } });
+
+        // });
         await axios.post(apiConfig.BOOKING_API.CREATE, params).then(() => {
-            //navigate('detail', { state: { data: { booking_id: bookingId } } });
-            // navigate('/booking');
+
             window.location.reload();
+
         });
     };
 
@@ -672,7 +677,7 @@ const BookingPage = () => {
         );
     };
 
-    return (
+    return getAuth() ? (
         <Box
             bgcolor={'white'}
             borderRadius={2}
@@ -697,7 +702,7 @@ const BookingPage = () => {
                 {activeStep !== 0 && <ButtonNavigation />}
             </React.Fragment>
         </Box>
-    );
+    ) : <Navigate to={{ pathname: '/login' }} />;
 };
 
 export default BookingPage;

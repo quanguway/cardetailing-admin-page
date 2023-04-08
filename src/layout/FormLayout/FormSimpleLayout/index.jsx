@@ -31,6 +31,7 @@ export default function FormSimpleLayout({
     nameForm,
     fields,
     mode = 'update' | 'create',
+    isBackgroud = true,
     handleSubmit = () => {},
     children
 }) {
@@ -70,12 +71,12 @@ export default function FormSimpleLayout({
         <Box>
             <Box
                 component={'form'}
-                sx={{
+                sx={isBackgroud ? { 
                     backgroundColor: 'white',
                     borderRadius: '12px',
                     padding: '16px',
                     border: '1px solid #90caf975'
-                }}
+                } : {}}
             >
                 <h3>{nameForm ? nameForm : 'Thêm thông tin'}</h3>
                 {fields.map((item, index) => {
@@ -235,6 +236,7 @@ export default function FormSimpleLayout({
                                         }
                                         helperText={item?.helper}
                                         disablePast
+                                        format="DD/MM/YYYY"
                                         disabled={item.disabled ?? false}
                                         label={item.label}
                                         defaultValue={item.useState[0]}

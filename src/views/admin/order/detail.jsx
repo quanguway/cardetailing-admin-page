@@ -3,13 +3,13 @@ import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
 import { apiConfig } from 'config/app.config';
 import TableSimpleLayout from 'layout/TableLayout/TableSimpleLayout';
+import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { v4 as uuid } from 'uuid';
-import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import moment from 'moment/moment';
 
-const BookingDetail = () => {
+const OrderDetail = () => {
     const { state } = useLocation();
     const navigate = useNavigate();
 
@@ -24,60 +24,58 @@ const BookingDetail = () => {
     const [promotionCanUse, setPromotionCanUse] = useState();
 
     useEffect(() => {
+        console.log(state.data)
         axios
             .get(apiConfig.BOOKING_API.GET_BY_ID, {
-                params: { id: state.data.booking_id }
+                params: { id: state.data.book_id }
             })
             .then((value) => {
                 const data = value.data;
-                console.log(data);
                 setBookDetailRow(
                     value.data.booking_details.map((item) => ({
                         id: item.id,
                         service_title: item.product.title,
-                        service_price: item?.price?.price ?? 0,
+                        service_price: item.price.price,
                         service_price_final: item.price_final,
                         service_product_received: item.product_recived_title,
                         service_time: item.product.time,
-                        staff_name: item?.staff?.full_name ?? '',
-                        type: item?.type ?? ''
+                        staff_name: item.staff.full_name
                     }))
                 );
                 setCustomerInfo([
                     {
                         label: 'Tên khách hàng',
-                        value: data.customer?.full_name ?? ''
+                        value: data.customer.full_name
                     },
                     {
                         label: 'Số diện thoại',
-                        value: data.customer?.phone ?? ''
+                        value: data.customer.phone
                     },
                     {
                         label: 'Thư điện tử',
-                        value: data.customer?.email ?? ''
+                        value: data.customer.email
                     },
                     {
                         label: 'Địa chỉ',
-                        value: data.customer?.addresses ?? ''
+                        value: data.customer.addresses
                     }
                 ]);
                 setCarDetailInfo([
                     {
                         label: 'Loại xe',
-                        value: data.car_detail?.car_info.type ?? ''
+                        value: data.car_detail.car_info.type
                     },
                     {
                         label: 'Tên xe',
-                        value: data.car_detail?.car_info.branch ?? ''
+                        value: data.car_detail.car_info.branch
                     },
                     {
                         label: 'Biển số xe',
-                        value: data.car_detail?.number_plate ?? ''
+                        value: data.car_detail.number_plate
                     }
                 ]);
 
                 const orderId = uuid();
-                console.log(data.booking_details);
                 const total = data.booking_details.reduce(
                     (partialSum, item) => partialSum + item.price_final,
                     0
@@ -91,38 +89,41 @@ const BookingDetail = () => {
                 setOrderSumTime(totalTime);
                 setOrderCreateDate(data.date_created);
                 const orderDetails = data.booking_details.map((item) => {
-                    console.log(item);
                     return {
                         type: 'SERVICE',
                         status: 'SERVICE',
                         product_id: item.product.id,
-                        price_line_id: item?.price?.id ?? null,
-                        order_id: orderId
+                        price_line_id: item.price.id
                     };
                 });
                 setOrderPayment({
                     order: {
                         id: orderId,
-                        customer_id: data?.customer?.id ?? null,
+                        customer_id: data.customer.id,
                         total: total,
-                        status: 'SERVICE',
-                        book_id: state.data.booking_id,
-                        promotion_line_id: promotionCanUse?.promotionLine?.id ?? null
+                        final_total: Number(orderSum) - Number(promotionCanUse?.soTienGiam ?? 0),
+                        status: 'SERVICE'
                     },
                     order_details: orderDetails,
                     slot_id: state.data.id
                 });
+
+                console.log(orderSumTime);
             });
     }, []);
+
+    console.log(state.data);
+
+    console.log(state.data.book_id);
 
     useEffect(() => {
         axios
             .get(apiConfig.PROMOTION_API.CHECKPROMOTIONORDER, {
-                params: { id: state.data.booking_id, total: orderSum }
+                params: { id: state.data.book_id, total: orderSum }
             })
             .then((value) => {
                 setPromotionCanUse(value.data.promotion_can_use);
-                // setOrderPayment({ promotion: value.data.promotion_can_use.promotionLine, ...orderPayment});
+
             });
     }, [orderSum]);
 
@@ -173,8 +174,7 @@ const BookingDetail = () => {
     const handlePayment = async () => {
         console.log(orderPayment);
         const params = {
-            ...orderPayment,
-            promotion_line : promotionCanUse
+            ...orderPayment
         };
 
         await axios.post(apiConfig.ORDER_API.PAYMENT, params);
@@ -193,12 +193,10 @@ const BookingDetail = () => {
             field: 'staff_name',
             flex: 1
         },
-        {
-            headerName: 'Ghi chú',
-            flex: 1,
-            field: 'type',
-            renderCell: (params) => (params.value === 'GIFT' ? <CardGiftcardIcon></CardGiftcardIcon> : '')
-        }
+        {             headerName: 'Ghi chú',
+        flex: 1,
+        field: 'type',
+        renderCell: (params) => (params.value === 'GIFT' ? <CardGiftcardIcon></CardGiftcardIcon> : '')}
     ];
 
     const RenderInfoService = () => {
@@ -326,7 +324,6 @@ const BookingDetail = () => {
                                         margin: '10px 10px'
                                     }}
                                 >
-
                                     {( Number(promotionCanUse?.soTienGiam) > 0) ? (
                                     <Box
                                         sx={{
@@ -337,7 +334,6 @@ const BookingDetail = () => {
                                         }}
                                     >
                                         
-
                                             <Grid
                                                 container
                                                 columnSpacing={{
@@ -477,11 +473,9 @@ const BookingDetail = () => {
                                                     </Box>
                                                 </Grid>
                                             </Grid>
-
                                         
                                     </Box>
                                     ) : <></>}
-
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Grid
@@ -532,7 +526,7 @@ const BookingDetail = () => {
                                     >
                                         <Grid item xs={6}></Grid>
                                         <Grid item xs={6}>
-                                            <Button
+                                            {/* <Button
                                                 sx={{
                                                     margin: '10px 15px',
                                                     width: '300px'
@@ -542,7 +536,7 @@ const BookingDetail = () => {
                                                 color="primary"
                                             >
                                                 Thanh toán
-                                            </Button>
+                                            </Button> */}
                                         </Grid>
                                     </Grid>
                                 </Grid>
@@ -567,4 +561,4 @@ const BookingDetail = () => {
     );
 };
 
-export default BookingDetail;
+export default OrderDetail;
