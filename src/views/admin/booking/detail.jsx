@@ -77,6 +77,7 @@ const BookingDetail = () => {
                 ]);
 
                 const orderId = uuid();
+                console.log(data.booking_details);
                 const total = data.booking_details.reduce(
                     (partialSum, item) => partialSum + item.price_final,
                     0
@@ -90,11 +91,13 @@ const BookingDetail = () => {
                 setOrderSumTime(totalTime);
                 setOrderCreateDate(data.date_created);
                 const orderDetails = data.booking_details.map((item) => {
+                    console.log(item);
                     return {
                         type: 'SERVICE',
                         status: 'SERVICE',
                         product_id: item.product.id,
-                        price_line_id: item?.price?.id ?? null
+                        price_line_id: item?.price?.id ?? null,
+                        order_id: orderId
                     };
                 });
                 setOrderPayment({
@@ -102,13 +105,13 @@ const BookingDetail = () => {
                         id: orderId,
                         customer_id: data?.customer?.id ?? null,
                         total: total,
-                        status: 'SERVICE'
+                        status: 'SERVICE',
+                        book_id: state.data.booking_id,
+                        promotion_line_id: promotionCanUse?.promotionLine?.id ?? null
                     },
                     order_details: orderDetails,
                     slot_id: state.data.id
                 });
-
-                console.log(orderSumTime);
             });
     }, []);
 
@@ -118,8 +121,8 @@ const BookingDetail = () => {
                 params: { id: state.data.booking_id, total: orderSum }
             })
             .then((value) => {
-                console.log(value.data.promotion_can_use);
                 setPromotionCanUse(value.data.promotion_can_use);
+                // setOrderPayment({ promotion: value.data.promotion_can_use.promotionLine, ...orderPayment});
             });
     }, [orderSum]);
 
@@ -170,7 +173,8 @@ const BookingDetail = () => {
     const handlePayment = async () => {
         console.log(orderPayment);
         const params = {
-            ...orderPayment
+            ...orderPayment,
+            promotion_line : promotionCanUse
         };
 
         await axios.post(apiConfig.ORDER_API.PAYMENT, params);

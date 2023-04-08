@@ -7,6 +7,7 @@ import { Divider, List, Typography } from '@mui/material';
 // project imports
 import NavItem from '../NavItem';
 import NavCollapse from '../NavCollapse';
+import { getAuth, roles } from 'utils/auth';
 
 // ==============================|| SIDEBAR MENU LIST GROUP ||============================== //
 

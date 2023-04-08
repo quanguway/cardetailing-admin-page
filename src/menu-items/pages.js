@@ -1,5 +1,6 @@
 // assets
 import { IconUser, IconBuildingStore, IconArchive   } from '@tabler/icons';
+import { roles } from 'utils/auth';
 
 // ==============================|| EXTRA PAGES MENU ITEMS ||============================== //
 
@@ -20,6 +21,7 @@ const pages = {
                     title: 'Xếp lịch & chỗ',
                     type: 'item',
                     url: '/booking',
+                    roles: [roles.ROLE_ADMIN, roles.ROLE_CUSTOMER],
                     target: true
                 },
                 {
@@ -27,6 +29,7 @@ const pages = {
                     title: 'Hóa đơn',
                     type: 'item',
                     url: '/order',
+                    roles: [roles.ROLE_ADMIN, roles.ROLE_CUSTOMER],
                     target: true
                 },
                 
@@ -43,6 +46,7 @@ const pages = {
                     title: 'Địa chỉ',
                     type: 'item',
                     url: '/address',
+                    roles: [roles.ROLE_ADMIN],
                     target: true
                 },
                 {
@@ -50,6 +54,7 @@ const pages = {
                     title: 'Nhân viên',
                     type: 'item',
                     url: '/staff',
+                    roles: [roles.ROLE_ADMIN],
                     target: true
                 },
                 {
@@ -57,6 +62,7 @@ const pages = {
                     title: 'Khách hàng',
                     type: 'item',
                     url: '/customer',
+                    roles: [roles.ROLE_ADMIN],
                     target: true
                 },
 
@@ -73,6 +79,7 @@ const pages = {
                     title: 'Loại dịch vụ',
                     type: 'item',
                     url: '/product-category',
+                    roles: [roles.ROLE_ADMIN],
                     target: true
                 },
                 {
@@ -80,6 +87,7 @@ const pages = {
                     title: 'Dịch vụ',
                     type: 'item',
                     url: '/product',
+                    roles: [roles.ROLE_ADMIN],
                     target: true
                 },
                 {
@@ -87,6 +95,7 @@ const pages = {
                     title: 'Đơn vị',
                     type: 'item',
                     url: '/unit',
+                    roles: [roles.ROLE_ADMIN],
                     target: true
                 },
                 {
@@ -94,6 +103,7 @@ const pages = {
                     title: 'Khuyến mãi',
                     type: 'item',
                     url: '/promotion',
+                    roles: [roles.ROLE_ADMIN],
                     target: true
                 },
                 {
@@ -101,6 +111,7 @@ const pages = {
                     title: 'Bảng giá',
                     type: 'item',
                     url: '/price',
+                    roles: [roles.ROLE_ADMIN],
                     target: true
                 },
             ]
@@ -116,10 +127,11 @@ const pages = {
                     title: 'Thông tin xe',
                     type: 'item',
                     url: '/car-info',
+                    roles: [roles.ROLE_ADMIN, roles.ROLE_CUSTOMER],
                     target: true
                 },
             ]
-        }
+        },
     ]
 };
 

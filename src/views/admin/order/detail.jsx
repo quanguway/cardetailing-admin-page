@@ -3,6 +3,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
 import { apiConfig } from 'config/app.config';
 import TableSimpleLayout from 'layout/TableLayout/TableSimpleLayout';
+import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { v4 as uuid } from 'uuid';
@@ -23,13 +24,13 @@ const OrderDetail = () => {
     const [promotionCanUse, setPromotionCanUse] = useState();
 
     useEffect(() => {
+        console.log(state.data)
         axios
             .get(apiConfig.BOOKING_API.GET_BY_ID, {
-                params: { id: state.data.booking_id }
+                params: { id: state.data.book_id }
             })
             .then((value) => {
                 const data = value.data;
-                console.log(data);
                 setBookDetailRow(
                     value.data.booking_details.map((item) => ({
                         id: item.id,
@@ -100,6 +101,7 @@ const OrderDetail = () => {
                         id: orderId,
                         customer_id: data.customer.id,
                         total: total,
+                        final_total: Number(orderSum) - Number(promotionCanUse?.soTienGiam ?? 0),
                         status: 'SERVICE'
                     },
                     order_details: orderDetails,
@@ -110,14 +112,18 @@ const OrderDetail = () => {
             });
     }, []);
 
+    console.log(state.data);
+
+    console.log(state.data.book_id);
+
     useEffect(() => {
         axios
             .get(apiConfig.PROMOTION_API.CHECKPROMOTIONORDER, {
-                params: { id: state.data.booking_id, total: orderSum }
+                params: { id: state.data.book_id, total: orderSum }
             })
             .then((value) => {
-                console.log(value.data.promotion_can_use);
                 setPromotionCanUse(value.data.promotion_can_use);
+
             });
     }, [orderSum]);
 
@@ -187,7 +193,10 @@ const OrderDetail = () => {
             field: 'staff_name',
             flex: 1
         },
-        { headerName: 'Ghi chú', flex: 1 }
+        {             headerName: 'Ghi chú',
+        flex: 1,
+        field: 'type',
+        renderCell: (params) => (params.value === 'GIFT' ? <CardGiftcardIcon></CardGiftcardIcon> : '')}
     ];
 
     const RenderInfoService = () => {
@@ -517,7 +526,7 @@ const OrderDetail = () => {
                                     >
                                         <Grid item xs={6}></Grid>
                                         <Grid item xs={6}>
-                                            <Button
+                                            {/* <Button
                                                 sx={{
                                                     margin: '10px 15px',
                                                     width: '300px'
@@ -527,7 +536,7 @@ const OrderDetail = () => {
                                                 color="primary"
                                             >
                                                 Thanh toán
-                                            </Button>
+                                            </Button> */}
                                         </Grid>
                                     </Grid>
                                 </Grid>

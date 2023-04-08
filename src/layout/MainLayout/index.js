@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 
 // material-ui
 import { styled, useTheme } from '@mui/material/styles';
@@ -16,6 +16,7 @@ import { SET_MENU } from 'store/actions';
 
 // assets
 import { IconChevronRight } from '@tabler/icons';
+import { getAuth } from 'utils/auth';
 
 // styles
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
@@ -73,7 +74,7 @@ const MainLayout = () => {
         dispatch({ type: SET_MENU, opened: !leftDrawerOpened });
     };
 
-    return (
+    return getAuth() ?  (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             {/* header */}
@@ -104,7 +105,7 @@ const MainLayout = () => {
             {/* <Customization /> */}
 
         </Box>
-    );
+    ) : <Navigate to={{ pathname: '/login' }} />;
 };
 
 export default MainLayout;
