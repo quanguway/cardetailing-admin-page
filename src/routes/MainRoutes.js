@@ -50,6 +50,9 @@ const PricePage = Loadable(lazy(() => import('views/admin/price')));
 
 const BookingForm = Loadable(lazy(() => import('views/admin/booking/form')));
 const BookingPage = Loadable(lazy(() => import('views/admin/booking')));
+
+const HomePage = Loadable(lazy(() => import('views/home')));
+
 const BookingHandle = Loadable(
     lazy(() => import('views/admin/booking/handleBooking'))
 );
@@ -67,7 +70,7 @@ const CustomerPage = Loadable(lazy(() => import('views/admin/customer')));
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
-    path: '/',
+    path: '',
     element: <MainLayout />,
     children: [
         {
@@ -83,7 +86,7 @@ const MainRoutes = {
             element: <StaffPage />
         },
         {
-            path: '/staff/form',
+            path: 'staff/form',
             element: <StaffForm />
         },
         {
@@ -95,11 +98,11 @@ const MainRoutes = {
             element: <ProductPage />
         },
         {
-            path: '/product/create',
+            path: 'product/create',
             element: <ProductCreate />
         },
         {
-            path: '/product/update',
+            path: 'product/update',
             element: <ProductUpdate />
         },
         // ------------ unit --------------
@@ -108,103 +111,103 @@ const MainRoutes = {
             element: <UnitPage />
         },
         {
-            path: '/unit/create',
+            path: 'unit/create',
             element: <UnitCreate />
         },
         {
-            path: '/unit/update',
+            path: 'unit/update',
             element: <UnitUpdate />
         },
 
         // ---------- price -------------
 
         {
-            path: '/price/create',
+            path: 'price/create',
             element: <PriceCreate />
         },
         {
-            path: '/price/update',
+            path: 'price/update',
             element: <PriceUpdate />
         },
         {
-            path: '/price',
+            path: 'price',
             element: <PricePage />
         },
 
         // ------------ order ----------------
 
         {
-            path: '/order/create',
+            path: 'order/create',
             element: <OrderCreate />
         },
         {
-            path: '/order',
+            path: 'order',
             element: <OrderPage />
         },
         {
-            path: '/order/detail',
+            path: 'order/detail',
             element: <OrderDetail />
         },
 
         //  -------------- promotion -------------------
 
         {
-            path: '/promotion/create',
+            path: 'promotion/create',
             element: <PromotionCreate />
         },
         {
-            path: '/promotion/update',
+            path: 'promotion/update',
             element: <PromotionUpdate />
         },
         {
-            path: '/promotion',
+            path: 'promotion',
             element: <PromotionPage />
         },
 
         // ------------------- carInfo ---------------------
 
         {
-            path: '/car-info/create',
+            path: 'car-info/create',
             element: <CarInfoCreate />
         },
         {
-            path: '/car-info/update',
+            path: 'car-info/update',
             element: <CarInfoUpdate />
         },
         {
-            path: '/car-info',
+            path: 'car-info',
             element: <CarInfoPage />
         },
 
 
         // {
-        //     path: '/booking/create',
+        //     path: 'booking/create',
         //     element: <BookingCreate />
         // },
         // {
-        //     path: '/booking/update',
+        //     path: 'booking/update',
         //     element: <BookingUpdate />
         // },
 
 
         {
-            path: '/booking/detail',
+            path: 'booking/detail',
             element: <BookingDetail />
         },
         {
-            path: '/booking',
+            path: 'booking',
             element: <BookingPage />
         },
         {
-            path: '/booking/handle',
+            path: 'booking/handle',
             element: <BookingHandle />
         },
         {
-            path: '/customer/update',
+            path: 'customer/update',
             element: <CustomerUpdate />
         },
         {
-            path: '/customer',
+            path: 'customer',
             element: <CustomerPage />
         }
 

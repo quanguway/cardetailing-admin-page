@@ -30,6 +30,7 @@ export default function FormSimpleLayout({
     returnButton,
     nameForm,
     fields,
+    showButton = true,
     mode = 'update' | 'create',
     isBackgroud = true,
     handleSubmit = () => {},
@@ -236,6 +237,8 @@ export default function FormSimpleLayout({
                                         }
                                         helperText={item?.helper}
                                         disablePast
+                                        minDate={item.minDate}
+                                        maxDate={item.maxDate}
                                         format="DD/MM/YYYY"
                                         disabled={item.disabled ?? false}
                                         label={item.label}
@@ -250,10 +253,17 @@ export default function FormSimpleLayout({
                         default:
                             return (
                                 <TextField
+                                    sx={ item.text_active ? {
+                                        marginTop: '20px',
+                                        '& .MuiInputBase-input.Mui-disabled': {
+                                            WebkitTextFillColor: 'black'
+                                        }
+                                    } : {
+                                        marginTop: '20px',
+                                    }}
                                     key={index}
                                     error={item?.isError ? item.isError : false}
                                     helperText={item?.helper}
-                                    sx={{ marginTop: '20px' }}
                                     variant="outlined"
                                     label={item.label}
                                     value={item.useState[0]}
@@ -284,14 +294,14 @@ export default function FormSimpleLayout({
                             Quay Lại
                         </Button>
                     )}
-                    <Button
+                    {showButton && <Button
                         variant="contained"
                         color="primary"
                         onClick={handleSubmit}
                         sx={{ minWidth: '100px', marginTop: '20px' }}
                     >
                         {nameButtonSave ? nameButtonSave : 'Lưu'}
-                    </Button>
+                    </Button>}
                 </Box>
             </Box>
         </Box>
