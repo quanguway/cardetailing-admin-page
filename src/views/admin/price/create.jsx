@@ -68,7 +68,7 @@ const PriceCreate = () => {
             });
             return;
         }
-        console.log(title);
+        console.log(startDate);
         if (title === undefined) {
             Swal.fire({
                 icon: 'error',
@@ -76,6 +76,24 @@ const PriceCreate = () => {
             });
             return;
         }
+
+        if (!startDate  || startDate === null) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Chưa nhập ngày bắt đầu bảng giá'
+            });
+            return;
+        }
+
+        if (!endDate  || endDate === null) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Chưa nhập ngày kết thúc bảng giá'
+            });
+            return;
+        }
+
+
 
         var params = {
             priceHeader: {
@@ -124,7 +142,7 @@ const PriceCreate = () => {
     };
 
     const handleSubmitPriceLine = async () => {
-        const priceList = price.split('.');
+        const priceList = price.split(',');
         const rows = {
             id: uuid(),
             price: priceList.join(''),
@@ -169,12 +187,15 @@ const PriceCreate = () => {
         {
             label: 'Ngày áp dụng',
             useState: [startDate, setStartDate],
-            type: 'date-picker'
+            type: 'date-picker',
+            minDate: dayjs().add(1, 'day'),
+            maxDate: endDate
         },
         {
             label: 'Ngày kết thúc',
             useState: [endDate, setEndDate],
-            type: 'date-picker'
+            type: 'date-picker',
+            minDate: startDate
         }
     ];
 

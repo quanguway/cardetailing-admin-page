@@ -43,17 +43,17 @@ const PromotionCreate = () => {
     const [promotionRows, setPromotionRows] = useState([]);
 
     const [promotionStartDate, setPromotionStartDate] = useState(
-        dayjs(new Date())
+        dayjs(new Date()).add(1, 'day')
     );
     const [promotionEndDate, setPromotionEndDate] = useState(
         dayjs(new Date()).add(1, 'day')
     );
 
     const [titlePromotionLine, setTitlePromotionLine] = useState();
-    const [startDate, setStartDate] = useState(dayjs(new Date()));
+    const [startDate, setStartDate] = useState();
     const [statusPromotionLine, setStatusPromotionLine] = useState('Kích hoạt');
     const [promotionCode, setPromotionCode] = useState();
-    const [endDate, setEndDate] = useState(dayjs(new Date()).add(1, 'day'));
+    const [endDate, setEndDate] = useState();
 
     const [reductionAmountMaximum, setReductionAmountMaximum] = useState();
     const [totalBudget, setTotalBudget] = useState();
@@ -180,22 +180,21 @@ const PromotionCreate = () => {
     //     checkCodePromotion();
     // },[code])
 
-
     const handleSubmit = async () => {
-        // if (
-        //     !(
-        //         !checkTitlePromotion() &&
-        //         !checkCodePromotion() &&
-        //         !checkPromotionDate()
-        //     )
-        // ) {
-        //     return;
-        // }
+        if (
+            !(
+                !checkTitlePromotion() &&
+                !checkCodePromotion() 
+            )
+        ) {
+            return;
+        }
         console.log('prem');
         // const promotionRowsCustomer = promotionRows.map((item) =>  ({...item, id: uuid()}))
         var params = {
             promotion: {
                 id: uuid(),
+                code: code,
                 title: title,
                 description: description,
                 note: note,
@@ -205,12 +204,86 @@ const PromotionCreate = () => {
             },
             promotionDetail: promotionRows
         };
-        await axios.post(apiConfig.PROMOTION_API.CREATE, params).then((value) => {
-            navigate('/promotion');
-        });
+        await axios
+            .post(apiConfig.PROMOTION_API.CREATE, params)
+            .then((value) => {
+                navigate('/promotion');
+            });
     };
 
     const handleSubmitToggle = async () => {
+        if (!promotionCode || promotionCode === null) {
+            alert('Chưa nhập mã khuyến mãi');
+            return;
+        }
+
+        if (!titlePromotionLine || titlePromotionLine === null) {
+            alert('Chưa nhập tên khuyến mãi');
+            return;
+        }
+
+        if (!startDate || startDate === null) {
+            alert('Chưa nhập ngày bắt đầu khuyến mãi');
+            return;
+        }
+
+        if (!endDate || endDate === null) {
+            alert('Chưa nhập ngày kết thúc khuyến mãi');
+            return;
+        }
+
+        if (conditionOption?.value) {
+            if (conditionOption?.value === 'CONDITION_PRODUCT') {
+                if (
+                    !conditionProduct ||
+                    conditionProduct === null ||
+                    conditionProduct === ''
+                ) {
+                    alert('Chưa nhập dịch vụ sử dụng');
+                    return;
+                }
+                if (!getProduct || getProduct === null || getProduct === '') {
+                    alert('Chưa nhập dịch vụ được tặng');
+                    return;
+                }
+            } else {
+                if (
+                    !minimumTotal ||
+                    minimumTotal === null ||
+                    minimumTotal === ''
+                ) {
+                    alert('Chưa nhập giá trị hóa đơn tối thiểu');
+                    return;
+                }
+
+                if (promotionOptions) {
+                    if (promotionOption?.value === 'PRICE') {
+                        if (
+                            !reductionAmountMaximum ||
+                            reductionAmountMaximum === null ||
+                            reductionAmountMaximum === ''
+                        ) {
+                            alert('Chưa nhập số tiền giảm');
+                            return;
+                        }
+                    } else if (promotionOption?.value === 'PERCENT'){
+                        if (!percent || percent === null || percent === '') {
+                            alert('Chưa nhập % giảm giá');
+                            return;
+                        }
+                        if (
+                            !reductionAmountMaximum ||
+                            reductionAmountMaximum === null ||
+                            reductionAmountMaximum === ''
+                        ) {
+                            alert('Chưa nhập số tiền giảm tối đa');
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
         const rows = {
             id: uuid(),
             promotion_code: promotionCode,
@@ -221,8 +294,8 @@ const PromotionCreate = () => {
             product_title: getProduct?.title ?? '',
             product_received_id: getProduct?.id ?? null,
             product_buy_id: conditionProduct?.id ?? null,
-            quantity_product_buy: quantityProductBuy ?? null,
-            quantity_product_received: quantityProductReceive ?? null,
+            quantity_product_buy: 1,
+            quantity_product_received: 1,
             minimum_total: minimumTotal ?? null,
             percent: percent ?? null,
             total_budget: totalBudget ?? null,
@@ -268,6 +341,8 @@ const PromotionCreate = () => {
             useState: [promotionStartDate, setPromotionStartDate],
             helper: helperPromotionStartDate,
             isError: isErrorPromotionStartDate,
+            minDate: dayjs().add(1, 'day'),
+            maxDate: promotionEndDate,
             type: 'date-picker'
         },
         {
@@ -275,7 +350,8 @@ const PromotionCreate = () => {
             useState: [promotionEndDate, setPromotionEndDate],
             helper: helperPromotionEndDate,
             isError: isErrorPromotionEndDate,
-            type: 'date-picker'
+            type: 'date-picker',
+            minDate: promotionStartDate
         },
         {
             label: 'Mô tả',
@@ -301,12 +377,25 @@ const PromotionCreate = () => {
         {
             label: 'Ngày áp dụng',
             useState: [startDate, setStartDate],
+            minDate: promotionStartDate,
+            maxDate:
+                endDate !== null
+                    ? dayjs(endDate).isBefore(promotionEndDate)
+                        ? endDate
+                        : promotionEndDate
+                    : promotionEndDate,
             type: 'date-picker'
         },
         {
             label: 'Ngày kết thúc',
             useState: [endDate, setEndDate],
-            minDate: dayjs().add(1, 'day'),
+            minDate:
+                startDate !== null
+                    ? dayjs(startDate).isAfter(promotionStartDate)
+                        ? startDate
+                        : promotionStartDate
+                    : promotionStartDate,
+            maxDate: promotionEndDate,
             type: 'date-picker'
         },
         {
@@ -374,6 +463,25 @@ const PromotionCreate = () => {
     ];
 
     const handleAddButton = () => {
+        if (!promotionStartDate || promotionStartDate === null) {
+            Swal.fire({
+                icon: 'error',
+                html: '<b>Chưa nhập ngày bắt đầu bảng khuyến mãi</b>'
+            });
+            return;
+        }
+
+        if (!promotionEndDate || promotionEndDate === null) {
+            Swal.fire({
+                icon: 'error',
+                html: '<b>Chưa nhập ngày kết thúc bảng khuyến mãi</b>'
+            });
+            return;
+        }
+
+        setStartDate(promotionStartDate);
+        setEndDate(promotionEndDate);
+
         handleToggle();
     };
 
@@ -424,7 +532,7 @@ const PromotionCreate = () => {
                                 />
                             )}
                         />
-                        <TextField
+                        {/* <TextField
                             sx={{ marginTop: '20px' }}
                             label={'Số lượng sử dụng'}
                             fullWidth={true}
@@ -432,7 +540,7 @@ const PromotionCreate = () => {
                             onBlur={(event) => {
                                 setQuanlityProductBuy(event.target.value);
                             }}
-                        />
+                        /> */}
                     </>
                 );
             case 'CONDITION_PRICE':
@@ -551,7 +659,7 @@ const PromotionCreate = () => {
                                 />
                             )}
                         />
-                        <TextField
+                        {/* <TextField
                             sx={{ marginTop: '20px' }}
                             label={'Số lượng được tặng'}
                             fullWidth={true}
@@ -559,7 +667,7 @@ const PromotionCreate = () => {
                             onBlur={(event) => {
                                 setQuanlityProductReceive(event.target.value);
                             }}
-                        />
+                        /> */}
                         <TextField
                             sx={{ marginTop: '20px' }}
                             label={'Số lượng khách áp dụng'}

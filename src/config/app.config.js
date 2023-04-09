@@ -46,6 +46,7 @@ export const apiConfig = {
         UPDATE: `${appConfig.URL_API}/product/update`,
         DELETE: `${appConfig.URL_API}/product`,
         CREATE: `${appConfig.URL_API}/product/create`,
+        GET_BY_ID: `${appConfig.URL_API}/product/id`,
     },
     BOOKING_API: {
         GET_ALL: `${appConfig.URL_API}/booking`,
