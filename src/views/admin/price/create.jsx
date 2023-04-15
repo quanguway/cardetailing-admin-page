@@ -124,7 +124,7 @@ const PriceCreate = () => {
     };
 
     const handleSubmitPriceLine = async () => {
-        const priceList = price.split('.');
+        const priceList = price.split(',');
         const rows = {
             id: uuid(),
             price: priceList.join(''),

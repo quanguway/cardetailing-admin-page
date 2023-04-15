@@ -57,6 +57,7 @@ export const apiConfig = {
     BOOKING_DETAIL_API: {
         GET_ALL: `${appConfig.URL_API}/booking-detail`,
         UPDATE: `${appConfig.URL_API}/booking-detail/update`,
+        CREATE: `${appConfig.URL_API}/booking-detail/create`,
         DELETE: `${appConfig.URL_API}/booking-detail`,
         GET_BY_BOOKING_ID: `${appConfig.URL_API}/price-line/booking-id`
     },
