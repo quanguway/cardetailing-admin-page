@@ -167,7 +167,7 @@ const ProfileSection = () => {
                                             </Stack>
                                             <Typography variant="subtitle2">{getAuth().role}</Typography>
                                         </Stack>
-                                        <OutlinedInput
+                                        {/* <OutlinedInput
                                             sx={{ width: '100%', pr: 1, pl: 2, my: 2 }}
                                             id="input-search-profile"
                                             value={value}
@@ -181,12 +181,12 @@ const ProfileSection = () => {
                                             aria-describedby="search-helper-text"
                                             inputProps={{
                                                 'aria-label': 'weight'
-                                            }}
-                                        />
+                                            }} 
+                                        />*/}
                                         <Divider />
                                     </Box>
                                     <PerfectScrollbar style={{ height: '100%', maxHeight: 'calc(100vh - 250px)', overflowX: 'hidden' }}>
-                                        <Box sx={{ p: 2 }}>
+                                        <Box>
                                             <List
                                                 component="nav"
                                                 sx={{

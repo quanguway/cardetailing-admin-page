@@ -20,11 +20,15 @@ const UnitUpdate = () => {
     const [openForm, setOPenForm] = useState(false);
     const [listProducts, setListProduct] = useState([]);
 
-    //unit
+    console.log(state.data);
 
-    const [type, setType] = useState({title: state.data.type});
     const [code, setCode] = useState(state.data.code);
-    const [branch, setBranch] = useState(state.data.branch);
+    const [branch, setBranch] = useState({title: state.data.branch});
+    const [model, setModel] = useState(state.data.model);
+    const [seats, setSeat] = useState(state.data.number_of_seats);
+
+    const [branchList, setBranchList] = useState([]);
+
 
 
     const carTypes = [
@@ -39,6 +43,13 @@ const UnitUpdate = () => {
     const handleToggle = () => {
         setOPenForm(!openForm);
     };
+
+    useEffect(() => {
+        axios.get(apiConfig.CAR_BRANCH.GET_ALL).then((item) => {
+            console.log(item.data);
+            setBranchList(item.data);
+        }); 
+    }, [])
 
     const handleSubmit = async () => {
         // if (!title || title.trim() === '') {
@@ -68,8 +79,9 @@ const UnitUpdate = () => {
             item: {
                 id: state.data.id,
                 code: code,
-                type: type.title,
-                branch: branch
+                car_branch_id: branch.id,
+                model: model,
+                number_of_seats: seats
             }
         };
         await axios.post(apiConfig.CAR_INFO.UPDATE, params).then((res) => {
@@ -100,16 +112,19 @@ const UnitUpdate = () => {
             useState: [code, setCode],
         },
         {
-            name: 'type',
-            label: 'Loại xe',
-            useState: [type, setType],
+            name: 'branch',
+            label: 'Hãng xe',
+            useState: [branch, setBranch],
             type: 'combo',
-            values: carTypes,
+            values: branchList,
         },
         {
-            name: 'branch',
             label: 'Dòng xe',
-            useState: [branch, setBranch],
+            useState: [model, setModel],
+        },
+        {
+            label: 'Số chỗ ngồi',
+            useState: [seats, setSeat],
         }
     ];
 
