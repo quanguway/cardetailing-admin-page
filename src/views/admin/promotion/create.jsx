@@ -301,6 +301,7 @@ const PromotionCreate = () => {
         {
             label: 'Ngày áp dụng',
             useState: [startDate, setStartDate],
+            minDate: dayjs().add(1, 'day'),
             type: 'date-picker'
         },
         {

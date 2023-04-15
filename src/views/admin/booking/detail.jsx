@@ -1,4 +1,4 @@
-import { Box, Button, Grid, List, ListItem, Typography } from '@mui/material';
+import { Autocomplete, Box, Button, Drawer, Grid, List, ListItem, TextField, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
 import { apiConfig } from 'config/app.config';
@@ -8,10 +8,20 @@ import { useLocation, useNavigate } from 'react-router';
 import { v4 as uuid } from 'uuid';
 import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import moment from 'moment/moment';
+import FormSimpleLayout from 'layout/FormLayout/FormSimpleLayout';
+import PerfectScrollbar from 'react-perfect-scrollbar';
+
 
 const BookingDetail = () => {
     const { state } = useLocation();
     const navigate = useNavigate();
+
+    const [open, setOpen] = useState(false);
+    const handleToggle = () => {
+        setOpen(!open);
+    };
+
+    const [listServiceIdBooked, setListServiceIdBooked] = useState();
 
     const [listInfo, setListInfo] = useState([]);
     const [customerInfo, setCustomerInfo] = useState([]);
@@ -23,6 +33,19 @@ const BookingDetail = () => {
     const [orderCreateDate, setOrderCreateDate] = useState();
     const [promotionCanUse, setPromotionCanUse] = useState();
 
+    const [listServiceWithoutInBook, setListServiceWithoutInBook] = useState();
+    const [listStaff, setListStaff] = useState();
+
+
+    const statusList = ['Đang chờ sử dụng dịch vụ' ,'Đang xử dụng dịch vụ', 'Hoàn thành dịch vụ', 'Hủy dịch vụ'];
+
+
+    useEffect(() => {
+        axios.get(apiConfig.STAFF_API.GET_ALL).then((value) => {
+            setListStaff(value.data);
+        })
+    }, [])
+
     useEffect(() => {
         axios
             .get(apiConfig.BOOKING_API.GET_BY_ID, {
@@ -31,6 +54,19 @@ const BookingDetail = () => {
             .then((value) => {
                 const data = value.data;
                 console.log(data);
+                setListServiceIdBooked(value.data.booking_details.map((item) => {return item.product.id}))
+
+                axios.get(apiConfig.PRODUCT_API.GET_ALL).then((data) => {
+                    console.log(listServiceIdBooked);
+                    const arr = data.data.filter((item) => { 
+                        console.log(listServiceIdBooked?.includes(item.id));
+                        return ! listServiceIdBooked?.includes(item.id) 
+                    });
+                    console.log(arr);
+                    setListServiceWithoutInBook(arr);
+                    console.log(listServiceIdBooked);
+                })
+
                 setBookDetailRow(
                     value.data.booking_details.map((item) => ({
                         id: item.id,
@@ -40,9 +76,11 @@ const BookingDetail = () => {
                         service_product_received: item.product_recived_title,
                         service_time: item.product.time,
                         staff_name: item?.staff?.full_name ?? '',
-                        type: item?.type ?? ''
+                        type: item?.type ?? '',
+                        status: item?.status ?? ''
                     }))
                 );
+
                 setCustomerInfo([
                     {
                         label: 'Tên khách hàng',
@@ -77,16 +115,23 @@ const BookingDetail = () => {
                 ]);
 
                 const orderId = uuid();
-                console.log(data.booking_details);
+                
                 const total = data.booking_details.reduce(
-                    (partialSum, item) => partialSum + item.price_final,
+                    (partialSum, item) => {
+                        if(item.status == statusList[2]) {
+                            return partialSum + item.price_final
+                        }
+                    },
                     0
                 );
                 const totalTime = data.booking_details.reduce(
                     (partialSum, item) => partialSum + item.product.time,
                     0
                 );
-                setOrderSum(total);
+                
+                
+                setOrderSum(total ?? 0);
+                console.log(orderSum);
 
                 setOrderSumTime(totalTime);
                 setOrderCreateDate(data.date_created);
@@ -94,7 +139,7 @@ const BookingDetail = () => {
                     console.log(item);
                     return {
                         type: item.type,
-                        status: 'SERVICE',
+                        status: item.status,
                         product_id: item.product.id,
                         price_line_id: item?.price?.id ?? null,
                         order_id: orderId
@@ -113,6 +158,17 @@ const BookingDetail = () => {
                     order_details: orderDetails,
                     slot_id: state.data.id
                 });
+            }).finally((value) => {
+                // axios.get(apiConfig.PRODUCT_API.GET_ALL).then((data) => {
+                //     console.log(listServiceIdBooked);
+                //     const arr = data.data.filter((item) => { 
+                //         console.log(listServiceIdBooked?.includes(item.id));
+                //         return ! listServiceIdBooked?.includes(item.id) 
+                //     });
+                //     console.log(arr);
+                //     setListServiceWithoutInBook(arr);
+                //     console.log(listServiceIdBooked);
+                // })
             });
     }, []);
 
@@ -185,6 +241,7 @@ const BookingDetail = () => {
         navigate('/booking');
     };
 
+
     const bookDetailColumns = [
         { field: 'service_title', headerName: 'Tên dịch vụ', flex: 1 },
         { field: 'service_time', headerName: 'Thời gian xử lý', flex: 1 },
@@ -222,7 +279,39 @@ const BookingDetail = () => {
                     </b>
                 </div>
             )
+        },
+        {
+            field: 'status',
+            headerName: 'Trạng thái',
+            width: 200,
+            renderCell: (data) => (
+                data.row.type != 'GIFT' ? <Autocomplete
+                    size="small"
+                    options={data.row.status == statusList[1] ? [statusList[1], statusList[2]] : statusList}
+                    value={data.row.status}
+                    disabled={data.row.status == statusList[3] || data.row.status == statusList[2]}
+                    fullWidth={true}
+                    disableClearable
+                    onChange={(event, newValue) => {
+                        console.log(data.row)
+                        const params = {
+                            id: data.row.id,
+                            item: {
+                                'status': newValue,
+                            }
+                        }
+                        if (confirm('BẠn có thực sự muốn chuyển status book detail?')) {
+                            axios.post(apiConfig.BOOKING_DETAIL_API.UPDATE, params).then(
+                                window.location.reload()
+                            );
+                        }
+                        handleConfirmChange(params.row.id, newValue);
+                    }}
+                    renderInput={(params) => <TextField {...params} />}
+                /> : <></>
+            )
         }
+        
     ];
 
     const RenderInfoService = () => {
@@ -238,6 +327,25 @@ const BookingDetail = () => {
             </Box>
         );
     };
+
+    const [addService, setAddService] = useState();
+    const [addStaff, setAddStaff] = useState();
+
+    const addServiceForm = [
+        {
+            label: 'Dịch vụ',
+            useState: [addService, setAddService],
+            type: 'combo',
+            values: listServiceWithoutInBook,
+        },
+        {
+            label: 'Nhân viên',
+            useState: [addStaff, setAddStaff],
+            type: 'combo',
+            values: listStaff
+        },
+        
+    ]
 
     return (
         <Box>
@@ -580,11 +688,44 @@ const BookingDetail = () => {
                     padding: '14px'
                 }}
             >
-                <h3>Danh sách dịch vụ</h3>
+                <Box justifyContent={'space-between'} display={'flex'} mb={1}>
+                    <h3>Danh sách dịch vụ</h3>
+                    <Button onClick={() => {
+                        handleToggle()
+                    }} variant='contained' py={0}>Thêm dịch vụ</Button>
+                    <Drawer
+                        anchor={'right'}
+                        onClose={handleToggle}
+                        open={open}
+                        PaperProps={{
+                            sx: {
+                                width: 700
+                            }
+                        }}
+                    >
+                        <PerfectScrollbar component="div">
+                            <FormSimpleLayout fields={addServiceForm} isBackgroud={false} nameForm={'Thêm dịch vụ'} handleSubmit={() => {
+                                    // const [addService, setAddService] = useState();
+                                    // const [addStaff, setAddStaff] = useState();
+                                    console.log(orderPayment);
+                                    console.log(addService);
+                                // const params = {
+                                //     product_id: addService.id,
+                                //     status: statusList[0],
+                                //     booking_id: orderPayment.order.book_id,
+                                //     staff_id: addStaff.id,
+                                //     price_id: serv
+                                // }
+
+                                // axios.post(apiConfig.BOOKING_DETAIL_API.CREATE, )
+                            }}/>
+                        </PerfectScrollbar>
+                    </Drawer>
+                </Box>
                 <RenderInfoService />
             </Box>
         </Box>
     );
-};
+}
 
-export default BookingDetail;
+export default BookingDetail
