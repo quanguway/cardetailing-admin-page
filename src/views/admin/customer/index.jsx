@@ -1,4 +1,4 @@
-import { Box, Button, ButtonBase, Collapse, Drawer, IconButton } from '@mui/material';
+import { Box, Button, ButtonBase, Collapse, Drawer, IconButton, Modal, Typography } from '@mui/material';
 import TableSimpleLayout from 'layout/TableLayout/TableSimpleLayout';
 import { apiConfig } from 'config/app.config';
 import { GridActionsCellItem } from '@mui/x-data-grid';
@@ -13,12 +13,17 @@ import { renderGender } from 'utils/dataToView';
 import React from 'react';
 import CarDetailRow from 'component/CarDetailRow';
 
+
 const CustomerPage = () => {
     const navigate = useNavigate();
 
     const [open, setOpen] = useState(false);
     const [row, setRow] = useState(null);
     const [openCollapse, setOpenCollapse] = React.useState(false);
+
+    const [openModal, setOpenModal] = React.useState(false);
+    const handleModalOpen = () => setOpenModal(true);
+    const handleModalClose = () => setOpenModal(false);
 
     const handleToggle = () => {
         setOpen(!open);
@@ -37,6 +42,15 @@ const CustomerPage = () => {
         setGender(renderGender(row?.gender) ?? '');
         setAddress(row?.address_path_title ?? '');
     }, [row]);
+
+    const addCarfields = [
+        {
+            label: 'Full name',
+            disabled: true,
+            text_active: true,
+            useState: [fullName, setFullName]
+        },
+    ]
 
     const fields = [
         {
@@ -105,6 +119,14 @@ const CustomerPage = () => {
                         });
                     }}
                     showInMenu
+                />,
+                <GridActionsCellItem
+                    icon={<IconPencil />}
+                    label="Thêm xe"
+                    onClick={() => {
+                        handleModalOpen()
+                    }}
+                    showInMenu
                 />
             ]
         }
@@ -119,6 +141,29 @@ const CustomerPage = () => {
                 // handleAddButton={() => navigate('create')}
                 disableButton={true}
             />
+            <Modal sx={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 500,
+                height: 600,
+                borderRadius: '12px',
+                boxShadow: 24,
+            }}
+                open={openModal}
+                onClose={handleModalClose}
+                >
+                <Box sx={{
+                    backgroundColor: '#ffffff !important',
+                    width: '100%',
+                    height: '100%'
+                }}>
+                    <PerfectScrollbar component="div">
+                        <FormSimpleLayout fields={fields} isBackgroud={false} showButton={true}/>
+                    </PerfectScrollbar>
+                </Box>
+            </Modal>
             <Drawer
                 anchor={'right'}
                 onClose={handleToggle}

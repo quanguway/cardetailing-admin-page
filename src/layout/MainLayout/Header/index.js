@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import { Avatar, Box, ButtonBase } from '@mui/material';
+import { Avatar, Box, ButtonBase, Stack, Typography } from '@mui/material';
 
 // project imports
 import LogoSection from '../LogoSection';
@@ -12,6 +12,7 @@ import NotificationSection from './NotificationSection';
 
 // assets
 import { IconMenu2 } from '@tabler/icons';
+import { getAuth } from 'utils/auth';
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
@@ -33,6 +34,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
                 <Box component="span" sx={{ display: { xs: 'none', md: 'block' }, flexGrow: 1 }}>
                     <LogoSection />
                 </Box>
+                
                 <ButtonBase sx={{ borderRadius: '12px', overflow: 'hidden' }}>
                     <Avatar
                         variant="rounded"
@@ -54,6 +56,17 @@ const Header = ({ handleLeftDrawerToggle }) => {
                     </Avatar>
                 </ButtonBase>
             </Box>
+            <Stack ml={4}>
+                <Stack direction="row" spacing={0.5} alignItems="center">
+                    <Typography variant="h4">Xin chào,</Typography>
+                    <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
+                        {getAuth().user_name} !
+                    </Typography>
+                </Stack>
+                <Stack direction="row" spacing={0.5} alignItems="center">
+                    <Typography variant="subtitle2"> {getAuth().role}</Typography>
+                </Stack>
+            </Stack>
 
             {/* header search */}
             {/* <SearchSection /> */}

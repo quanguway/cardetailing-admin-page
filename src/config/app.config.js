@@ -31,6 +31,11 @@ export const apiConfig = {
         CREATE: `${appConfig.URL_API}/car-info/create`,
         UPDATE: `${appConfig.URL_API}/car-info/update`
     },
+    CAR_BRANCH: {
+        GET_ALL: `${appConfig.URL_API}/car-branch`,
+        // CREATE: `${appConfig.URL_API}/car-info/create`,
+        // UPDATE: `${appConfig.URL_API}/car-info/update`
+    },
     CAR_DETAIL: {
         GET_BY_CUSTOMER: `${appConfig.URL_API}/car-detail/customer`
     },
