@@ -428,12 +428,12 @@ const PromotionCreate = () => {
             label: 'Mô tả',
             useState: [description, setDescription],
             type: 'textarea'
-        },
-        {
-            label: 'Chú thích',
-            useState: [note, setNote],
-            type: 'textarea'
         }
+        // {
+        //     label: 'Chú thích',
+        //     useState: [note, setNote],
+        //     type: 'textarea'
+        // }
     ];
 
     const subFields = [
@@ -518,7 +518,9 @@ const PromotionCreate = () => {
             field: 'status',
             headerName: 'Trạng thái',
             flex: 1,
-            renderCell: (params) => (<p>{status ? 'Kích hoạt' : 'Dừng hoạt động '}</p>)
+            renderCell: (params) => (
+                <p>{status ? 'Kích hoạt' : 'Dừng hoạt động '}</p>
+            )
         },
         {
             field: 'actions',

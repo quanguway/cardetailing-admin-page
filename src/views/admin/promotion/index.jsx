@@ -27,6 +27,7 @@ import Row from 'component/TableRow';
 import FormSimpleLayout from 'layout/FormLayout/FormSimpleLayout';
 import dayjs from 'dayjs';
 import { useEffect } from 'react';
+import Swal from 'sweetalert2';
 
 const PromotionPage = () => {
     const navigate = useNavigate();
@@ -89,14 +90,25 @@ const PromotionPage = () => {
                     icon={<IconTrash />}
                     label="Xóa"
                     onClick={() => {
-                        if (confirm('Bạn có chắc muốn xóa ?')) {
-                            axios
-                                .delete(apiConfig.PROMOTION_API.DELETE, {
-                                    data: { id: params.id }
-                                })
-                                .then(() => {
-                                    window.location.reload();
-                                });
+                        if (dayjs(params?.row?.date_start).isBefore(dayjs())) {
+                            Swal.fire({
+                                position: 'top',
+                                icon: 'error',
+                                html: `<h3>Không thể xóa do bảng giá đã được áp dụng</h3>`,
+                                showConfirmButton: false,
+                                timerProgressBar: true,
+                                timer: 2000
+                            });
+                        } else {
+                            if (confirm('Bạn có chắc muốn xóa ?')) {
+                                axios
+                                    .delete(apiConfig.PROMOTION_API.DELETE, {
+                                        data: { id: params.id }
+                                    })
+                                    .then(() => {
+                                        window.location.reload();
+                                    });
+                            }
                         }
                     }}
                     showInMenu
@@ -105,13 +117,27 @@ const PromotionPage = () => {
                     icon={<IconPencil />}
                     label="Chỉnh sửa"
                     onClick={() => {
-                        navigate('update', {
-                            state: {
-                                data: params.row,
-                                mode: 'UPDATE',
-                                api: apiConfig.PROMOTION_API.UPDATE
-                            }
-                        });
+                        if (
+                            dayjs(params?.row?.date_end).isAfter(dayjs()) ||
+                            dayjs(params?.row?.date_end).isSame(dayjs())
+                        ) {
+                            navigate('update', {
+                                state: {
+                                    data: params.row,
+                                    mode: 'UPDATE',
+                                    api: apiConfig.PROMOTION_API.UPDATE
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                position: 'top',
+                                icon: 'error',
+                                html: `<h3>Không thể chỉnh sửa bảng khuyến mại hết hiệu lực</h3>`,
+                                showConfirmButton: false,
+                                timerProgressBar: true,
+                                timer: 2000
+                            });
+                        }
                     }}
                     showInMenu
                 />
@@ -129,6 +155,9 @@ const PromotionPage = () => {
 
     const [promotionCode, setPromotionCode] = useState();
     const [title, setTitle] = useState(row?.title ?? '');
+    const [status, setStatus] = useState(
+        row?.status ? 'Kích hoạt' : 'Hủy kích hoạt'
+    );
     const [startDate, setStartDate] = useState(dayjs(row?.start_date) ?? '');
     const [endDate, setEndDate] = useState(dayjs(row?.end_date) ?? '');
 
@@ -158,6 +187,12 @@ const PromotionPage = () => {
             label: 'Ngày kết thúc',
             useState: [endDate, setEndDate],
             type: 'date-picker',
+            text_active: true,
+            disabled: true
+        },
+        {
+            label: 'Trạng thái',
+            useState: [status, setStatus],
             text_active: true,
             disabled: true
         }
@@ -190,7 +225,7 @@ const PromotionPage = () => {
                             }}
                         >
                             <FormSimpleLayout
-                                showButton = {false}
+                                showButton={false}
                                 fields={fieldPromotion}
                                 isBackgroud={false}
                                 nameForm={'Thông tin giảm giá'}

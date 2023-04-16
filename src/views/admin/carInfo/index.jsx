@@ -35,6 +35,7 @@ const UnitPage = () => {
         { field: 'code', flex: 1, headerName: 'Mã xe' },
         { field: 'branch', flex: 1, headerName: 'Hãng xe' },
         { field: 'model', flex: 1, headerName: 'Dòng xe' },
+        { field: 'number_of_seats', flex: 1, headerName: 'Số chổ' },
         {
             field: 'actions',
             type: 'actions',
