@@ -295,9 +295,9 @@ export default function FormSimpleLayout({
                                     helperText={item?.helper}
                                     variant="outlined"
                                     label={item.label}
-                                    value={item.useState[0]}
+                                    defaultValue={item.useState[0]}
                                     fullWidth={true}
-                                    onChange={(event) => {
+                                    onBlur={(event) => {
                                         item.useState[1](event.target.value);
                                     }}
                                     name={item.name}

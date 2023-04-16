@@ -15,6 +15,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import moment from 'moment/moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import Swal from 'sweetalert2';
+import dayjs from 'dayjs';
 
 const PricePage = () => {
     const navigate = useNavigate();
@@ -90,14 +92,33 @@ const PricePage = () => {
                     icon={<IconTrash />}
                     label="Xóa"
                     onClick={() => {
-                        if (confirm('Bạn có chắc muốn xóa bảng giá này?')) {
-                            axios
-                                .delete(apiConfig.PRICE_HEADER.DELETE, {
-                                    data: { id: params.id }
-                                })
-                                .then(() => {
-                                    window.location.reload();
-                                });
+                        if (dayjs(params?.row?.start_date).isBefore(dayjs())) {
+                            Swal.fire({
+                                position: 'top',
+                                icon: 'error',
+                                html: `<h3>Không thể xóa do bảng giá đã được áp dụng</h3>`,
+                                showConfirmButton: false,
+                                timerProgressBar: true,
+                                timer: 3000
+                            });
+                        } else {
+                            if (confirm('Bạn có chắc muốn xóa bảng giá này?')) {
+                                axios
+                                    .delete(apiConfig.PRICE_HEADER.DELETE, {
+                                        data: { id: params.id }
+                                    })
+                                    .then(() => {
+                                        Swal.fire({
+                                            position: 'top',
+                                            icon: 'success',
+                                            html: `<h3>Xóa bảng giá thành công</h3>`,
+                                            showConfirmButton: false,
+                                            timerProgressBar: true,
+                                            timer: 1500
+                                        });
+                                        window.location.reload();
+                                    });
+                            }
                         }
                     }}
                     showInMenu
@@ -106,7 +127,18 @@ const PricePage = () => {
                     icon={<IconPencil />}
                     label="Chỉnh sửa"
                     onClick={() => {
-                        navigate('update', { state: { data: params.row } });
+                        if (dayjs(params?.row?.end_date).isAfter(dayjs()) || dayjs(params?.row?.end_date).isSame(dayjs())){
+                            navigate('update', { state: { data: params.row } });
+                        }else{
+                            Swal.fire({
+                                position: 'top',
+                                icon: 'error',
+                                html: `<h3>Không thể chỉnh sửa bảng giá hết hiệu lực</h3>`,
+                                showConfirmButton: false,
+                                timerProgressBar: true,
+                                timer: 3000
+                            });
+                        }
                     }}
                     showInMenu
                 />

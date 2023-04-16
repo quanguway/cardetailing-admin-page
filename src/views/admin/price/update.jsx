@@ -24,6 +24,7 @@ const PriceUpdate = () => {
     const [startDate, setStartDate] = useState(dayjs(state.data.start_date));
     const [endDate, setEndDate] = useState(dayjs(state.data.end_date));
     const [isActive, setIsActive] = useState(renderYesNo(state.data.is_active));
+    const [isUpdate, setIsUpdate] = useState(false);
 
     // price line
 
@@ -37,7 +38,7 @@ const PriceUpdate = () => {
     const [priceLineRows, setPriceLineRows] = useState([]);
 
     useEffect(() => {
-        axios.get(apiConfig.PRODUCT_API.GET_ALL).then((value) => {
+        axios.get(apiConfig.PRODUCT_API.GET_ALL_WITHOUT_PRICE).then((value) => {
             setListProduct(value.data);
         });
         axios.get(apiConfig.UNIT_API.GET_ALL).then((value) => {
@@ -46,6 +47,7 @@ const PriceUpdate = () => {
     }, []);
 
     const handleToggle = () => {
+        if (openForm) setIsUpdate(false);
         setOPenForm(!openForm);
     };
 
@@ -56,16 +58,17 @@ const PriceUpdate = () => {
             })
             .then((value) => {
                 const dataCustom = value.data.map((item) => {
-                    // console.log(item.is_active);
                     return {
                         id: item.id,
+                        product_id: item.product.id,
                         product_title: item.product.title,
                         unit_title: item.unit.title,
+                        product: item.product,
+                        unit: item.unit,
                         is_active: renderYesNo(item.is_active),
                         price: item.price
                     };
                 });
-                console.log(value);
                 setPriceLineRows(dataCustom);
             });
     }, []);
@@ -84,20 +87,68 @@ const PriceUpdate = () => {
             priceLines: princeLinecustom
         };
 
-        await axios.post(apiConfig.PRICE_HEADER.CREATE, params).then(() => {
+        await axios.post(apiConfig.PRICE_HEADER.UPDATE, params).then(() => {
             navigate('/price');
         });
     };
 
     const handleSubmitPriceLine = async () => {
-        const params = {
-            id: priceLineId,
-            item: {
-                is_active: YesNoToBool(isActivePriceLine)
+        if (!product || product === null || product === undefined) {
+            alert('Phải chọn sản phẩm để thêm vào bảng giá');
+            return;
+        }
+        const priceList = price.split(',');
+        const priceNew = priceList.join('');
+        if (price !== '') {
+            if (Number.parseInt(priceNew) <= 0) {
+                alert('Giá dịch vụ phải lớn hơn 0');
+                return;
             }
+        } else {
+            alert('Giá dịch vụ không được trống');
+            return;
+        }
+
+        const tmp = priceLineRows.findIndex(
+            (item) => item.product_id === product.id
+        );
+
+        if (tmp >= 0 && !isUpdate) {
+            alert('Sản phẩm đã có trong bảng giá, hãy chọn sản phẩm khác !');
+            return;
+        }
+        const rows = {
+            id: uuid(),
+            price: priceList.join(''),
+            is_active: YesNoToBool(isActivePriceLine),
+            product: product,
+            product_id: product.id,
+            product_title: product.title,
+            unit: {
+                id: '276ac4a3-d5d6-11ed-a956-0242ac150002',
+                title: 'Lượt',
+                description: 'Không có mô tả',
+                unit_code: 'LUOT',
+                unitExchanges: null
+            },
+            unit_id: '276ac4a3-d5d6-11ed-a956-0242ac150002',
+            unit_title: 'Lượt'
         };
-        await axios.post(apiConfig.PRICE_LINE.UPDATE, params);
-        window.location.reload();
+        setProduct(null);
+        if (isUpdate) {
+            const newRows = priceLineRows.map((item) => {
+                if (item.product_id === rows.product_id) {
+                    return rows;
+                } else {
+                    return item;
+                }
+            });
+            setPriceLineRows(newRows);
+        } else {
+            setPriceLineRows([...priceLineRows, rows]);
+        }
+        setIsUpdate(false);
+        handleToggle();
     };
 
     const fields = [
@@ -112,8 +163,7 @@ const PriceUpdate = () => {
             useState: [isActive, setIsActive],
             values: [
                 {
-                    value: 'Có',
-                    disabled: true
+                    value: 'Có'
                 },
                 {
                     value: 'Không'
@@ -125,54 +175,130 @@ const PriceUpdate = () => {
             label: 'Ngày áp dụng',
             useState: [startDate, setStartDate],
             type: 'date-picker',
-            disabled: true
+            minDate: dayjs().add(1, 'day'),
+            maxDate: endDate,
+            disabled: !dayjs(startDate).isAfter(dayjs())
         },
         {
             label: 'Ngày kết thúc',
             useState: [endDate, setEndDate],
-            type: 'date-picker'
+            type: 'date-picker',
+            minDate: startDate
         }
     ];
 
-    const priceLineCols = [
-        { field: 'product_title', flex: 1, headerName: 'Tên dịch vụ' },
-        { field: 'price', flex: 1, headerName: 'Giá' },
-        { field: 'unit_title', flex: 1, headerName: 'Đơn vị' },
-        { field: 'is_active', flex: 1, headerName: 'Kích hoạt ' },
+    const priceLineFields = [
         {
-            field: 'actions',
-            type: 'actions',
-            headerName: 'hành động',
-            flex: 1,
-            getActions: (row) => [
-                <GridActionsCellItem
-                    icon={<IconPencil />}
-                    label="Hủy kích hoạt"
-                    sx={{ backgroundColor: 'red' }}
-                    onClick={async () => {
-                        const params = {
-                            id: row.id,
-                            item: {
-                                is_active: false,
-                            }
-                        }
-                        await axios.post(apiConfig.PRICE_LINE.UPDATE, params)
-                        window.location.reload();
-                    }}
-                    showInMenu
-                />
-            ]
+            label: 'Dịch vụ & sản phẩm',
+            type: 'combo',
+            values: listProducts,
+            useState: [product, setProduct],
+            disabled: isUpdate
+        },
+        {
+            label: 'Giá sản phẩm',
+            useState: [price, setPrice],
+            type: 'text-price'
         }
     ];
+
+    const renderColumnLine = () => {
+        var fieldsLine = [
+            { field: 'product_title', flex: 1, headerName: 'Tên dịch vụ' },
+            {
+                field: 'price',
+                flex: 1,
+                headerName: 'Giá',
+                headerAlign: 'right',
+                renderCell: (params) => (
+                    <div style={{ width: '100%', textAlign: 'right' }}>
+                        <b>
+                            {new Intl.NumberFormat('vi-VN', {
+                                style: 'currency',
+                                currency: 'VND'
+                            }).format(params.value)}
+                        </b>
+                    </div>
+                )
+            }
+        ];
+        if (dayjs(startDate).isAfter(dayjs())) {
+            fieldsLine.push({
+                field: 'actions',
+                type: 'actions',
+                headerName: 'hành động',
+                flex: 1,
+                getActions: (params) => [
+                    <GridActionsCellItem
+                        icon={<IconTrash />}
+                        label="Xóa"
+                        onClick={() => {
+                            if (
+                                confirm(
+                                    'Bạn muốn xóa sản phẩm này khỏi bảng giá ?'
+                                )
+                            ) {
+                                setPriceLineRows(
+                                    priceLineRows.filter(
+                                        (item) => item.id !== params.row.id
+                                    )
+                                );
+                            }
+                        }}
+                        showInMenu
+                    />,
+                    <GridActionsCellItem
+                        icon={<IconPencil />}
+                        label="Chỉnh sửa"
+                        onClick={() => {
+                            setIsUpdate(true);
+                            setPriceLineId(params.row.id);
+                            setPrice(params.row.price);
+                            setIsActivePriceLine('Không');
+                            setProduct(params.row.product);
+                            setUnit(params.row.unit);
+                            handleToggle();
+                        }}
+                        showInMenu
+                    />
+                ]
+            });
+        }
+        return fieldsLine;
+    };
+
+    const priceLineCols = renderColumnLine();
+    const handleAddButton = () => {
+        setPriceLineId('');
+        setPrice('');
+        setIsActivePriceLine('Có');
+        setProduct();
+        setUnit();
+        handleToggle();
+    };
 
     return (
         <Box>
-            <FormSimpleLayout fields={fields} handleSubmit={handleSubmit} />
+            <FormSimpleLayout
+                nameButtonSave={'Cập nhật bảng giá'}
+                fields={fields}
+                handleSubmit={handleSubmit}
+                returnButton={true}
+            />
 
             <FormTableLayout
                 columns={priceLineCols}
                 rows={priceLineRows ?? []}
-                addButton={false}
+                addButton={dayjs(startDate).isAfter(dayjs())}
+                handleAddButton={handleAddButton}
+            />
+
+            <FormToggle
+                open={openForm}
+                handleToggle={handleToggle}
+                fields={priceLineFields}
+                handleSubmit={handleSubmitPriceLine}
+                nameForm="Thông tin giá dịch vụ"
             />
         </Box>
     );

@@ -76,8 +76,12 @@ const PromotionPage = () => {
                     icon={<IconEye />}
                     label="Chi tiết"
                     onClick={() => {
-                        handleToggle();
+                        setTitle(params.row.title);
+                        setPromotionCode(params.row.code);
+                        setStartDate(dayjs(params.row.date_start) ?? '');
+                        setEndDate(dayjs(params.row.date_end));
                         setRow(params.row);
+                        handleToggle();
                     }}
                     showInMenu
                 />,
@@ -101,7 +105,7 @@ const PromotionPage = () => {
                     icon={<IconPencil />}
                     label="Chỉnh sửa"
                     onClick={() => {
-                        navigate('form', {
+                        navigate('update', {
                             state: {
                                 data: params.row,
                                 mode: 'UPDATE',
@@ -115,13 +119,13 @@ const PromotionPage = () => {
         }
     ];
 
-    useEffect(() => {
-        console.log(row);
-        setTitle(row?.title);
-        setPromotionCode(row?.code);
-        setStartDate(dayjs(row?.date_start) ?? '');
-        setEndDate(dayjs(row?.date_end));
-    }, [row]);
+    // useEffect(() => {
+    //     console.log(row);
+    //     setTitle(row?.title);
+    //     setPromotionCode(row?.code);
+    //     setStartDate(dayjs(row?.date_start) ?? '');
+    //     setEndDate(dayjs(row?.date_end));
+    // }, [row]);
 
     const [promotionCode, setPromotionCode] = useState();
     const [title, setTitle] = useState(row?.title ?? '');
@@ -146,13 +150,16 @@ const PromotionPage = () => {
         {
             label: 'Ngày bắt đầu',
             useState: [startDate, setStartDate],
-            disabled: dayjs().isAfter(dayjs(startDate)),
+            disabled: true,
+            text_active: true,
             type: 'date-picker'
         },
         {
             label: 'Ngày kết thúc',
             useState: [endDate, setEndDate],
-            type: 'date-picker'
+            type: 'date-picker',
+            text_active: true,
+            disabled: true
         }
     ];
 
@@ -183,6 +190,7 @@ const PromotionPage = () => {
                             }}
                         >
                             <FormSimpleLayout
+                                showButton = {false}
                                 fields={fieldPromotion}
                                 isBackgroud={false}
                                 nameForm={'Thông tin giảm giá'}

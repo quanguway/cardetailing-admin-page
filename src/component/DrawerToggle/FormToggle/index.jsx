@@ -1,14 +1,24 @@
-import { Collapse, Drawer } from "@mui/material"
+import { Collapse, Drawer } from '@mui/material';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import React, { useState } from 'react';
 import { Autocomplete, Box, IconButton, TextField } from '@mui/material';
-import FormSimpleLayout from "layout/FormLayout/FormSimpleLayout";
+import FormSimpleLayout from 'layout/FormLayout/FormSimpleLayout';
 
-export default function FormToggle({open, handleToggle, fields, width, anchor, mode, api, handleSubmit, children}) {
-
+export default function FormToggle({
+    open,
+    handleToggle,
+    fields,
+    width,
+    anchor,
+    mode,
+    api,
+    handleSubmit,
+    children,
+    nameForm
+}) {
     return (
         <Drawer
-            anchor={anchor ?? "right"}
+            anchor={anchor ?? 'right'}
             onClose={handleToggle}
             open={open}
             PaperProps={{
@@ -18,8 +28,15 @@ export default function FormToggle({open, handleToggle, fields, width, anchor, m
             }}
         >
             <PerfectScrollbar component="div">
-                <FormSimpleLayout mode={mode} fields={fields} api={api} handleSubmit={handleSubmit} children={children} nameForm= "Thêm thông tin" />
+                <FormSimpleLayout
+                    mode={mode}
+                    fields={fields}
+                    api={api}
+                    handleSubmit={handleSubmit}
+                    children={children}
+                    nameForm={nameForm ? nameForm : 'Thêm thông tin'}
+                />
             </PerfectScrollbar>
         </Drawer>
-    )
+    );
 }

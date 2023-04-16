@@ -592,7 +592,7 @@ const BookingPage = () => {
                 );
             case 2:
                 return (
-                    <FormSimpleLayout label={'Thông tin xe'} fields={carFields}>
+                    <FormSimpleLayout label={'Thông tin xe'} fields={carFields} showButton={false}>
                         <Box>
                             <Grid
                                 container
@@ -607,9 +607,9 @@ const BookingPage = () => {
                                         sx={{ marginTop: '20px' }}
                                         variant="outlined"
                                         label="Màu sắc"
-                                        value={color}
+                                        defaultValue={color}
                                         fullWidth={true}
-                                        onChange={(event) => {
+                                        onBlur={(event) => {
                                             setColor(event.target.value);
                                         }}
                                     />
@@ -624,9 +624,9 @@ const BookingPage = () => {
                                         sx={{ marginTop: '20px' }}
                                         variant="outlined"
                                         label="Số chỗ ngồi"
-                                        value={number_seat}
+                                        defaultValue={number_seat}
                                         fullWidth={true}
-                                        onChange={(event) => {
+                                        onBlur={(event) => {
                                             setNumber_seat(event.target.value);
                                         }}
                                     />
@@ -640,9 +640,9 @@ const BookingPage = () => {
                                         sx={{ marginTop: '20px' }}
                                         variant="outlined"
                                         label="Số khung"
-                                        value={chassis}
+                                        defaultValue={chassis}
                                         fullWidth={true}
-                                        onChange={(event) => {
+                                        onBlur={(event) => {
                                             setChassis(event.target.value);
                                         }}
                                     />
@@ -659,7 +659,7 @@ const BookingPage = () => {
                                         label="Số máy"
                                         value={engine}
                                         fullWidth={true}
-                                        onChange={(event) => {
+                                        onBlur={(event) => {
                                             setEngine(event.target.value);
                                         }}
                                     />

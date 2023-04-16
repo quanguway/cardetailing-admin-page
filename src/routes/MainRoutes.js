@@ -41,8 +41,12 @@ const UnitCreate = Loadable(lazy(() => import('views/admin/unit/create')));
 const UnitUpdate = Loadable(lazy(() => import('views/admin/unit/update')));
 
 const CarInfoPage = Loadable(lazy(() => import('views/admin/carInfo')));
-const CarInfoCreate = Loadable(lazy(() => import('views/admin/carInfo/create')));
-const CarInfoUpdate = Loadable(lazy(() => import('views/admin/carInfo/update')));
+const CarInfoCreate = Loadable(
+    lazy(() => import('views/admin/carInfo/create'))
+);
+const CarInfoUpdate = Loadable(
+    lazy(() => import('views/admin/carInfo/update'))
+);
 
 const PriceCreate = Loadable(lazy(() => import('views/admin/price/create')));
 const PriceUpdate = Loadable(lazy(() => import('views/admin/price/update')));
@@ -63,7 +67,6 @@ const BookingDetail = Loadable(
 const OrderCreate = Loadable(lazy(() => import('views/admin/order/create')));
 const OrderPage = Loadable(lazy(() => import('views/admin/order')));
 const OrderDetail = Loadable(lazy(() => import('views/admin/order/detail')));
-
 
 const CustomerPage = Loadable(lazy(() => import('views/admin/customer')));
 
@@ -179,7 +182,6 @@ const MainRoutes = {
             element: <CarInfoPage />
         },
 
-
         // {
         //     path: 'booking/create',
         //     element: <BookingCreate />
@@ -188,7 +190,6 @@ const MainRoutes = {
         //     path: 'booking/update',
         //     element: <BookingUpdate />
         // },
-
 
         {
             path: 'booking/detail',
@@ -210,7 +211,6 @@ const MainRoutes = {
             path: 'customer',
             element: <CustomerPage />
         }
-
     ]
 };
 

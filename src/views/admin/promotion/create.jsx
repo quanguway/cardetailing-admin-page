@@ -12,13 +12,18 @@ import dayjs from 'dayjs';
 import { v4 as uuid } from 'uuid';
 import { dateSQL } from 'utils/variable';
 import Swal from 'sweetalert2';
-import { log } from 'util';
+import { NumericFormat } from 'react-number-format';
+import moment from 'moment/moment';
 
 const PromotionCreate = () => {
+    const { state } = useLocation();
+    const [mode, setMode] = useState('CREATE');
     const navigate = useNavigate();
     const [openForm, setOPenForm] = useState(false);
     const [listProducts, setListProduct] = useState([]);
     const [listUnit, setListUnit] = useState([]);
+    const [isUpdate, setIsUpdate] = useState(false);
+    const [isUpdateID, setIsUpdateID] = useState();
 
     const [title, setTitle] = useState();
     const [code, setCode] = useState();
@@ -43,10 +48,10 @@ const PromotionCreate = () => {
     const [promotionRows, setPromotionRows] = useState([]);
 
     const [promotionStartDate, setPromotionStartDate] = useState(
-        dayjs(new Date()).add(1, 'day')
+        state ? dayjs(state?.data?.date_start) : dayjs(new Date()).add(1, 'day')
     );
     const [promotionEndDate, setPromotionEndDate] = useState(
-        dayjs(new Date()).add(1, 'day')
+        state ? dayjs(state?.data?.date_end) : dayjs(new Date()).add(1, 'day')
     );
 
     const [titlePromotionLine, setTitlePromotionLine] = useState();
@@ -83,25 +88,32 @@ const PromotionCreate = () => {
             value: 'CONDITION_PRODUCT',
             label: 'Dịch vụ'
         });
-        axios.get(apiConfig.PRODUCT_API.GET_ALL).then((value) => {
-            console.log(value.data);
+        const listOption = promotionOptions.filter(
+            (item) => item.condition === 'CONDITION_PRODUCT'
+        );
+        setConditionPromotionOptions(listOption);
+        axios.get(apiConfig.PRODUCT_API.GET_ALL_WITHOUT_PRICE).then((value) => {
             setListProduct(value.data);
         });
         axios.get(apiConfig.UNIT_API.GET_ALL).then((value) => {
             setListUnit(value.data);
         });
+        if (state) {
+            console.log(state);
+            setMode(state.mode);
+        }
     }, []);
 
-    useEffect(() => {
-        setReductionAmountMaximum(null);
-        setPercent(null);
-        setGetProduct(null);
-    }, [promotionOption]);
+    // useEffect(() => {
+    //     setReductionAmountMaximum(null);
+    //     setPercent(null);
+    //     setGetProduct(null);
+    // }, [promotionOption]);
 
     useEffect(() => {
-        setConditionProduct(null);
-        setQuanlityProductBuy(null);
-        setMinimumTotal(null);
+        // setConditionProduct(null);
+        // setQuanlityProductBuy(null);
+        // setMinimumTotal(null);
         const listOption = promotionOptions.filter(
             (item) => item.condition === conditionOption?.value
         );
@@ -110,10 +122,29 @@ const PromotionCreate = () => {
     }, [conditionOption]);
 
     const handleToggle = () => {
-        setTitlePromotionLine('');
-        setPromotionCode('');
-        setNoteMaxQuantityPerCustomer('');
-        setMaxQuantityPerCustomerPerDay('');
+        if (openForm) {
+            setConditionOption({
+                value: 'CONDITION_PRODUCT',
+                label: 'Dịch vụ'
+            });
+            const listOption = promotionOptions.filter(
+                (item) => item.condition === 'CONDITION_PRODUCT'
+            );
+            setIsUpdate(false);
+            setMaxCustomer(null);
+            setConditionPromotionOptions(listOption);
+            setConditionProduct(null);
+            setQuanlityProductBuy(null);
+            setReductionAmountMaximum(null);
+            setPercent(null);
+            setGetProduct(null);
+            setTitlePromotionLine(null);
+            setPromotionCode(null);
+            setMinimumTotal(null);
+            setNoteMaxQuantityPerCustomer(null);
+            setMaxQuantityPerCustomerPerDay(null);
+            setStatusPromotionLine('Kích hoạt');
+        }
         setOPenForm(!openForm);
     };
 
@@ -181,12 +212,7 @@ const PromotionCreate = () => {
     // },[code])
 
     const handleSubmit = async () => {
-        if (
-            !(
-                !checkTitlePromotion() &&
-                !checkCodePromotion() 
-            )
-        ) {
+        if (!(!checkTitlePromotion() && !checkCodePromotion())) {
             return;
         }
         console.log('prem');
@@ -254,6 +280,13 @@ const PromotionCreate = () => {
                 ) {
                     alert('Chưa nhập giá trị hóa đơn tối thiểu');
                     return;
+                } else {
+                    const priceList = minimumTotal.split(',');
+                    const priceNew = priceList.join('');
+                    if (Number.parseInt(priceNew) <= 0) {
+                        alert('Giá trị hóa đơn tối thiểu phải lớn hơn 0');
+                        return;
+                    }
                 }
 
                 if (promotionOptions) {
@@ -265,11 +298,26 @@ const PromotionCreate = () => {
                         ) {
                             alert('Chưa nhập số tiền giảm');
                             return;
+                        } else {
+                            const priceList = reductionAmountMaximum.split(',');
+                            const priceNew = priceList.join('');
+                            if (Number.parseInt(priceNew) <= 0) {
+                                alert('Số tiền giảm phải lớn hơn 0');
+                                return;
+                            }
                         }
-                    } else if (promotionOption?.value === 'PERCENT'){
+                    } else if (promotionOption?.value === 'PERCENT') {
                         if (!percent || percent === null || percent === '') {
                             alert('Chưa nhập % giảm giá');
                             return;
+                        } else {
+                            if (Number.parseInt(percent) <= 0) {
+                                alert('% giảm giá phải lớn hơn 0');
+                                return;
+                            } else if (Number.parseInt(percent) > 100) {
+                                alert('% giảm giá phải nhỏ hơn 100');
+                                return;
+                            }
                         }
                         if (
                             !reductionAmountMaximum ||
@@ -278,33 +326,54 @@ const PromotionCreate = () => {
                         ) {
                             alert('Chưa nhập số tiền giảm tối đa');
                             return;
+                        } else {
+                            const priceList = reductionAmountMaximum.split(',');
+                            const priceNew = priceList.join('');
+                            if (Number.parseInt(priceNew) <= 0) {
+                                alert('Số tiền giảm tối đa phải lớn hơn 0');
+                                return;
+                            }
                         }
                     }
                 }
             }
         }
 
+        //const priceList = reductionAmountMaximum?.split(',').join('');
+        // const priceNew = priceList.join('');
+
         const rows = {
-            id: uuid(),
+            id: isUpdate ? isUpdateID : uuid(),
             promotion_code: promotionCode,
             title: titlePromotionLine,
             type: conditionOption.value + '/' + promotionOption.value,
             status: statusPromotionLine,
-            maximum_reduction_amount: reductionAmountMaximum ?? null,
+            maximum_reduction_amount:
+                reductionAmountMaximum?.split(',')?.join('') ?? null,
             product_title: getProduct?.title ?? '',
             product_received_id: getProduct?.id ?? null,
             product_buy_id: conditionProduct?.id ?? null,
             quantity_product_buy: 1,
             quantity_product_received: 1,
-            minimum_total: minimumTotal ?? null,
+            minimum_total: minimumTotal?.split(',')?.join('') ?? null,
             percent: percent ?? null,
             total_budget: totalBudget ?? null,
             max_customer: maxCustomer ?? null,
             start_date: startDate.format(dateSQL),
-            end_date: endDate.format(dateSQL)
+            end_date: endDate.format(dateSQL),
+            product_received: getProduct ?? null,
+            product_buy: conditionProduct ?? null
         };
-        console.log([...promotionRows, rows]);
-        setPromotionRows([...promotionRows, rows]);
+        console.log(rows);
+        if (isUpdate) {
+            const tmp = promotionRows.map((item) => {
+                if (item.id === rows.id) return rows;
+                else return item;
+            });
+            setPromotionRows(tmp);
+        } else {
+            setPromotionRows([...promotionRows, rows]);
+        }
         handleToggle();
     };
 
@@ -343,7 +412,9 @@ const PromotionCreate = () => {
             isError: isErrorPromotionStartDate,
             minDate: dayjs().add(1, 'day'),
             maxDate: promotionEndDate,
-            type: 'date-picker'
+            type: 'date-picker',
+            disabled:
+                mode === 'UPDATE' && !dayjs(promotionStartDate).isAfter(dayjs())
         },
         {
             label: 'Ngày kết thúc',
@@ -427,9 +498,26 @@ const PromotionCreate = () => {
     const subCols = [
         { field: 'promotion_code', headerName: 'Mã khuyến mãi', flex: 1 },
         { field: 'title', headerName: 'Tên khuyến mãi', flex: 1 },
-        { field: 'start_date', headerName: 'Ngày áp dụng', flex: 1 },
-        { field: 'end_date', headerName: 'Ngày kết thúc', flex: 1 },
-        { field: 'type', headerName: 'Loại khuyến mãi', flex: 1 },
+        {
+            field: 'start_date',
+            headerName: 'Ngày áp dụng',
+            flex: 1,
+            valueFormatter: (params) =>
+                moment(params?.value).format('DD/MM/YYYY')
+        },
+        {
+            field: 'end_date',
+            headerName: 'Ngày kết thúc',
+            flex: 1,
+            valueFormatter: (params) =>
+                moment(params?.value).format('DD/MM/YYYY')
+        },
+        {
+            field: 'status',
+            headerName: 'Trạng thái',
+            flex: 1,
+            renderCell: (params) => (<p>{status ? 'Kích hoạt' : 'Dừng hoạt động '}</p>)
+        },
         {
             field: 'actions',
             type: 'actions',
@@ -454,6 +542,33 @@ const PromotionCreate = () => {
                     icon={<IconPencil />}
                     label="Chỉnh sửa"
                     onClick={() => {
+                        console.log(params.row);
+                        const tmp = params.row.type.split('/');
+                        setConditionOption(
+                            conditionOptions.filter(
+                                (item) => item.value === tmp[0]
+                            )[0]
+                        );
+                        setConditionPromotionOptions(
+                            promotionOptions.filter(
+                                (item) => item.value === tmp[1]
+                            )[0]
+                        );
+                        setMaxCustomer(params.row.max_customer);
+                        setConditionProduct(params.row.product_buy);
+                        setReductionAmountMaximum(
+                            params.row.maximum_reduction_amount
+                        );
+                        setIsUpdateID(params.row.id);
+                        setPercent(params.row.percent);
+                        setGetProduct(params.row.product_received);
+                        setTitlePromotionLine(params.row.title);
+                        setPromotionCode(params.row.promotion_code);
+                        setStatusPromotionLine(params.row.status);
+                        setMinimumTotal(params.row.minimum_total);
+                        setStartDate(dayjs(params.row.start_date));
+                        setEndDate(dayjs(params.row.end_date));
+                        setIsUpdate(true);
                         handleToggle();
                     }}
                     showInMenu
@@ -546,14 +661,22 @@ const PromotionCreate = () => {
             case 'CONDITION_PRICE':
                 return (
                     <>
-                        <TextField
+                        <NumericFormat
+                            key="minimumTotalaa"
+                            customInput={TextField}
                             sx={{ marginTop: '20px' }}
+                            variant="outlined"
                             label={'Tổng tiền hóa đơn tối thiểu'}
+                            value={minimumTotal}
                             fullWidth={true}
-                            defaultValue={minimumTotal}
                             onBlur={(event) => {
-                                setMinimumTotal(event.target.value);
+                                setMinimumTotal(
+                                    event.target.value.split(' VND')[0]
+                                );
                             }}
+                            thousandSeparator
+                            valueIsNumericString
+                            suffix=" VND"
                         />
                     </>
                 );
@@ -576,23 +699,38 @@ const PromotionCreate = () => {
                                 setPercent(event.target.value);
                             }}
                         />
-                        <TextField
+                        <NumericFormat
+                            customInput={TextField}
                             sx={{ marginTop: '20px' }}
+                            variant="outlined"
                             label={'Số tiền giảm tối đa'}
+                            value={reductionAmountMaximum}
                             fullWidth={true}
-                            defaultValue={reductionAmountMaximum}
                             onBlur={(event) => {
-                                setReductionAmountMaximum(event.target.value);
+                                console.log(event);
+                                setReductionAmountMaximum(
+                                    event.target.value.split(' VND')[0]
+                                );
                             }}
+                            thousandSeparator
+                            valueIsNumericString
+                            suffix=" VND"
                         />
-                        <TextField
+                        <NumericFormat
+                            customInput={TextField}
                             sx={{ marginTop: '20px' }}
+                            variant="outlined"
                             label={'Tổng ngân sách áp dụng'}
+                            value={totalBudget}
                             fullWidth={true}
-                            defaultValue={totalBudget}
                             onBlur={(event) => {
-                                setTotalBudget(event.target.value);
+                                setTotalBudget(
+                                    event.target.value.split(' VND')[0]
+                                );
                             }}
+                            thousandSeparator
+                            valueIsNumericString
+                            suffix=" VND"
                         />
                         <TextField
                             sx={{ marginTop: '20px' }}
@@ -608,25 +746,41 @@ const PromotionCreate = () => {
             case 'PRICE':
                 return (
                     <>
-                        <TextField
+                        <NumericFormat
+                            customInput={TextField}
                             sx={{ marginTop: '20px' }}
+                            variant="outlined"
                             label={'Nhập số tiền cụ thể'}
+                            value={reductionAmountMaximum}
                             fullWidth={true}
-                            defaultValue={reductionAmountMaximum}
                             onBlur={(event) => {
-                                setReductionAmountMaximum(event.target.value);
+                                setReductionAmountMaximum(
+                                    event.target.value.split(' VND')[0]
+                                );
                             }}
+                            thousandSeparator
+                            valueIsNumericString
+                            suffix=" VND"
                         />
-                        <TextField
+                        <NumericFormat
+                            key="totalBudget"
+                            customInput={TextField}
                             sx={{ marginTop: '20px' }}
+                            variant="outlined"
                             label={'Tổng ngân sách áp dụng'}
+                            value={totalBudget}
                             fullWidth={true}
-                            defaultValue={totalBudget}
                             onBlur={(event) => {
-                                setTotalBudget(event.target.value);
+                                setTotalBudget(
+                                    event.target.value.split(' VND')[0]
+                                );
                             }}
+                            thousandSeparator
+                            valueIsNumericString
+                            suffix=" VND"
                         />
                         <TextField
+                            key="maxCustomer"
                             sx={{ marginTop: '20px' }}
                             label={'Số lượng khách áp dụng'}
                             fullWidth={true}
