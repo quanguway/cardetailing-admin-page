@@ -37,6 +37,7 @@ export default function Row(props) {
     const [open, setOpen] = React.useState(false);
     const [promotionCode, setPromotionCode] = useState(row.promotion_code);
     const [title, setTitle] = useState(row.title);
+    const [status, setStatus] = useState(row.status ? 'Đang hoạt động' : 'Dừng hoạt động');
     const [startDate, setStartDate] = useState(dayjs(row.start_date));
     const [endDate, setEndDate] = useState(dayjs(row.end_date));
     const [maxCustomer, setMaxCustomer] = useState(row?.max_customer);
@@ -63,6 +64,7 @@ export default function Row(props) {
         setEndDate(dayjs(row.end_date));
         setMaxCustomer(row?.max_customer);
         setPercent(row?.percent);
+        setStatus(row?.status ? 'Đang hoạt động' : 'Dừng hoạt động');
         setProductBuyId(row?.product_buy?.title);
         setProductReceivedId(row?.product_received?.title);
         setMaximumReductionAmount(row?.maximum_reduction_amount);
@@ -87,13 +89,21 @@ export default function Row(props) {
             text_active: true,
             label: 'Ngày bắt đầu',
             useState: [startDate, setStartDate],
-            disabled: dayjs().isAfter(dayjs(startDate)),
+            disabled: true,
             type: 'date-picker'
         },
         {
             label: 'Ngày kết thúc',
             useState: [endDate, setEndDate],
-            type: 'date-picker'
+            type: 'date-picker',
+            text_active: true,
+            disabled: true
+        },
+        {
+            label: 'Trạng thái',
+            useState: [status, setStatus],
+            text_active: true,
+            disabled: true
         },
         {
             text_active: true,
@@ -216,7 +226,8 @@ export default function Row(props) {
                                 fields={rowsShowDetail}
                                 isBackgroud={false}
                                 nameForm={'Thông tin các giảm giá'}
-                                nameButtonSave={'Lưu chi tiết giảm giá'}
+                                showButton={false}
+                                // nameButtonSave={'Lưu chi tiết giảm giá'}
                             />
                         </Box>
                     </Collapse>
