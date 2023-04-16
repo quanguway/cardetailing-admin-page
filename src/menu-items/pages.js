@@ -121,7 +121,7 @@ const pages = {
             children: [
                 {
                     id: 'carInfo',
-                    title: 'Thông tin xe',
+                    title: 'Hãng xe',
                     type: 'item',
                     url: '/car-info',
                     roles: [roles.ROLE_ADMIN, roles.ROLE_CUSTOMER],

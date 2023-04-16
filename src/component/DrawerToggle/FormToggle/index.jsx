@@ -28,6 +28,7 @@ export default function FormToggle({
             }}
         >
             <PerfectScrollbar component="div">
+
                 <FormSimpleLayout
                     mode={mode}
                     fields={fields}
@@ -35,7 +36,9 @@ export default function FormToggle({
                     handleSubmit={handleSubmit}
                     children={children}
                     nameForm={nameForm ? nameForm : 'Thêm thông tin'}
+                    isBackgroud={false}
                 />
+
             </PerfectScrollbar>
         </Drawer>
     );

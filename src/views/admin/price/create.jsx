@@ -143,6 +143,7 @@ const PriceCreate = () => {
     };
 
     const handleSubmitPriceLine = async () => {
+
         console.log(product);
         if (!product || product === null || product === undefined) {
             alert('Phải chọn sản phẩm để thêm vào bảng giá');
@@ -169,6 +170,7 @@ const PriceCreate = () => {
             alert('Sản phẩm đã có trong bảng giá, hãy chọn sản phẩm khác !');
             return;
         }
+
         const rows = {
             id: uuid(),
             price: priceList.join(''),

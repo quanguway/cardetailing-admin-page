@@ -17,6 +17,7 @@ const UnitPage = () => {
         setOpen(!open);
     };
 
+
     // const columnsShow = ['title', 'description'];
 
     // const columnsChildShow = {
@@ -32,8 +33,8 @@ const UnitPage = () => {
 
     const columns = [
         { field: 'code', flex: 1, headerName: 'Mã xe' },
-        { field: 'branch', flex: 1, headerName: 'Tên dòng xe' },
-        { field: 'type', flex: 1, headerName: 'Loại xe' },
+        { field: 'branch', flex: 1, headerName: 'Hãng xe' },
+        { field: 'model', flex: 1, headerName: 'Dòng xe' },
         {
             field: 'actions',
             type: 'actions',

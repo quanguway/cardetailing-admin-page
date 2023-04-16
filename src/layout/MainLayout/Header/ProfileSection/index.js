@@ -171,39 +171,21 @@ const ProfileSection = () => {
                                 >
                                     <Box sx={{ p: 2 }}>
                                         <Stack>
-                                            <Stack
-                                                direction="row"
-                                                spacing={0.5}
-                                                alignItems="center"
-                                            >
-                                                <Typography variant="h4">
-                                                    Good Morning,
-                                                </Typography>
-                                                <Typography
-                                                    component="span"
-                                                    variant="h4"
-                                                    sx={{ fontWeight: 400 }}
-                                                >
-                                                    Johne Doe
+
+                                            <Stack direction="row" spacing={0.5} alignItems="center">
+                                                <Typography variant="h4">Xin chào,</Typography>
+                                                <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
+                                                    {getAuth().user_name}
                                                 </Typography>
                                             </Stack>
-                                            <Typography variant="subtitle2">
-                                                Project Admin
-                                            </Typography>
+                                            <Typography variant="subtitle2">{getAuth().role}</Typography>
                                         </Stack>
-                                        <OutlinedInput
-                                            sx={{
-                                                width: '100%',
-                                                pr: 1,
-                                                pl: 2,
-                                                my: 2
-                                            }}
+                                        {/* <OutlinedInput
+                                            sx={{ width: '100%', pr: 1, pl: 2, my: 2 }}
                                             id="input-search-profile"
                                             value={value}
-                                            onChange={(e) =>
-                                                setValue(e.target.value)
-                                            }
-                                            placeholder="Search profile options"
+                                            onChange={(e) => setValue(e.target.value)}
+                                            placeholder="Tìm kiếm"
                                             startAdornment={
                                                 <InputAdornment position="start">
                                                     <IconSearch
@@ -219,10 +201,11 @@ const ProfileSection = () => {
                                             aria-describedby="search-helper-text"
                                             inputProps={{
                                                 'aria-label': 'weight'
-                                            }}
-                                        />
+                                            }} 
+                                        />*/}
                                         <Divider />
                                     </Box>
+
                                     <PerfectScrollbar
                                         style={{
                                             height: '100%',
@@ -318,6 +301,7 @@ const ProfileSection = () => {
                                                 </CardContent>
                                             </Card>
                                             <Divider />
+
                                             <List
                                                 component="nav"
                                                 sx={{
@@ -339,6 +323,7 @@ const ProfileSection = () => {
                                                         }
                                                 }}
                                             >
+
                                                 <ListItemButton
                                                     sx={{
                                                         borderRadius: `${customization.borderRadius}px`
@@ -423,6 +408,7 @@ const ProfileSection = () => {
                                                         }
                                                     />
                                                 </ListItemButton>
+
                                                 <ListItemButton
                                                     sx={{
                                                         borderRadius: `${customization.borderRadius}px`
@@ -438,13 +424,8 @@ const ProfileSection = () => {
                                                             size="1.3rem"
                                                         />
                                                     </ListItemIcon>
-                                                    <ListItemText
-                                                        primary={
-                                                            <Typography variant="body2">
-                                                                Logout
-                                                            </Typography>
-                                                        }
-                                                    />
+
+                                                    <ListItemText primary={<Typography variant="body2">Đăng xuất</Typography>} />
                                                 </ListItemButton>
                                             </List>
                                         </Box>

@@ -81,7 +81,7 @@ export default function FormSimpleLayout({
                               padding: '16px',
                               border: '1px solid #90caf975'
                           }
-                        : {}
+                        : {padding: '16px',}
                 }
             >
                 <h3>{nameForm ? nameForm : 'Thêm thông tin'}</h3>
@@ -241,7 +241,7 @@ export default function FormSimpleLayout({
                                             item?.isError ? item.isError : false
                                         }
                                         helperText={item?.helper}
-                                        disablePast
+                                        disablePast   
                                         minDate={item.minDate}
                                         maxDate={item.maxDate}
                                         format="DD/MM/YYYY"

@@ -448,6 +448,7 @@ const PromotionCreate = () => {
         {
             label: 'Ngày áp dụng',
             useState: [startDate, setStartDate],
+
             minDate: promotionStartDate,
             maxDate:
                 endDate !== null
@@ -455,6 +456,7 @@ const PromotionCreate = () => {
                         ? endDate
                         : promotionEndDate
                     : promotionEndDate,
+
             type: 'date-picker'
         },
         {

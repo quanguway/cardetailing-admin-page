@@ -143,6 +143,7 @@ const BookingPage = () => {
     //   }
     // ]
 
+    const [carModel, setCarModel] = useState();
     const [carDetails, setCarDetails] = useState([]);
     const [carBranchs, setCarBranchs] = useState([]);
     const [carBranch, setCarBranch] = useState([]);
@@ -152,27 +153,40 @@ const BookingPage = () => {
     const [color, setColor] = useState();
     const [carType, setCarType] = useState();
 
+    const [listCarBranch, setListCarBranch] = useState();
+    const [listCarModel, setListCarModel] = useState();
+
     const [carNumberPlate, setCarNumberPlate] = useState();
 
-    useEffect(() => {
-        axios.get(apiConfig.CAR_INFO.GET_ALL).then((value) => {
-            const data = value.data.map((item) => ({
-                ...item,
-                title: item.branch
-            }));
-            setCarDetails(data);
-        });
-    }, []);
+    // useEffect(() => {
+    //     axios.get(apiConfig.CAR_INFO.GET_ALL).then((value) => {
+    //         const data = value.data.map((item) => ({
+    //             ...item,
+    //             title: item.branch
+    //         }));
+    //         setCarDetails(data);
+    //     });
+    // }, []);
+
+    // useEffect(() => {
+    //     const data = carDetails.filter((item) => {
+    //         return item.type == carType.title;
+    //     });
+    //     setCarBranchs(data);
+    // }, [carType]);
 
     useEffect(() => {
-        // console.log(carDetails);
-        // console.log(carType);
-        const data = carDetails.filter((item) => {
-            return item.type == carType.title;
-        });
-        // console.log(data);
-        setCarBranchs(data);
-    }, [carType]);
+        axios.get(apiConfig.CAR_BRANCH.GET_ALL).then((item) => {
+            setListCarBranch(item.data);
+        })
+    },[])
+
+    useEffect(() => {
+        setCarModel('');
+        console.log(carBranch);
+        setListCarModel(carBranch?.car_info);
+    },[carBranch])
+
 
     // useEffect(() => {
     //     navigate('/booking');
@@ -180,25 +194,29 @@ const BookingPage = () => {
 
     const carFields = [
         {
-            label: 'Loại xe',
-            useState: [carType, setCarType],
+            label: 'Hãng xe',
             type: 'combo',
-            values: [
-                { title: 'Hạng xe nhỏ (Mini Car)' },
-                { title: 'Hạng xe nhỏ gọn (Compact)' },
-                { title: 'Hạng xe trung (Midsize)' },
-                { title: 'Hạng xe lớn (Large)' }
-            ]
+            useState: [carBranch, setCarBranch],
+            disabled: ! oldCustomerCarDetail ? true : false,
+            values: listCarBranch
         },
         {
-            label: 'Hãng xe',
-            useState: [carBranch, setCarBranch],
+            label: 'Dòng xe',
+            text_active: true,
             type: 'combo',
-            values: carBranchs
+            disabled: ! oldCustomerCarDetail ? true : false,
+            useState: [carModel, setCarModel],
+            values: listCarModel
         },
         {
             label: 'Biển số xe',
+            disabled: ! oldCustomerCarDetail ? true : false,
             useState: [carNumberPlate, setCarNumberPlate]
+        },
+        {
+            label: 'Màu xe',
+            disabled: ! oldCustomerCarDetail ? true : false,
+            useState: [color, setColor]
         }
     ];
 
@@ -304,6 +322,7 @@ const BookingPage = () => {
             product_id: item.id,
             price_id: item.price_line_id,
             staff_id: item.staff.id,
+            status: 'Đang chờ sử dụng dịch vụ',
             type: 'SERVICE'
         }));
 
@@ -326,8 +345,6 @@ const BookingPage = () => {
                     });
                 });
             });
-
-        console.log(oldCustomerCarDetail);
 
         const params = {
             id: bookingId,
@@ -389,6 +406,7 @@ const BookingPage = () => {
     };
 
     useEffect(() => {
+        console.log(oldCustomerCarDetail);
         if (oldCustomerCarDetail) {
             setCarType({
                 ...oldCustomerCarDetail.car_info,
@@ -398,8 +416,12 @@ const BookingPage = () => {
                 ...oldCustomerCarDetail.car_info,
                 title: oldCustomerCarDetail.car_info.branch
             });
-            setCarNumberPlate(oldCustomerCarDetail.number_plate);
+            
         }
+        setCarNumberPlate(oldCustomerCarDetail?.number_plate ?? '');
+        setCarBranch(oldCustomerCarDetail?.car_info ?? '');
+        setCarModel({title: oldCustomerCarDetail?.car_info.model ?? ''});
+        setColor(oldCustomerCarDetail?.color ?? '')
     }, [oldCustomerCarDetail]);
 
     const handleChangePhone = async (event) => {
@@ -592,8 +614,9 @@ const BookingPage = () => {
                 );
             case 2:
                 return (
-                    <FormSimpleLayout label={'Thông tin xe'} fields={carFields} showButton={false}>
-                        <Box>
+
+                    <FormSimpleLayout label={'Thông tin xe'} fields={carFields} isBackgroud={false} showButton={false}>
+                        {/* <Box>
                             <Grid
                                 container
                                 columnSpacing={{ xs: 1, sm: 2, md: 2 }}
@@ -657,7 +680,7 @@ const BookingPage = () => {
                                         sx={{ marginTop: '20px' }}
                                         variant="outlined"
                                         label="Số máy"
-                                        value={engine}
+                                        defaultValue={engine}
                                         fullWidth={true}
                                         onBlur={(event) => {
                                             setEngine(event.target.value);
@@ -665,7 +688,7 @@ const BookingPage = () => {
                                     />
                                 </Grid>
                             </Grid>
-                        </Box>
+                        </Box> */}
                     </FormSimpleLayout>
                 );
             case 3:
