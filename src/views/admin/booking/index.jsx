@@ -240,13 +240,32 @@ const BookingPage = () => {
         axios.get(apiConfig.STAFF_API.GET_ALL).then((value) => {
             const data = value.data.map((item) => ({
                 ...item,
-                label: item.full_name
+                title: item.full_name
             }));
             setStaffList(data);
         });
     }, []);
 
-    const serviceFields = [];
+    // <Autocomplete
+        //             size="small"
+        //             options={staffList}
+        //             value={params.row.staff}
+        //             sx={{ width: '100%' }}
+        //             onChange={(event, newValue) => {
+        //                 handleConfirmChange(params.row.id, newValue);
+        //             }}
+        //             renderInput={(params) => <TextField {...params} />}
+        //         />
+    const [employeeAssignBook, setEmployeeAssignBook] = useState();
+
+    const serviceFields = [
+        {
+            useState: [employeeAssignBook, setEmployeeAssignBook],
+            type: 'combo',
+            values: staffList,
+            label: 'Chọn nhân viên'
+        }
+    ];
 
     const handleConfirmChange = (rowId, newValue) => {
         const updatedData = serviceRows.map((x) => {
@@ -282,7 +301,7 @@ const BookingPage = () => {
         //             value={params.row.staff}
         //             sx={{ width: '100%' }}
         //             onChange={(event, newValue) => {
-        //                 handleConfirmChange(params.row.id, newValue);
+                        // handleConfirmChange(params.row.id, newValue);
         //             }}
         //             renderInput={(params) => <TextField {...params} />}
         //         />
@@ -315,6 +334,8 @@ const BookingPage = () => {
         setActiveStep(0);
     };
 
+    console.log(employeeAssignBook);
+
     const handleFinish = async () => {
         const addrLength = customerAddress?.length - 1;
 
@@ -322,11 +343,13 @@ const BookingPage = () => {
         const customerId = uuid();
         const carDetailId = uuid();
 
+        // console.log(item);
+
         const booking_details = serviceRowSelected.map((item) => ({
             booking_id: bookingId,
             product_id: item.id,
             price_id: item.price_line_id,
-            // staff_id: item.staff.id,
+            // employee_id: item.staff.id,
             status: 'Đang chờ sử dụng dịch vụ',
             type: 'SERVICE'
         }));
@@ -343,6 +366,7 @@ const BookingPage = () => {
                 value.data.result.map((item) => {
                     booking_details.push({
                         booking_id: bookingId,
+                        // employee_id: employeeAssignBook.id,
                         product_id: item,
                         price_id: null,
                         staff_id: null,
@@ -351,10 +375,13 @@ const BookingPage = () => {
                 });
             });
 
+            console.log(employeeAssignBook);
+            
         const params = {
             id: bookingId,
             total: total,
             slot_id: slotSelected.id,
+            employee_id: employeeAssignBook.id,
             car_detail_id: carDetailId,
             booking_details: booking_details,
             customer: {
@@ -383,9 +410,9 @@ const BookingPage = () => {
         //     // navigate('detail', { state: { data: { booking_id: bookingId } } });
 
         // });
-        await axios.post(apiConfig.BOOKING_API.CREATE, params).then(() => {
-            window.location.reload();
-        });
+        // await axios.post(apiConfig.BOOKING_API.CREATE, params).then(() => {
+        //     window.location.reload();
+        // });
     };
 
     // --------------------------------- render stepper ---------------------------------
