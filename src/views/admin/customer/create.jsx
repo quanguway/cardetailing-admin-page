@@ -26,44 +26,41 @@ import { v4 as uuid } from 'uuid';
 import { dateSQL } from 'utils/variable';
 import FormSimpleLayoutV2 from 'layout/FormLayout/FormSimpleLayoutV2';
 
-const CustomerUpdate = () => {
-    const { state } = useLocation();
+const CustomerCreate = () => {
 
     const navigate = useNavigate();
 
-    const [customerFullName, setCustomerFullName] = useState(
-        state.data?.full_name ?? ''
-    );
-    const [customerPhone, setCustomerPhone] = useState(state.data?.phone ?? '');
-    const [customerEmail, setCustomerEmail] = useState(state.data?.email ?? '');
-    const [customerGender, setCustomerGender] = useState(
-        state.data?.gender ?? 'Nam'
-    );
-    const [customerNote, setCustomerNote] = useState(state.data?.note ?? '');
+    const [customerFullName, setCustomerFullName] = useState();
+    const [customerPhone, setCustomerPhone] = useState();
+    const [customerEmail, setCustomerEmail] = useState();
+    const [customerGender, setCustomerGender] = useState('Nam');
+    const [customerNote, setCustomerNote] = useState();
     const [customerAddress, setCustomerAddress] = useState();
 
-    const [title, setTitle] = useState(state.data.title);
-    const [description, setDescription] = useState(state.data.description);
-    const [time, setTime] = useState(state.data.time);
-    // const [status, setTime] = useState('0')
-    const [note, setNote] = useState(state.data.note);
-    const [category, setCategory] = useState();
 
     useEffect(() => {
-        const params = { ids: state.data.address_paths };
-
-        axios
-            .get(apiConfig.ADDRESS_API.GET_MANY_BY_IDs, { params })
-            .then((value) => {
-                console.log(value);
-                setCustomerAddress(value.data);
-            });
+        axios.get(apiConfig.ADDRESS_API.GET_ALL).then((value) => {
+            setCustomerAddress([value.data[0]]);
+        });
     }, []);
+    
+    // const [status, setTime] = useState('0')
+    const [category, setCategory] = useState();
+
+    // useEffect(() => {
+    //     const params = { ids: state.data.address_paths };
+
+    //     axios
+    //         .get(apiConfig.ADDRESS_API.GET_MANY_BY_IDs, { params })
+    //         .then((value) => {
+    //             console.log(value);
+    //             setCustomerAddress(value.data);
+    //         });
+    // }, []);
 
     const handleSubmit = async () => {
         const addrLength = customerAddress?.length - 1;
         var params = {
-            id: state.data.id,
             item: {
                 full_name: customerFullName,
                 phone: customerPhone,
@@ -74,7 +71,7 @@ const CustomerUpdate = () => {
             }
         };
 
-        await axios.post(apiConfig.CUSTOMER_API.UPDATE, params).then(() => {
+        await axios.post(apiConfig.CUSTOMER_API.CREATE, params).then(() => {
             navigate('/customer');
         });
     };
@@ -84,10 +81,10 @@ const CustomerUpdate = () => {
             label: 'Tên khách hàng',
             useState: [customerFullName, setCustomerFullName]
         },
-        // {
-        //   label: 'Số điện thoại',
-        //   useState: [customerPhone, setCustomerPhone]
-        // },
+        {
+          label: 'Số điện thoại',
+          useState: [customerPhone, setCustomerPhone]
+        },
         {
             label: 'Email',
             useState: [customerEmail, setCustomerEmail]
@@ -129,14 +126,13 @@ const CustomerUpdate = () => {
             <FormSimpleLayout
                 label={'Thông tin khác hàng'}
                 fields={customerFields}
-                api={state.api}
                 handleSubmit={handleSubmit}
                 returnButton={true}
-                nameButtonSave={'Cập nhật thông tin khách hàng'}
+                nameButtonSave={'Thêm thông tin khách hàng'}
             >
             </FormSimpleLayout>
         </Box>
     );
 };
 
-export default CustomerUpdate;
+export default CustomerCreate;

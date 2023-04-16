@@ -66,6 +66,7 @@ const OrderDetail = Loadable(lazy(() => import('views/admin/order/detail')));
 
 
 const CustomerPage = Loadable(lazy(() => import('views/admin/customer')));
+const CustomerCreate = Loadable(lazy(() => import('views/admin/customer/create')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -209,6 +210,10 @@ const MainRoutes = {
         {
             path: 'customer',
             element: <CustomerPage />
+        },
+        {
+            path: 'customer/create',
+            element: <CustomerCreate />
         }
 
     ]
