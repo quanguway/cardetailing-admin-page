@@ -37,7 +37,8 @@ export const apiConfig = {
         // UPDATE: `${appConfig.URL_API}/car-info/update`
     },
     CAR_DETAIL: {
-        GET_BY_CUSTOMER: `${appConfig.URL_API}/car-detail/customer`
+        GET_BY_CUSTOMER: `${appConfig.URL_API}/car-detail/customer`,
+        CREATE: `${appConfig.URL_API}/car-detail/create`
     },
     STAFF_API: {
         GET_ALL: `${appConfig.URL_API}/staff`,

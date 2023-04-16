@@ -12,6 +12,8 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { renderGender } from 'utils/dataToView';
 import React from 'react';
 import CarDetailRow from 'component/CarDetailRow';
+import axios from 'axios';
+import { set } from 'date-fns';
 
 
 const CustomerPage = () => {
@@ -19,6 +21,8 @@ const CustomerPage = () => {
 
     const [open, setOpen] = useState(false);
     const [row, setRow] = useState(null);
+    const [customer, setCustomer] = useState();
+
     const [openCollapse, setOpenCollapse] = React.useState(false);
 
     const [openModal, setOpenModal] = React.useState(false);
@@ -35,20 +39,68 @@ const CustomerPage = () => {
     const [gender, setGender] = useState(row?.gender ?? '');
     const [address, setAddress] = useState(row?.address_path_title ?? '');
 
+
+    const [carBranch, setCarBranch] = useState();
+    const [listCarBranch, setListCarBranch] = useState();
+
+    const [carModel, setCarModel] = useState();
+    const [listCarModel, setListCarModel] = useState();
+    const [numberPlate, setNumberPlate] = useState();
+    const [carColor, setCarColor] = useState();
+
+    // useEffect(() => {
+        
+    // }, [row]);
+
+
+
     useEffect(() => {
-        setFullName(row?.full_name ?? '');
-        setPhone(row?.phone ?? '');
-        setEmail(row?.email ?? '');
-        setGender(renderGender(row?.gender) ?? '');
-        setAddress(row?.address_path_title ?? '');
-    }, [row]);
+        axios.get(apiConfig.CAR_BRANCH.GET_ALL).then((item) => {
+            setListCarBranch(item.data);
+        })
+    },[])
+
+    useEffect(() => {
+        setCarModel('');
+        setListCarModel(carBranch?.car_info);
+    },[carBranch])
+
+    const handleAddCar = async () => {
+        const params = {
+            item: {
+                car_info_id: carModel.id,
+                customer_id: customer.id,
+                number_plate: numberPlate,
+                color: carColor
+            }
+        }
+
+        await axios.post(apiConfig.CAR_DETAIL.CREATE, params);
+
+        window.location.reload();
+    }
 
     const addCarfields = [
         {
-            label: 'Full name',
-            disabled: true,
+            label: 'Hãng xe',
+            type: 'combo',
+            useState: [carBranch, setCarBranch],
+            values: listCarBranch
+        },
+        {
+            label: 'Dòng xe',
             text_active: true,
-            useState: [fullName, setFullName]
+            type: 'combo',
+            useState: [carModel, setCarModel],
+            values: listCarModel
+        },
+        {
+            label: 'Biển số xe',
+            useState: [numberPlate, setNumberPlate]
+        },
+        {
+            label: 'Màu xe',
+            useState: [carColor, setCarColor]
         },
     ]
 
@@ -85,6 +137,8 @@ const CustomerPage = () => {
         },
     ]
 
+
+
     const columns = [
         { field: 'full_name', flex: 1, headerName: 'Tên khách hàng' },
         { field: 'phone', flex: 1, headerName: 'Số điện thoại' },
@@ -101,9 +155,13 @@ const CustomerPage = () => {
                 icon={<IconEye />}
                 label="Chi tiết"
                 onClick={() => {
-                    console.log(params.row);
-                    handleToggle();
                     setRow(params.row);
+                    setFullName(params.row.full_name ?? '');
+                    setPhone(params.row.phone ?? '');
+                    setEmail(params.row.email ?? '');
+                    setGender(renderGender(params.row.gender) ?? '');
+                    setAddress(params.row.address_path_title ?? '');
+                    handleToggle();
                 }}
                 showInMenu
             />,
@@ -124,6 +182,11 @@ const CustomerPage = () => {
                     icon={<IconPencil />}
                     label="Thêm xe"
                     onClick={() => {
+                        setCustomer(params.row)
+                        setCarBranch('')
+                        setCarModel('')
+                        setNumberPlate('')
+                        setCarColor('')
                         handleModalOpen()
                     }}
                     showInMenu
@@ -138,29 +201,29 @@ const CustomerPage = () => {
                 apiGet={apiConfig.CUSTOMER_API.GET_ALL}
                 customFields={['gender']}
                 columns={columns}
-                // handleAddButton={() => navigate('create')}
-                disableButton={true}
+                handleAddButton={() => navigate('create')}
+                disableButton={false}
             />
-            <Modal sx={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: 500,
-                height: 600,
-                borderRadius: '12px',
-                boxShadow: 24,
-            }}
+            <Modal
                 open={openModal}
                 onClose={handleModalClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
                 >
                 <Box sx={{
-                    backgroundColor: '#ffffff !important',
-                    width: '100%',
-                    height: '100%'
+                    backgroundColor: '#ffffff',
+                    padding: "4px",
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 500,
+                    borderRadius: '12px',
+                    bgcolor: 'background.paper',
+                    boxShadow: 24,
                 }}>
                     <PerfectScrollbar component="div">
-                        <FormSimpleLayout fields={fields} isBackgroud={false} showButton={true}/>
+                        <FormSimpleLayout fields={addCarfields} isBackgroud={false} showButton={true} handleSubmit={handleAddCar}/>
                     </PerfectScrollbar>
                 </Box>
             </Modal>

@@ -28,16 +28,28 @@ export default function CarDetailRow({row}) {
                 <Box sx={{ margin: 1 }}>
                 <Grid container>
                     <Grid item xs={4}>
-                        <h3>Branch: </h3>
+                        <h3>Hãng xe: </h3>
                     </Grid>
                     <Grid item xs={8}>
-                    <p>{row?.car_info.branch}</p>
+                    <p>{row?.car_info.title}</p>
                     </Grid>
                     <Grid item xs={4}>
-                        <h3>Type: </h3>
+                        <h3>Dòng xe: </h3>
                     </Grid>
                     <Grid item xs={8}>
-                        <p>{row?.car_info.type}</p>
+                    <p>{row?.car_info.model}</p>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <h3>Số chỗ ngồi: </h3>
+                    </Grid>
+                    <Grid item xs={8}>
+                        <p>{row?.car_info.number_of_seats}</p>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <h3>Màu: </h3>
+                    </Grid>
+                    <Grid item xs={8}>
+                        <p>{row?.color}</p>
                     </Grid>
                 </Grid>
                 </Box>
