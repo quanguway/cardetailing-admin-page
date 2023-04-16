@@ -24,10 +24,12 @@ const ProductPage = () => {
     const [title, setTitle] = useState(row?.title ?? '');
     const [description, setDescription] = useState(row?.email ?? '');
     const [time, setTime] = useState(row?.time ?? '');
-    const [category, setCategory] = useState(row?.category_paths.split('/')[1] ?? '');
+    const [category, setCategory] = useState(
+        row?.category_paths.split('/')[1] ?? ''
+    );
 
     useEffect(() => {
-        setProductCode(row?.promotio_code ?? '');
+        setProductCode(row?.product_code ?? '');
         setTitle(row?.title ?? '');
         setDescription(row?.description ?? '');
         setTime(row?.time ?? '');
@@ -42,30 +44,30 @@ const ProductPage = () => {
             useState: [productCode, setProductCode]
         },
         {
-            label: 'Phone',
+            label: 'Tên dịch vụ',
             disabled: true,
-            text_active:true,
+            text_active: true,
             useState: [title, setTitle]
         },
         {
-            label: 'Description',
+            label: 'Mô tả',
             disabled: true,
             text_active: true,
             useState: [description, setDescription]
         },
         {
-            label: 'Time',
+            label: 'Thời gian ước tính',
             disabled: true,
             text_active: true,
             useState: [time, setTime]
         },
         {
-            label: 'Category',
+            label: 'Loại dịch vụ',
             disabled: true,
             text_active: true,
             useState: [category, setCategory]
-        },
-    ]
+        }
+    ];
 
     const columns = [
         { field: 'product_code', flex: 1, headerName: 'Mã dịch vụ' },
@@ -138,7 +140,12 @@ const ProductPage = () => {
                 }}
             >
                 <PerfectScrollbar component="div">
-                    <FormSimpleLayout fields={fields} isBackgroud={false} showButton={false}/>
+                    <FormSimpleLayout
+                        fields={fields}
+                        isBackgroud={false}
+                        showButton={false}
+                        nameForm="Thông tin chi tiết dịch vụ"
+                    />
                 </PerfectScrollbar>
             </Drawer>
         </Box>

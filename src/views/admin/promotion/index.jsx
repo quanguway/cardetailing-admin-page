@@ -1,4 +1,18 @@
-import { Box, Button, ButtonBase, Drawer, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
+import {
+    Box,
+    Button,
+    ButtonBase,
+    Drawer,
+    IconButton,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TextField
+} from '@mui/material';
 import TableSimpleLayout from 'layout/TableLayout/TableSimpleLayout';
 import { apiConfig } from 'config/app.config';
 import { GridActionsCellItem } from '@mui/x-data-grid';
@@ -27,11 +41,7 @@ const PromotionPage = () => {
 
     const columnsChildShow = {
         label: 'promotionLines',
-        columns: [
-            'promotion_code',
-            'start_date',
-            'end_date'
-        ]
+        columns: ['Mã khuyễn mãi', 'Ngày bắt đầu', 'Ngày kết thúc']
     };
 
     const infoToggle = {
@@ -39,6 +49,7 @@ const PromotionPage = () => {
     };
 
     const columns = [
+        { field: 'code', headerName: 'Mã bảng KM', flex: 1 },
         { field: 'title', headerName: 'Tiêu đề', flex: 1 },
         { field: 'description', headerName: 'Mô tả', flex: 1 },
         {
@@ -63,16 +74,20 @@ const PromotionPage = () => {
             getActions: (params) => [
                 <GridActionsCellItem
                     icon={<IconEye />}
-                    label="Show"
+                    label="Chi tiết"
                     onClick={() => {
-                        handleToggle();
+                        setTitle(params.row.title);
+                        setPromotionCode(params.row.code);
+                        setStartDate(dayjs(params.row.date_start) ?? '');
+                        setEndDate(dayjs(params.row.date_end));
                         setRow(params.row);
+                        handleToggle();
                     }}
                     showInMenu
                 />,
                 <GridActionsCellItem
                     icon={<IconTrash />}
-                    label="Delete"
+                    label="Xóa"
                     onClick={() => {
                         if (confirm('Bạn có chắc muốn xóa ?')) {
                             axios
@@ -88,9 +103,9 @@ const PromotionPage = () => {
                 />,
                 <GridActionsCellItem
                     icon={<IconPencil />}
-                    label="Edit"
+                    label="Chỉnh sửa"
                     onClick={() => {
-                        navigate('form', {
+                        navigate('update', {
                             state: {
                                 data: params.row,
                                 mode: 'UPDATE',
@@ -104,45 +119,49 @@ const PromotionPage = () => {
         }
     ];
 
-    useEffect(() => {
-        setTitle(row?.title)
-        setPromotionCode(row?.promotionCode)
-        setStartDate(dayjs(row?.startDate) ?? '')
-        setEndDate(dayjs(row?.endDate))
-    }, [row])
+    // useEffect(() => {
+    //     console.log(row);
+    //     setTitle(row?.title);
+    //     setPromotionCode(row?.code);
+    //     setStartDate(dayjs(row?.date_start) ?? '');
+    //     setEndDate(dayjs(row?.date_end));
+    // }, [row]);
 
     const [promotionCode, setPromotionCode] = useState();
     const [title, setTitle] = useState(row?.title ?? '');
-    const [startDate, setStartDate] = useState(dayjs(row?.date_end) ?? '');
-    const [endDate, setEndDate] = useState(dayjs(row?.date_end) ?? '');
+    const [startDate, setStartDate] = useState(dayjs(row?.start_date) ?? '');
+    const [endDate, setEndDate] = useState(dayjs(row?.end_date) ?? '');
 
-    const fieldPromotion = [    
+    const fieldPromotion = [
         {
-            label: 'Promotion code',
+            label: 'Mã bảng khuyến mãi',
             text_active: true,
             useState: [promotionCode, setPromotionCode],
-            disabled: true,
+            disabled: true
         },
         {
-            label: 'Title',
+            label: 'Tiêu đề',
             name: 'title',
             text_active: true,
             useState: [title, setTitle],
-            disabled: true,
+            disabled: true
         },
-        
+
         {
-            label: 'Start date',
+            label: 'Ngày bắt đầu',
             useState: [startDate, setStartDate],
             disabled: true,
+            text_active: true,
             type: 'date-picker'
         },
         {
-            label: 'End date',
+            label: 'Ngày kết thúc',
             useState: [endDate, setEndDate],
-            type: 'date-picker'
+            type: 'date-picker',
+            text_active: true,
+            disabled: true
         }
-    ]
+    ];
 
     return (
         <Box>
@@ -170,29 +189,37 @@ const PromotionPage = () => {
                                 padding: '20px'
                             }}
                         >
-                            
-                            <FormSimpleLayout fields={fieldPromotion} isBackgroud={false} nameForm={'Thông tin giảm giá'}/>
+                            <FormSimpleLayout
+                                showButton = {false}
+                                fields={fieldPromotion}
+                                isBackgroud={false}
+                                nameForm={'Thông tin giảm giá'}
+                            />
 
                             <TableContainer component={Paper}>
                                 <Table aria-label="collapsible table">
                                     <TableHead>
                                         <TableRow>
                                             <TableCell />
-                                            {columnsChildShow.columns.map((item) => {
-                                                return (
-                                                    <TableCell>{item}</TableCell>
-                                                )
-                                            })}
+                                            {columnsChildShow.columns.map(
+                                                (item) => {
+                                                    return (
+                                                        <TableCell>
+                                                            {item}
+                                                        </TableCell>
+                                                    );
+                                                }
+                                            )}
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
                                         {row.promotionLines.map((item) => (
-                                            <Row row={item}/>
+                                            <Row row={item} />
                                         ))}
                                     </TableBody>
                                 </Table>
                             </TableContainer>
-                            
+
                             {/* <Box height={320}>
                                 <DataGrid
                                     density="comfortable"

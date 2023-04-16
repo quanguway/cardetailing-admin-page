@@ -614,6 +614,7 @@ const BookingPage = () => {
                 );
             case 2:
                 return (
+
                     <FormSimpleLayout label={'Thông tin xe'} fields={carFields} isBackgroud={false} showButton={false}>
                         {/* <Box>
                             <Grid

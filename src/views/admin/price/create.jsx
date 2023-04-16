@@ -21,9 +21,10 @@ const PriceCreate = () => {
     const [listUnit, setListUnit] = useState([]);
 
     const [title, setTitle] = useState();
-    const [startDate, setStartDate] = useState();
-    const [endDate, setEndDate] = useState();
+    const [startDate, setStartDate] = useState(dayjs().add(1, 'day'));
+    const [endDate, setEndDate] = useState(dayjs().add(1, 'day'));
     const [isActive, setIsActive] = useState('Có');
+    const [isUpdate, setIsUpdate] = useState(false);
 
     // price line
 
@@ -40,6 +41,7 @@ const PriceCreate = () => {
     });
     const [priceLineRows, setPriceLineRows] = useState([]);
 
+
     useEffect(() => {
         axios.get(apiConfig.PRODUCT_API.GET_ALL_WITHOUT_PRICE).then((value) => {
             setListProduct(value.data);
@@ -53,6 +55,7 @@ const PriceCreate = () => {
     }, []);
 
     const handleToggle = () => {
+        if (openForm) setIsUpdate(false);
         setOPenForm(!openForm);
     };
 
@@ -68,11 +71,27 @@ const PriceCreate = () => {
             });
             return;
         }
-        console.log(title);
+        console.log(startDate);
         if (title === undefined) {
             Swal.fire({
                 icon: 'error',
                 title: 'Chưa nhập tên bảng giá'
+            });
+            return;
+        }
+
+        if (!startDate || startDate === null) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Chưa nhập ngày bắt đầu bảng giá'
+            });
+            return;
+        }
+
+        if (!endDate || endDate === null) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Chưa nhập ngày kết thúc bảng giá'
             });
             return;
         }
@@ -100,22 +119,22 @@ const PriceCreate = () => {
                             (note +=
                                 ' Dịch vụ <b>' +
                                 item.productTitle +
-                                ' / ' +
-                                item.unitTitle +
-                                '</b> đang kích hoạt trong bảng giá <b>' +
+                                '</b> đang kích hoạt trong: <b>' +
                                 item.headerTitle +
                                 '</b> <br/>')
                     );
                     Swal.fire({
+                        position: 'top',
                         icon: 'error',
-                        title: 'Tạo bảng giá không thành công',
-                        html: `<div> ${note} </div>`
+                        html: `<h3>Tạo bảng giá không thành công</h3><div> ${note} </div>`
                     });
                 } else {
                     Swal.fire({
+                        position: 'top',
                         icon: 'success',
-                        title: 'Tạo bảng giá thành công',
+                        html: `<h3>Tạo bảng giá thành công</h3>`,
                         showConfirmButton: false,
+                        timerProgressBar: true,
                         timer: 1500
                     });
                     navigate('/price');
@@ -124,7 +143,34 @@ const PriceCreate = () => {
     };
 
     const handleSubmitPriceLine = async () => {
+
+        console.log(product);
+        if (!product || product === null || product === undefined) {
+            alert('Phải chọn sản phẩm để thêm vào bảng giá');
+            return;
+        }
+
         const priceList = price.split(',');
+        const priceNew = priceList.join('');
+        console.log(priceNew);
+        if (price !== '') {
+            if (Number.parseInt(priceNew) <= 0) {
+                alert('Giá dịch vụ phải lớn hơn 0');
+                return;
+            }
+        } else {
+            alert('Giá dịch vụ không được trống');
+            return;
+        }
+
+        const tmp = priceLineRows.findIndex(
+            (item) => item.product_id === product.id
+        );
+        if (tmp >= 0 && !isUpdate) {
+            alert('Sản phẩm đã có trong bảng giá, hãy chọn sản phẩm khác !');
+            return;
+        }
+
         const rows = {
             id: uuid(),
             price: priceList.join(''),
@@ -142,7 +188,20 @@ const PriceCreate = () => {
             unit_id: '276ac4a3-d5d6-11ed-a956-0242ac150002',
             unit_title: 'Lượt'
         };
-        setPriceLineRows([...priceLineRows, rows]);
+        setProduct(null);
+        if (isUpdate) {
+            const newRows = priceLineRows.map((item) => {
+                if (item.product_id === rows.product_id) {
+                    return rows;
+                } else {
+                    return item;
+                }
+            });
+            setPriceLineRows(newRows);
+        } else {
+            setPriceLineRows([...priceLineRows, rows]);
+        }
+        setIsUpdate(false);
         handleToggle();
     };
 
@@ -169,12 +228,15 @@ const PriceCreate = () => {
         {
             label: 'Ngày áp dụng',
             useState: [startDate, setStartDate],
-            type: 'date-picker'
+            type: 'date-picker',
+            minDate: dayjs().add(1, 'day'),
+            maxDate: endDate
         },
         {
             label: 'Ngày kết thúc',
             useState: [endDate, setEndDate],
-            type: 'date-picker'
+            type: 'date-picker',
+            minDate: startDate
         }
     ];
 
@@ -183,7 +245,8 @@ const PriceCreate = () => {
             label: 'Dịch vụ & sản phẩm',
             type: 'combo',
             values: listProducts,
-            useState: [product, setProduct]
+            useState: [product, setProduct],
+            disabled: isUpdate
         },
         // {
         //     label: 'Đơn vị',
@@ -258,6 +321,7 @@ const PriceCreate = () => {
                     icon={<IconPencil />}
                     label="Chỉnh sửa"
                     onClick={() => {
+                        setIsUpdate(true);
                         setPriceLineId(params.row.id);
                         setPrice(params.row.price);
                         setIsActivePriceLine('Không');
@@ -301,6 +365,7 @@ const PriceCreate = () => {
                 handleToggle={handleToggle}
                 fields={priceLineFields}
                 handleSubmit={handleSubmitPriceLine}
+                nameForm="Thông tin giá dịch vụ"
             />
         </Box>
     );
