@@ -13,6 +13,7 @@ import NotificationSection from './NotificationSection';
 // assets
 import { IconMenu2 } from '@tabler/icons';
 import { getAuth } from 'utils/auth';
+import dayjs from 'dayjs';
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
@@ -64,7 +65,10 @@ const Header = ({ handleLeftDrawerToggle }) => {
                     </Typography>
                 </Stack>
                 <Stack direction="row" spacing={0.5} alignItems="center">
-                    <Typography variant="subtitle2"> {getAuth().role}</Typography>
+                    <Typography variant="subtitle2"> {getAuth().role}</Typography> 
+                </Stack>
+                <Stack direction="row" spacing={0.5} alignItems="center">
+                    Ngày: {dayjs().format('DD/MM/YYYY')}
                 </Stack>
             </Stack>
 
