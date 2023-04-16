@@ -65,6 +65,7 @@ const BookingPage = () => {
 
     const [customerFullName, setCustomerFullName] = useState();
     const [customerPhone, setCustomerPhone] = useState();
+    const [customerListPhone, setCustomerListPhone] = useState();
     const [customerEmail, setCustomerEmail] = useState();
     const [customerGender, setCustomerGender] = useState();
     const [customerNote, setCustomerNote] = useState();
@@ -75,6 +76,11 @@ const BookingPage = () => {
         axios.get(apiConfig.ADDRESS_API.GET_ALL).then((value) => {
             setCustomerAddress([value.data[0]]);
         });
+
+        axios.get(apiConfig.CUSTOMER_API.GET_ALL).then((value) => {
+            const phones = value.data.map((item) => (item.phone))
+            setCustomerListPhone(phones)
+        })
     }, []);
 
     const customerFields = [
@@ -82,10 +88,6 @@ const BookingPage = () => {
             label: 'Tên khách hàng',
             useState: [customerFullName, setCustomerFullName]
         },
-        // {
-        //   label: 'Số điện thoại',
-        //   useState: [customerPhone, setCustomerPhone]
-        // },
         {
             label: 'Email',
             useState: [customerEmail, setCustomerEmail]
@@ -158,6 +160,9 @@ const BookingPage = () => {
 
     const [carNumberPlate, setCarNumberPlate] = useState();
 
+    const [oldCustomerCarDetail, setOldCustomerCarDetail] = useState({});
+
+
     // useEffect(() => {
     //     axios.get(apiConfig.CAR_INFO.GET_ALL).then((value) => {
     //         const data = value.data.map((item) => ({
@@ -183,7 +188,6 @@ const BookingPage = () => {
 
     useEffect(() => {
         setCarModel('');
-        console.log(carBranch);
         setListCarModel(carBranch?.car_info);
     },[carBranch])
 
@@ -192,30 +196,31 @@ const BookingPage = () => {
     //     navigate('/booking');
     // }, [activeStep]);
 
+    console.log(oldCustomerCarDetail);
+
     const carFields = [
         {
             label: 'Hãng xe',
             type: 'combo',
             useState: [carBranch, setCarBranch],
-            disabled: ! oldCustomerCarDetail ? true : false,
+            disabled: oldCustomerCarDetail ? true : false,
             values: listCarBranch
         },
         {
             label: 'Dòng xe',
-            text_active: true,
             type: 'combo',
-            disabled: ! oldCustomerCarDetail ? true : false,
+            disabled: oldCustomerCarDetail ? true : false,
             useState: [carModel, setCarModel],
             values: listCarModel
         },
         {
             label: 'Biển số xe',
-            disabled: ! oldCustomerCarDetail ? true : false,
+            disabled: oldCustomerCarDetail ? true : false,
             useState: [carNumberPlate, setCarNumberPlate]
         },
         {
             label: 'Màu xe',
-            disabled: ! oldCustomerCarDetail ? true : false,
+            disabled: oldCustomerCarDetail ? true : false,
             useState: [color, setColor]
         }
     ];
@@ -259,30 +264,30 @@ const BookingPage = () => {
     const serviceColumns = [
         { field: 'title', headerName: 'Tên dịch vụ', flex: 1 },
         { field: 'time', headerName: 'Thời gian xử lý (Phút)', flex: 1 },
-        { field: 'price_line', headerName: 'Giá', flex: 1 },
-        { field: 'price_final', headerName: 'Giá Cuối', flex: 1 },
+        // { field: 'price_line', headerName: 'Giá', flex: 1 },
+        // { field: 'price_final', headerName: 'Giá Cuối', flex: 1 },
         {
             field: 'product_recived_title',
             headerName: 'Dịch vụ được tặng',
             flex: 1
         },
-        {
-            field: 'staff',
-            headerName: 'Nhân viên xử lý',
-            width: 300,
-            renderCell: (params) => (
-                <Autocomplete
-                    size="small"
-                    options={staffList}
-                    value={params.row.staff}
-                    sx={{ width: '100%' }}
-                    onChange={(event, newValue) => {
-                        handleConfirmChange(params.row.id, newValue);
-                    }}
-                    renderInput={(params) => <TextField {...params} />}
-                />
-            )
-        }
+        // {
+        //     field: 'staff',
+        //     headerName: 'Nhân viên xử lý',
+        //     width: 300,
+        //     renderCell: (params) => (
+        //         <Autocomplete
+        //             size="small"
+        //             options={staffList}
+        //             value={params.row.staff}
+        //             sx={{ width: '100%' }}
+        //             onChange={(event, newValue) => {
+        //                 handleConfirmChange(params.row.id, newValue);
+        //             }}
+        //             renderInput={(params) => <TextField {...params} />}
+        //         />
+        //     )
+        // }
     ];
 
     // ---------------------------- config ------------------------------
@@ -321,7 +326,7 @@ const BookingPage = () => {
             booking_id: bookingId,
             product_id: item.id,
             price_id: item.price_line_id,
-            staff_id: item.staff.id,
+            // staff_id: item.staff.id,
             status: 'Đang chờ sử dụng dịch vụ',
             type: 'SERVICE'
         }));
@@ -367,8 +372,6 @@ const BookingPage = () => {
                 car_info_id: carBranch.id,
                 number_plate: carNumberPlate,
                 customer_id: customerId,
-                engine: engine,
-                chassis: chassis,
                 color: color,
                 number_seat: number_seat
             },
@@ -390,7 +393,6 @@ const BookingPage = () => {
     const [isOldCustomer, setIsOldCustomer] = useState(false);
     const [oldCustomerInfo, setOldCustomerInfo] = useState();
     const [oldCustomerCarDetails, setOldCustomerCarDetails] = useState([]);
-    const [oldCustomerCarDetail, setOldCustomerCarDetail] = useState();
 
     const RenderRowDataFinshed = ({ label, value }) => {
         return (
@@ -405,28 +407,31 @@ const BookingPage = () => {
         );
     };
 
+    console.log(oldCustomerCarDetail?.car_info?.model);
+
     useEffect(() => {
         console.log(oldCustomerCarDetail);
         if (oldCustomerCarDetail) {
-            setCarType({
-                ...oldCustomerCarDetail.car_info,
-                title: oldCustomerCarDetail.car_info.type
-            });
-            setCarBranch({
-                ...oldCustomerCarDetail.car_info,
-                title: oldCustomerCarDetail.car_info.branch
-            });
+            // setCarType({
+            //     ...oldCustomerCarDetail.car_info,
+            //     title: oldCustomerCarDetail.car_info.type
+            // });
+            // setCarBranch({
+            //     ...oldCustomerCarDetail.car_info,
+            //     title: oldCustomerCarDetail.car_info.title
+            // });
             
         }
-        setCarNumberPlate(oldCustomerCarDetail?.number_plate ?? '');
+        setCarModel({ title: oldCustomerCarDetail?.car_info?.model ?? ''});
         setCarBranch(oldCustomerCarDetail?.car_info ?? '');
-        setCarModel({title: oldCustomerCarDetail?.car_info.model ?? ''});
+        setCarNumberPlate(oldCustomerCarDetail?.number_plate ?? '');
         setColor(oldCustomerCarDetail?.color ?? '')
     }, [oldCustomerCarDetail]);
 
     const handleChangePhone = async (event) => {
         const phone = event.target.value;
         setCustomerPhone(phone);
+        setOldCustomerCarDetail();
 
         if (phone.length === 10) {
             await axios
@@ -493,7 +498,7 @@ const BookingPage = () => {
                         label={'Thông tin khác hàng'}
                         fields={customerFields}
                     >
-                        <TextField
+                        {/* <TextField
                             sx={{ marginY: '8px' }}
                             key={'customer phone'}
                             //helperText="Some important text"
@@ -502,7 +507,24 @@ const BookingPage = () => {
                             defaultValue={customerPhone}
                             fullWidth={true}
                             onBlur={(event) => handleChangePhone(event)}
-                        />
+                        /> */}
+
+                            <Autocomplete
+                                sx={{ marginY: '8px' }}
+                                disablePortal
+                                options={customerListPhone ?? []}
+                                fullWidth={true}
+                                defaultValue={customerPhone}
+                                onBlur={(event) => handleChangePhone(event)}
+                                renderInput={(params) => (
+                                    <TextField
+                                        // helperText="Some important text"
+                                        {...params}
+                                        label={"số điện thoại"}
+                                    />
+                                )}
+                            />
+      
                         {/* <FormGroup>
                             <FormControlLabel
                                 control={

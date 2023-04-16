@@ -64,17 +64,17 @@ const OrderDetail = () => {
                 ]);
                 setCarDetailInfo([
                     {
-                        label: 'Loại xe',
-                        value: data.car_detail.car_info.type
-                    },
-                    {
-                        label: 'Tên xe',
-                        value: data.car_detail.car_info.branch
-                    },
-                    {
                         label: 'Biển số xe',
-                        value: data.car_detail.number_plate
-                    }
+                        value: data.car_detail?.number_plate ?? ''
+                    },
+                    {
+                        label: 'Dòng xe',
+                        value: data.car_detail?.car_info.model ?? ''
+                    },
+                    {
+                        label: 'Màu  xe',
+                        value: data.car_detail?.color ?? ''
+                    },
                 ]);
 
                 const orderId = uuid();

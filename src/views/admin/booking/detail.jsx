@@ -99,28 +99,34 @@ const BookingDetail = () => {
                         value: data.customer?.addresses ?? ''
                     }
                 ]);
+                console.log(data.car_detail);
                 setCarDetailInfo([
-                    {
-                        label: 'Loại xe',
-                        value: data.car_detail?.car_info.type ?? ''
-                    },
-                    {
-                        label: 'Tên xe',
-                        value: data.car_detail?.car_info.branch ?? ''
-                    },
                     {
                         label: 'Biển số xe',
                         value: data.car_detail?.number_plate ?? ''
-                    }
+                    },
+                    {
+                        label: 'Dòng xe',
+                        value: data.car_detail?.car_info.model ?? ''
+                    },
+                    {
+                        label: 'Màu  xe',
+                        value: data.car_detail?.color ?? ''
+                    },
+                    {
+                        label: 'Số chỗ ngồi',
+                        value: data.car_detail?.car_info.number_of_seats ?? ''
+                    },
+                    
                 ]);
 
                 const orderId = uuid();
                 
                 const total = data.booking_details.reduce(
                     (partialSum, item) => {
-                        if(item.status == statusList[2]) {
+                        // if(item.status == statusList[2]) {
                             return partialSum + item.price_final
-                        }
+                        // }
                     },
                     0
                 );
@@ -248,11 +254,11 @@ const BookingDetail = () => {
 
         // { field: 'service_price', headerName: 'Giá', flex: 1 },
         // { field: 'service_price_final', headerName: 'Thành tiền', flex: 1 },
-        {
-            headerName: 'Nhân viên',
-            field: 'staff_name',
-            flex: 1
-        },
+        // {
+        //     headerName: 'Nhân viên',
+        //     field: 'staff_name',
+        //     flex: 1
+        // },
         {
             headerName: 'Ghi chú',
             flex: 1,
